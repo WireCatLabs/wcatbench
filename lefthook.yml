@@ -1,0 +1,9 @@
+# Fast checks on staged files only. No install, build, type check or test here (WC-CI-1, WC-CI-2): `task gate` and CI do that.
+pre-commit:
+  parallel: true
+  commands:
+    ruff:
+      glob: "*.py"
+      run: uv run --frozen ruff check --force-exclude {staged_files} && uv run --frozen ruff format --check --force-exclude {staged_files}
+    gitleaks:
+      run: command -v gitleaks >/dev/null 2>&1 && gitleaks git --staged --no-banner --redact . || echo "gitleaks not installed; CI scans every commit"

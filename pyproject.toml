@@ -1,0 +1,156 @@
+[project]
+name = "wcatbench"
+version = "0.1.0"
+description = "Benchmark AI agent memory: any agent, any memory store, the same questions."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Viacheslav Ptsarev" }]
+requires-python = ">=3.13"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "loguru>=0.7.3",
+    "pydantic>=2.12",
+    "pydantic-settings>=2.11",
+    "tenacity>=9.1",
+    "typer>=0.20",
+]
+
+[project.optional-dependencies]
+# Reports query the JSONL files a run writes; not needed to run a round.
+report = ["duckdb>=1.4"]
+
+[project.scripts]
+wcatbench = "wcatbench.cli:app"
+
+# Built-in adapters register the same way a third-party package does, so the core never imports one by name.
+[project.entry-points."wcatbench.stores"]
+fts = "wcatbench.stores.fts:FtsStore"
+
+[project.entry-points."wcatbench.agents"]
+oracle = "wcatbench.agents.oracle:OracleAgent"
+noop = "wcatbench.agents.noop:NoopAgent"
+
+[project.entry-points."wcatbench.scorers"]
+answer = "wcatbench.scoring.answer:AnswerScorer"
+
+[project.urls]
+Homepage = "https://github.com/WireCatLabs/wcatbench"
+Issues = "https://github.com/WireCatLabs/wcatbench/issues"
+Changelog = "https://github.com/WireCatLabs/wcatbench/blob/main/CHANGELOG.md"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wcatbench"]
+
+[dependency-groups]
+dev = [
+    "bandit[toml]>=1.8.0",
+    "duckdb>=1.4",
+    "import-linter>=2.1",
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0",
+    "pytest-describe>=3.0",
+    "pytest-mock>=3.15",
+    "pytest-sugar>=1.1",
+    "pytest-xdist>=3.8",
+    "ruff>=0.15.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "Describe*"]
+python_functions = ["test_*", "it_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--showlocals",
+    "--tb=short",
+    "--cov=src/wcatbench",
+    "--cov-report=term-missing",
+    "--cov-fail-under=85",
+    "-m",
+    "not live",
+]
+filterwarnings = ["error"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: the whole pipeline, offline",
+    "unit: one module",
+    "live: calls a real paid service or agent; run only by hand with -m live",
+]
+
+[tool.coverage.run]
+source = ["src/wcatbench"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "\\.\\.\\.$",
+]
+
+[tool.ruff]
+line-length = 120
+src = ["src", "tests"]
+target-version = "py313"
+
+[tool.ruff.lint]
+# The base set (E F I B UP A) plus the rules a harness that handles keys and subprocesses needs.
+select = ["E", "F", "W", "I", "B", "UP", "A", "S", "BLE", "SIM", "RUF", "PT", "PTH", "RET", "C4", "N", "T20", "ERA"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S603", "S607"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_unused_configs = true
+mypy_path = "src"
+packages = ["wcatbench"]
+
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = ["B101"]
+
+[tool.importlinter]
+root_package = "wcatbench"
+
+[[tool.importlinter.contracts]]
+name = "Layers: the CLI on top, adapters in the middle, the core and logging at the bottom"
+type = "layers"
+layers = [
+    "wcatbench.cli",
+    "wcatbench.stores | wcatbench.agents | wcatbench.scoring",
+    "wcatbench.core",
+    "wcatbench.observability",
+    "wcatbench.config",
+]
+
+[[tool.importlinter.contracts]]
+name = "Adapters never import each other: a store, an agent and a scorer meet only in the core's types"
+type = "independence"
+modules = ["wcatbench.stores", "wcatbench.agents", "wcatbench.scoring"]

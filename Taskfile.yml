@@ -1,0 +1,81 @@
+version: "3"
+
+vars:
+  UV: uv run --frozen
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  install:
+    desc: Install the package and the dev tools, then the git hooks
+    cmds:
+      - uv sync --frozen
+      - lefthook install
+
+  lint:
+    desc: Ruff lint
+    cmds:
+      - "{{.UV}} ruff check ."
+
+  lint:fix:
+    desc: Ruff lint with fixes
+    cmds:
+      - "{{.UV}} ruff check --fix ."
+
+  lint:imports:
+    desc: Layer and independence contracts (import-linter)
+    cmds:
+      - "{{.UV}} lint-imports"
+
+  format:
+    desc: Format the code
+    cmds:
+      - "{{.UV}} ruff format ."
+
+  format:check:
+    desc: Check formatting
+    cmds:
+      - "{{.UV}} ruff format --check ."
+
+  typecheck:
+    desc: mypy, strict
+    cmds:
+      - "{{.UV}} mypy"
+
+  security:
+    desc: Bandit over the package
+    cmds:
+      - "{{.UV}} bandit -q -r src -c pyproject.toml"
+
+  test:
+    desc: Tests with coverage (live tests excluded)
+    cmds:
+      - "{{.UV}} pytest {{.CLI_ARGS}}"
+
+  test:nocov:
+    desc: Tests without coverage
+    cmds:
+      - "{{.UV}} pytest --no-cov {{.CLI_ARGS}}"
+
+  test:fast:
+    desc: Stop at the first failure, failed tests first
+    cmds:
+      - "{{.UV}} pytest --no-cov -x --ff {{.CLI_ARGS}}"
+
+  test:live:
+    desc: Tests that call real paid services or agents. By hand only
+    cmds:
+      - "{{.UV}} pytest --no-cov -m live {{.CLI_ARGS}}"
+
+  gate:
+    desc: Everything CI runs
+    cmds:
+      - task: lint
+      - task: format:check
+      - task: lint:imports
+      - task: typecheck
+      - task: security
+      - task: test
