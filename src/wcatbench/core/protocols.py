@@ -6,7 +6,16 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Protocol, runtime_checkable
 
-from wcatbench.core.types import AgentReply, AnswerKey, BatchReceipt, Hit, ItemState, Question, Record
+from wcatbench.core.types import (
+    AgentReply,
+    AnswerKey,
+    BatchReceipt,
+    DatasetManifest,
+    Hit,
+    ItemState,
+    Question,
+    Record,
+)
 
 
 @runtime_checkable
@@ -48,3 +57,12 @@ class Scorer(Protocol):
     name: str
 
     def score(self, reply: AgentReply, key: AnswerKey) -> dict[str, bool]: ...
+
+
+@runtime_checkable
+class Dataset(Protocol):
+    name: str
+
+    def build(self, out: Path, params: dict[str, int]) -> DatasetManifest:
+        """Writes the files `wcatbench.core.dataset_files` reads. Same params, same digests, on any machine."""
+        ...

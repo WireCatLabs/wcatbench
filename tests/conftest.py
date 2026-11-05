@@ -8,11 +8,14 @@ from wcatbench.core.types import AnswerKey, Question, Record
 @pytest.fixture
 def records() -> list[Record]:
     return [
-        Record(id="r0001", kind="telegram", time="2026-01-05", text="Ari Vale owns the Amber Kite project."),
+        Record(id="r0001", kind="telegram", timestamp="2026-01-05", text="Ari Vale owns the Amber Kite project."),
         Record(
-            id="r0002", kind="mail", time="2026-02-10", text="Amber Kite moved its launch to the accessibility review."
+            id="r0002",
+            kind="mail",
+            timestamp="2026-02-10",
+            text="Amber Kite moved its launch to the accessibility review.",
         ),
-        Record(id="r0003", kind="notes", time="2026-03-01", text="Archive item 3: nothing about any project."),
+        Record(id="r0003", kind="notes", timestamp="2026-03-01", text="Archive item 3: nothing about any project."),
     ]
 
 

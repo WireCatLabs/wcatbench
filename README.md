@@ -35,10 +35,12 @@ wcatbench is not on PyPI yet. Run it straight from GitHub with [uv](https://docs
 ```sh
 uvx --from git+https://github.com/WireCatLabs/wcatbench wcatbench doctor
 uvx --from git+https://github.com/WireCatLabs/wcatbench wcatbench adapters list
+uvx --from git+https://github.com/WireCatLabs/wcatbench wcatbench dataset build synthetic -p records=10000
 ```
 
-`doctor` checks the data folder and SQLite full text search. `adapters list` shows every store, agent and scorer it
-can load.
+`doctor` checks the data folder and SQLite full text search. `adapters list` shows every store, agent, dataset and
+scorer it can load. `dataset build` writes the 10,000 record synthetic corpus to `~/.local/share/wcatbench/datasets/`,
+named by its digest. It is the same corpus, byte for byte, as the one the example rounds used.
 
 ## What it measures
 
@@ -82,7 +84,7 @@ without a change here.
 | Stores | `fts` (SQLite full text, no model) | WireCat memo, plain files, Mem0, Supermemory |
 | Agents | `oracle`, `noop` | Hermes, OpenClaw, a fixed model with search results |
 | Scorers | `answer` (correct, strict, sources, stale) | recall@k for search only runs |
-| Datasets | | the synthetic corpus (2,000 and 10,000 records), later LongMemEval and LoCoMo |
+| Datasets | `synthetic` (2,000 records, or 3,000 and more) | LongMemEval, LoCoMo |
 
 How to write one: [docs/adapters.md](docs/adapters.md).
 

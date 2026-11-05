@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sqlite3
+import tempfile
 from contextlib import closing
+from pathlib import Path
 from typing import Annotated
 
 import typer
 
 from wcatbench import __version__
 from wcatbench.config import get_settings
-from wcatbench.core import registry
+from wcatbench.core import dataset_files, registry
+from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 
 app = typer.Typer(
@@ -19,6 +23,8 @@ app = typer.Typer(
 )
 adapters_app = typer.Typer(help="Installed adapters.", no_args_is_help=True)
 app.add_typer(adapters_app, name="adapters")
+dataset_app = typer.Typer(help="Datasets: build one, see what is built.", no_args_is_help=True)
+app.add_typer(dataset_app, name="dataset")
 
 
 def _version(value: bool) -> None:
@@ -70,3 +76,38 @@ def _has_fts5() -> bool:
         except sqlite3.OperationalError:
             return False
     return True
+
+
+def _params(pairs: list[str]) -> dict[str, int]:
+    params = {}
+    for pair in pairs:
+        name, _, value = pair.partition("=")
+        if not name or not value.isdigit():
+            raise typer.BadParameter(f"{pair!r} is not name=number", param_hint="--param")
+        params[name] = int(value)
+    return params
+
+
+@dataset_app.command("build")
+def dataset_build(
+    name: Annotated[str, typer.Argument(help="An installed dataset adapter, such as synthetic.")],
+    param: Annotated[
+        list[str] | None, typer.Option("--param", "-p", help="name=number, repeatable: -p records=10000 -p seed=7.")
+    ] = None,
+) -> None:
+    """Build a dataset into the data folder, named by its corpus digest. Building it again changes nothing."""
+    datasets = get_settings().home / "datasets"
+    datasets.mkdir(parents=True, exist_ok=True)
+    try:
+        dataset = registry.load("datasets", name)()
+        with tempfile.TemporaryDirectory(dir=datasets, prefix=".building-") as scratch:
+            manifest = dataset.build(Path(scratch), _params(param or []))
+            target = datasets / f"{name}-{manifest.records}-{manifest.corpus_sha256[:8]}"
+            if not target.exists():
+                shutil.copytree(scratch, target)
+    except PermanentError as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(code=2) from error
+    built = dataset_files.manifest(target)
+    typer.echo(f"{target}")
+    typer.echo(f"records {built.records}, questions {built.questions}, corpus sha256 {built.corpus_sha256}")

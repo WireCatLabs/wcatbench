@@ -264,12 +264,12 @@ Later, not built now:
 The current scripts in `cli-testing/performance/agents/knowledge-graph-memory/` stay until these pass, as tests in
 wcatbench:
 
-1. The ported generator reproduces the published digests:
+1. The ported generator reproduces the published digests. Passes, in `tests/test_synthetic_dataset.py`:
    - the 10K corpus `e99e1e52…b8f0`;
    - the Mem0 subset `6273370e…b973`;
    - the 2K fixture.
 2. Rescoring the saved 2K and 10K predictions gives exactly the numbers in RESULTS.md, strict counts included.
-3. The oracle scores 50/50 and the no-op 0/50 on both datasets.
+3. The oracle scores 50/50 and the no-op 0/50 on both datasets. Passes on the 10K corpus.
 
 Until the gates pass, nothing is published from wcatbench. The 10K round finishes on the current scripts.
 
