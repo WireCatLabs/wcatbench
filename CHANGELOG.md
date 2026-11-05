@@ -11,6 +11,9 @@
   the answer key and the Mem0 subset. The corpus and subset digests equal the ones the cli-testing rounds published,
   and a test keeps them equal.
 
+- **A test that rescores the published 2K round.** The saved answers of all seven setups in the cli-testing results
+  table score exactly the published numbers, strict counts included.
+
 ### Changed
 
 - **A record's time field is now `timestamp`.** It matches the corpus file, so the published digests hold.

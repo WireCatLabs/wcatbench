@@ -1,0 +1,2386 @@
+{
+ "source": "cli-testing performance/agents/knowledge-graph-memory/RESULTS.md, Test 2 table, 2,000 record corpus",
+ "note": "The memo 0.131.13 run stopped after q21 and was finished by a second run from q22; both halves are joined here.",
+ "rows": [
+  {
+   "setup": "OpenClaw alone",
+   "published": {
+    "correct": 50,
+    "correct_strict": 50,
+    "cited_correctly": 34,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "document:3"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "accessibility review",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "document:19"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "accessibility review",
+     "citations": [
+      "document:19"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q19",
+     "answer": "accessibility review",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "accessibility review",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "document:43"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/44/cue/1"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49"
+     ]
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "document:51"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/52/cue/1"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "document:59"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/60/cue/1"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65"
+     ]
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "accessibility review",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73"
+     ]
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "accessibility review",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "OpenClaw + WireCat, memo 0.131.13, word search only (2 Nov)",
+   "published": {
+    "correct": 50,
+    "correct_strict": 50,
+    "cited_correctly": 40,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "document:3"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/12/cue/1"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "document:19"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/20/cue/1"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q19",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/28/cue/1"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/36/cue/1"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "document:43"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/44/cue/1"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49"
+     ]
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "document:51"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/52/cue/1"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "document:59"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/60/cue/1"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65"
+     ]
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/68/cue/1"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73"
+     ]
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/76/cue/1"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "OpenClaw + WireCat, memo 0.131.24 with e5-small (5 Nov)",
+   "published": {
+    "correct": 50,
+    "correct_strict": 50,
+    "cited_correctly": 40,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "document:3"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/12/cue/1"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "document:19"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/20/cue/1"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q19",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/28/cue/1"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/36/cue/1"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "document:43"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/44/cue/1"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49"
+     ]
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "document:51"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/52/cue/1"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "document:59"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/60/cue/1"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65"
+     ]
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/68/cue/1"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73"
+     ]
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "accessibility review",
+     "citations": [
+      "meeting:synthetic/76/cue/1"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "Hermes alone",
+   "published": {
+    "correct": 50,
+    "correct_strict": 40,
+    "cited_correctly": 37,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "document:3",
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/12/cue/1"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "document:19",
+      "meeting:synthetic/20/cue/1"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/20/cue/1"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q19",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/28/cue/1"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/36/cue/1"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "document:43"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/44/cue/1"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49"
+     ]
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "document:51"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/52/cue/1"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "document:59"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/60/cue/1"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65"
+     ]
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/68/cue/1"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73"
+     ]
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/76/cue/1"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "Hermes + Supermemory",
+   "published": {
+    "correct": 40,
+    "correct_strict": 30,
+    "cited_correctly": 10,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "bCLoter25pz88BnVTiiMfv"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "mFbDrgnxZzmeBc16ingHFZ"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "the accessibility review",
+     "citations": [
+      "9iGofBxZ1suuwdxd8EL5Mw"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "qJGjSZJAbZR3XFe9S8wDRv"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "mAuXd8fFCyeE46SLewcJRn"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "VnZueYPQZuPLqUyk82H11r"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "yWC92H84zfVg2a9sEJqfQB"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "the accessibility review",
+     "citations": [
+      "EK6qAbUyNgc5udumB2iNUE"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "bCqHDt2esMAFsaaRY8EU5o"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": []
+    },
+    {
+     "id": "q19",
+     "answer": "the accessibility review",
+     "citations": [
+      "dQwKadg7G4Ui9yKdyBv7wE"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "e96bTCpsByUm4RJfTmu2xU"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "PX8wf1bNxjzPMAgSzsb4Q6"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "the accessibility review",
+     "citations": [
+      "a5QhYKpZNVAtuCHgVeUN1i"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "fJFNnvoPHdabZm2pNeCJRp"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "st7TtCWN2jbtpJu2N3YbiK"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "the accessibility review",
+     "citations": [
+      "z6fntSX7r3tefrZZJS2R3u"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "HVZzPqAgdaWwhm2k8gEtwX"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "YHznN3VAT3QU9sc4pg1P5Z"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "the accessibility review",
+     "citations": [
+      "reGkoTVCXRRk7kV2cPYhWV"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "q5Z6C86RpSnB9ow6tES68c"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "YdGv8RLMrZDLeVtGvWf9t2"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "the accessibility review",
+     "citations": [
+      "hkDk2BaJ7v9MMgSJg4BFH9"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "yjue4x4f9hFWiAwW5gpX79"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "wnceW8sFo5tUbTQYp4cEuu"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "the accessibility review",
+     "citations": [
+      "R8UvwPgnDMBCWMQU9oYytv"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "Y869RU7KcKXriGBdX5gR7h"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "cDtZ52uzguYMLEQ5b1nPuN",
+      "w9FxtWggVVQvv57s4LixCU"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "the accessibility review",
+     "citations": [
+      "cDtZ52uzguYMLEQ5b1nPuN"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "Hermes + Mem0",
+   "published": {
+    "correct": 48,
+    "correct_strict": 38,
+    "cited_correctly": 10,
+    "stale": 2
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "8a16c12c-dd07-4615-ae6d-72ca07d5cdfe"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": []
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": []
+    },
+    {
+     "id": "q04",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": []
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": []
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": []
+    },
+    {
+     "id": "q09",
+     "answer": "the accessibility review",
+     "citations": [
+      "0d3b191a-918f-494a-9adf-9918279d5010"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-11-03",
+     "citations": [
+      "82907d14-54b2-4485-81fa-f9e76ccf14c7"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "82907d14-54b2-4485-81fa-f9e76ccf14c7"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": []
+    },
+    {
+     "id": "q14",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-11-04",
+     "citations": [
+      "04dad082-4d70-42ae-acc3-26622c825941"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": []
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": []
+    },
+    {
+     "id": "q19",
+     "answer": "The accessibility review",
+     "citations": [
+      "b87c3f5e-c755-4666-a20a-433dbd1c7d82"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": []
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": []
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": []
+    },
+    {
+     "id": "q24",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": []
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "384b2223-de11-4e95-8937-a3d4f11e281a",
+      "870c984a-87db-4270-9dff-b138a9b1057a"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "84e7e6f5-056b-48cd-98ad-3139419a0bdd"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "the accessibility review",
+     "citations": [
+      "d86f0259-65c3-4d86-9d53-0bed83ac1dc0"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "a418985f-40f6-4e31-a09e-d3dd556cb807"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": []
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "a6cdfece-d141-4015-8d8f-b1e501e1c73e"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "the accessibility review",
+     "citations": [
+      "2ce535bb-05ca-4ac2-a1a9-e43c39919f10"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": []
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "d5235552-329c-40a8-b2ef-8d359a60dc9a",
+      "fe822b5c-3189-4997-96b2-ee9a467e52cf"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "51c4060e-dc05-41ae-a0cd-a803f4796cc9"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "the accessibility review",
+     "citations": [
+      "7369be20-26c5-4715-b646-5dfeb7a49a44"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": []
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": []
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "fc42aada-3ef9-482e-b0c1-11f3d4a3a444"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "167af3a4-2566-4ab0-b2b3-3d4b05aa256b"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": []
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": []
+    },
+    {
+     "id": "q49",
+     "answer": "the accessibility review",
+     "citations": []
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  },
+  {
+   "setup": "Hermes + WireCat, memo 0.131.24 with e5-small (5 Nov)",
+   "published": {
+    "correct": 50,
+    "correct_strict": 40,
+    "cited_correctly": 33,
+    "stale": 0
+   },
+   "predictions": [
+    {
+     "id": "q01",
+     "answer": "2026-12-11",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2"
+     ]
+    },
+    {
+     "id": "q02",
+     "answer": "2026-11-01",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1"
+     ]
+    },
+    {
+     "id": "q03",
+     "answer": "Ari Vale",
+     "citations": [
+      "document:3",
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q04",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/4/cue/1"
+     ]
+    },
+    {
+     "id": "q05",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q06",
+     "answer": "2026-12-12",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q07",
+     "answer": "2026-11-02",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9"
+     ]
+    },
+    {
+     "id": "q08",
+     "answer": "Bo Reed",
+     "citations": [
+      "document:11"
+     ]
+    },
+    {
+     "id": "q09",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/12/cue/1"
+     ]
+    },
+    {
+     "id": "q10",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q11",
+     "answer": "2026-12-13",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q12",
+     "answer": "2026-11-03",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17"
+     ]
+    },
+    {
+     "id": "q13",
+     "answer": "Cy Moss",
+     "citations": [
+      "document:19"
+     ]
+    },
+    {
+     "id": "q14",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/20/cue/1"
+     ]
+    },
+    {
+     "id": "q15",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q16",
+     "answer": "2026-12-14",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q17",
+     "answer": "2026-11-04",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25"
+     ]
+    },
+    {
+     "id": "q18",
+     "answer": "Dee Lake",
+     "citations": [
+      "document:27"
+     ]
+    },
+    {
+     "id": "q19",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/28/cue/1"
+     ]
+    },
+    {
+     "id": "q20",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q21",
+     "answer": "2026-12-15",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q22",
+     "answer": "2026-11-05",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33"
+     ]
+    },
+    {
+     "id": "q23",
+     "answer": "Eli Pine",
+     "citations": [
+      "document:35"
+     ]
+    },
+    {
+     "id": "q24",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/36/cue/1"
+     ]
+    },
+    {
+     "id": "q25",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q26",
+     "answer": "2026-12-16",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q27",
+     "answer": "2026-11-06",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41"
+     ]
+    },
+    {
+     "id": "q28",
+     "answer": "Fay Stone",
+     "citations": [
+      "document:43"
+     ]
+    },
+    {
+     "id": "q29",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/44/cue/1"
+     ]
+    },
+    {
+     "id": "q30",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q31",
+     "answer": "2026-12-17",
+     "citations": [
+      "document:55",
+      "msg:email/synthetic%40example.test/thread-50/50"
+     ]
+    },
+    {
+     "id": "q32",
+     "answer": "2026-11-07",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49"
+     ]
+    },
+    {
+     "id": "q33",
+     "answer": "Gio Fern",
+     "citations": [
+      "document:51"
+     ]
+    },
+    {
+     "id": "q34",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/52/cue/1"
+     ]
+    },
+    {
+     "id": "q35",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q36",
+     "answer": "2026-12-18",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ]
+    },
+    {
+     "id": "q37",
+     "answer": "2026-11-08",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57"
+     ]
+    },
+    {
+     "id": "q38",
+     "answer": "Hal Cove",
+     "citations": [
+      "document:59"
+     ]
+    },
+    {
+     "id": "q39",
+     "answer": "the accessibility review",
+     "citations": [
+      "meeting:synthetic/60/cue/1"
+     ]
+    },
+    {
+     "id": "q40",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q41",
+     "answer": "2026-12-19",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ]
+    },
+    {
+     "id": "q42",
+     "answer": "2026-11-09",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65"
+     ]
+    },
+    {
+     "id": "q43",
+     "answer": "Ira Brook",
+     "citations": [
+      "document:67"
+     ]
+    },
+    {
+     "id": "q44",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/68/cue/1"
+     ]
+    },
+    {
+     "id": "q45",
+     "answer": "unknown",
+     "citations": []
+    },
+    {
+     "id": "q46",
+     "answer": "2026-12-20",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ]
+    },
+    {
+     "id": "q47",
+     "answer": "2026-11-10",
+     "citations": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73"
+     ]
+    },
+    {
+     "id": "q48",
+     "answer": "Jo Birch",
+     "citations": [
+      "document:75"
+     ]
+    },
+    {
+     "id": "q49",
+     "answer": "The accessibility review",
+     "citations": [
+      "meeting:synthetic/76/cue/1"
+     ]
+    },
+    {
+     "id": "q50",
+     "answer": "unknown",
+     "citations": []
+    }
+   ]
+  }
+ ]
+}
