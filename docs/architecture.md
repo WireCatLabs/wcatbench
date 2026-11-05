@@ -269,6 +269,7 @@ wcatbench:
    - the Mem0 subset `6273370e…b973`;
    - the 2K fixture.
 2. Rescoring the saved 2K and 10K predictions gives exactly the numbers in RESULTS.md, strict counts included.
+   Passes for all seven 2K rows, in `tests/test_published_results.py`. The 10K round has no answers yet.
 3. The oracle scores 50/50 and the no-op 0/50 on both datasets. Passes on the 10K corpus.
 
 Until the gates pass, nothing is published from wcatbench. The 10K round finishes on the current scripts.
