@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess  # nosec B404
 
@@ -21,3 +22,12 @@ def keyring_secret(service: str, account: str) -> str:
         raise PermanentError(f"no keyring entry for service {service!r} account {account!r}")
     register_secret(secret)
     return secret
+
+
+def service_key(service: str, account: str) -> str:
+    """`<SERVICE>_API_KEY` from the environment if set, else the keyring entry `service`/`account`."""
+    from_env = os.environ.get(f"{service.upper()}_API_KEY", "").strip()
+    if from_env:
+        register_secret(from_env)
+        return from_env
+    return keyring_secret(service, account)

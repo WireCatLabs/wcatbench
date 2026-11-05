@@ -182,12 +182,22 @@ def store_status(
     space: SpaceOption,
     subset: SubsetOption = None,
     started: StartedOption = None,
+    import_ledger: Annotated[
+        Path | None, typer.Option(help="The ledger.jsonl of a build made by the earlier cli-testing scripts.")
+    ] = None,
+    all_sent: Annotated[
+        bool, typer.Option("--all-sent", help="A build made elsewhere with no ledger, known to have sent every record.")
+    ] = False,
 ) -> None:
     """Ask the store what it holds for a build, and save the answer as status-<time>.json. Sends nothing."""
     try:
         build = _build(store, dataset, space, subset)
         with closing(build.store):
             build.open(resume=True, started=started.replace(tzinfo=UTC) if started else None)
+            if import_ledger:
+                typer.echo(f"imported {build.import_ledger(import_ledger)} batches")
+            if all_sent:
+                build.adopt_all_sent()
             _, status = build.check()
             path = build.write_status(status)
     except PermanentError as error:

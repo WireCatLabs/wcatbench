@@ -27,7 +27,6 @@ from wcatbench.core.types import DatasetManifest, ItemState, Privacy, Record
 
 BUILD, LEDGER = "build.json", "ledger.jsonl"
 FINAL = (ItemState.DONE, ItemState.FAILED)
-RESEND = (None, ItemState.FAILED)
 
 
 def now() -> str:
@@ -113,6 +112,7 @@ class Build:
             "expected": len(keys),
             "by_status": dict(Counter(str(held[key]) if key in held else "absent" for key in keys)),
             "outside_selection": len(set(held) - set(keys)),
+            "accepted_not_listed": len((set(keys) - set(held)) & self.sent_before()),
             "ledger": {
                 "batches": len(entries),
                 "sent": sum(entry["sent"] for entry in entries),
@@ -120,6 +120,60 @@ class Build:
             },
             "store_counts": self.store.describe(),
         }
+
+    def import_ledger(self, path: Path) -> int:
+        """Adopt the ledger of a build made by the earlier cli-testing scripts, so resume knows what they sent."""
+        self._refuse_if_ledger()
+        if not path.is_file():
+            raise PermanentError(f"no ledger at {path}")
+        count = 0
+        for line in path.read_text().splitlines():
+            entry = json.loads(line)
+            if "batch" not in entry:
+                continue
+            refused = {row["rid"]: row["error"] for row in entry["failed"]}
+            self.ledger.write(
+                "batch",
+                keys=entry["rids"],
+                sent=entry["sent"] - len(refused),
+                refused=refused,
+                s=entry["s"],
+                imported_from=str(path),
+            )
+            count += 1
+        return count
+
+    def adopt_all_sent(self) -> None:
+        """For a build made elsewhere without a ledger, whose operator knows every record was accepted."""
+        self._refuse_if_ledger()
+        keys = [record.key for record in self.selection.records]
+        self.ledger.write("batch", keys=keys, sent=len(keys), refused={}, s=0, adopted="operator: every record sent")
+
+    def _refuse_if_ledger(self) -> None:
+        if any(True for _ in self.ledger.entries()):
+            raise PermanentError(f"{self.ledger.path} is not empty; adopt only into a new build folder")
+
+    def sent_before(self) -> set[str]:
+        return {
+            key
+            for entry in self.ledger.entries()
+            if entry["unit"] == "batch"
+            for key in entry["keys"]
+            if key not in entry["refused"]
+        }
+
+    def to_resend(self, held: dict[str, ItemState], records: Sequence[Record]) -> list[Record]:
+        """Failed records, and absent ones the ledger never saw accepted. A record the service accepted and no longer
+        lists is reported, not sent: a listing can miss a record, and a paid service would charge for it twice."""
+        accepted = self.sent_before()
+        unlisted = [record.key for record in records if record.key not in held and record.key in accepted]
+        if unlisted:
+            logger.warning("{} accepted records are not listed by the store; not sending them again", len(unlisted))
+        return [
+            record
+            for record in records
+            if held.get(record.key) is ItemState.FAILED or (record.key not in held and record.key not in accepted)
+        ]
 
     def write_status(self, status: dict[str, Any]) -> Path:
         path = self.folder / f"status-{datetime.now(UTC):%Y%m%dT%H%M%S%f}.json"
@@ -162,7 +216,7 @@ class Build:
         if resume:
             held, status = self.check()
             self.write_status(status)
-            todo = [record for record in todo if held.get(record.key) in RESEND]
+            todo = self.to_resend(held, todo)
         logger.info("sending {} of {} records", len(todo), len(self.selection.records))
         self.send(todo, batch_size)
         status = self.wait(wait_seconds, poll_seconds)

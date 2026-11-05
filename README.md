@@ -92,7 +92,7 @@ without a change here.
 
 | Kind | Built in now | Next |
 |---|---|---|
-| Stores | `fts` (SQLite full text, no model) | WireCat memo, plain files, Mem0, Supermemory |
+| Stores | `fts` (SQLite full text, no model), `supermemory`, `mem0` | WireCat memo, plain files |
 | Agents | `oracle`, `noop` | Hermes, OpenClaw, a fixed model with search results |
 | Scorers | `answer` (correct, strict, sources, stale), recall@1, 5 and 10 for `store search` | a model judge |
 | Datasets | `synthetic` (2,000 records, or 3,000 and more) | LongMemEval, LoCoMo |
@@ -101,8 +101,10 @@ How to write one: [docs/adapters.md](docs/adapters.md).
 
 ## Security
 
-- Keys for paid services come from the system keyring into the wcatbench process. They are never printed, logged or
-  put on a command line, and every log line passes a filter that removes known keys.
+- Keys for paid services come from `SUPERMEMORY_API_KEY` or `MEM0_API_KEY`, or else from the system keyring (service
+  `supermemory` or `mem0`, account `wcatbench`, or the one in `WCATBENCH_KEYRING_ACCOUNT`). They are never printed,
+  logged or put on a command line, and every log line passes a filter that removes known keys.
+- wcatbench never deletes a hosted tag or user. Do that in the service's own console.
 - Agents run in a throwaway home folder with the system keyring out of reach.
 - Synthetic data only goes to hosted stores unless you say otherwise.
 
