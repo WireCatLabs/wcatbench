@@ -147,6 +147,7 @@ name = "Layers: the CLI on top, adapters in the middle, the core and logging at 
 type = "layers"
 layers = [
     "wcatbench.cli",
+    "wcatbench.pipeline",
     "wcatbench.stores | wcatbench.agents | wcatbench.scoring | wcatbench.datasets",
     "wcatbench.core",
     "wcatbench.observability",

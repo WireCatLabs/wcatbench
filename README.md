@@ -42,6 +42,17 @@ uvx --from git+https://github.com/WireCatLabs/wcatbench wcatbench dataset build 
 scorer it can load. `dataset build` writes the 10,000 record synthetic corpus to `~/.local/share/wcatbench/datasets/`,
 named by its digest. It is the same corpus, byte for byte, as the one the example rounds used.
 
+Load it into a store and score the store's own search, with no AI model and no cost (`fts` is SQLite full text
+search on this computer):
+
+```sh
+wcatbench store build fts --dataset synthetic-10000-e99e1e52 --space try
+wcatbench store search fts --dataset synthetic-10000-e99e1e52 --space try
+```
+
+A build keeps a ledger, one line per batch. `--resume` continues a stopped build and sends only what the store does
+not hold. `store status` asks the store what it holds and sends nothing.
+
 ## What it measures
 
 - **Correct answers.** The answer key holds the expected value, so no judge model is needed. A leading "the" or "a"
@@ -83,7 +94,7 @@ without a change here.
 |---|---|---|
 | Stores | `fts` (SQLite full text, no model) | WireCat memo, plain files, Mem0, Supermemory |
 | Agents | `oracle`, `noop` | Hermes, OpenClaw, a fixed model with search results |
-| Scorers | `answer` (correct, strict, sources, stale) | recall@k for search only runs |
+| Scorers | `answer` (correct, strict, sources, stale), recall@1, 5 and 10 for `store search` | a model judge |
 | Datasets | `synthetic` (2,000 records, or 3,000 and more) | LongMemEval, LoCoMo |
 
 How to write one: [docs/adapters.md](docs/adapters.md).

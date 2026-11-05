@@ -6,6 +6,7 @@ import re
 import sqlite3
 import time
 from collections.abc import Sequence
+from datetime import datetime
 from pathlib import Path
 
 from wcatbench.core.errors import PermanentError
@@ -30,7 +31,7 @@ class FtsStore:
     def version(self) -> str:
         return f"sqlite {sqlite3.sqlite_version}"
 
-    def open(self, space: str, workdir: Path) -> None:
+    def open(self, space: str, workdir: Path, started: datetime) -> None:
         workdir.mkdir(parents=True, exist_ok=True)
         self._db = sqlite3.connect(workdir / f"{space}.sqlite")
         self.db.execute("CREATE VIRTUAL TABLE IF NOT EXISTS records USING fts5(id UNINDEXED, kind UNINDEXED, text)")
@@ -38,12 +39,12 @@ class FtsStore:
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt:
         started = time.perf_counter()
         with self.db:
-            self.db.executemany("DELETE FROM records WHERE id = ?", [(record.id,) for record in batch])
+            self.db.executemany("DELETE FROM records WHERE id = ?", [(record.key,) for record in batch])
             self.db.executemany(
                 "INSERT INTO records (id, kind, text) VALUES (?, ?, ?)",
-                [(record.id, record.kind, record.text) for record in batch],
+                [(record.key, record.kind, record.text) for record in batch],
             )
-        return BatchReceipt(sent=tuple(record.id for record in batch), seconds=time.perf_counter() - started)
+        return BatchReceipt(sent=tuple(record.key for record in batch), seconds=time.perf_counter() - started)
 
     def held(self) -> dict[str, ItemState]:
         return {row[0]: ItemState.DONE for row in self.db.execute("SELECT id FROM records")}
@@ -61,7 +62,7 @@ class FtsStore:
             "SELECT id, kind, text, bm25(records) FROM records WHERE records MATCH ? ORDER BY bm25(records) LIMIT ?",
             (match, k),
         )
-        return [Hit(record_ids=(rid,), kind=kind, text=text, score=-rank) for rid, kind, text, rank in rows]
+        return [Hit(keys=(rid,), kind=kind, text=text, score=-rank) for rid, kind, text, rank in rows]
 
     def describe(self) -> dict[str, object]:
         return {"records": self.db.execute("SELECT count(*) FROM records").fetchone()[0]}
