@@ -21,12 +21,15 @@ class Privacy(StrEnum):
 
 
 class Record(Frozen):
-    """One message, mail, note or meeting. `id` travels as metadata to a store, never inside the text."""
+    """One message, mail, note or meeting. `id` travels as metadata to a store, never inside the text.
+
+    Field order is the corpus file's key order: the published corpus digests depend on it.
+    """
 
     id: str
     kind: str
+    timestamp: str
     text: str
-    time: str
     source: str | None = None
     thread: str | None = None
     author: str | None = None
@@ -95,3 +98,17 @@ class AgentReply(Frozen):
     usage: Usage = Usage()
     seconds: float = 0.0
     note: str | None = None
+
+
+class DatasetManifest(Frozen):
+    """What a built dataset is. A store build and a run record `corpus_sha256`, so results name their data."""
+
+    name: str
+    version: int
+    privacy: Privacy
+    params: dict[str, int]
+    records: int
+    questions: int
+    corpus_sha256: str
+    key_sha256: str
+    extra: dict[str, object] = Field(default_factory=dict)

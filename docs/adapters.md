@@ -36,6 +36,18 @@ Look at [`stores/fts.py`](../src/wcatbench/stores/fts.py), the smallest real one
 - Usage says where it came from: the agent's own usage files, a proxy on the model API, or none.
 - An outcome is `completed`, `error`, `timeout` or `invalid`. A harness failure is never a wrong answer.
 
+## A dataset
+
+Look at [`datasets/synthetic`](../src/wcatbench/datasets/synthetic/__init__.py).
+
+- `build(out, params)` writes four files into `out` and returns their manifest. The files are described in
+  [`core/dataset_files.py`](../src/wcatbench/core/dataset_files.py): the corpus, the questions, the answer key
+  and the manifest.
+- The same params must give the same files on any machine. The manifest holds the corpus and key digests, and a
+  run refuses a corpus that no longer matches them.
+- Questions and the key are separate files. Nothing an agent can read may hold the answers.
+- Mark the privacy: `synthetic`, `public` or `private`. Hosted stores refuse a private dataset.
+
 ## Tests every adapter passes
 
 New adapters must pass the same contract tests as the built-in ones. The contract suite arrives with the first

@@ -41,6 +41,9 @@ fts = "wcatbench.stores.fts:FtsStore"
 oracle = "wcatbench.agents.oracle:OracleAgent"
 noop = "wcatbench.agents.noop:NoopAgent"
 
+[project.entry-points."wcatbench.datasets"]
+synthetic = "wcatbench.datasets.synthetic:SyntheticDataset"
+
 [project.entry-points."wcatbench.scorers"]
 answer = "wcatbench.scoring.answer:AnswerScorer"
 
@@ -144,13 +147,13 @@ name = "Layers: the CLI on top, adapters in the middle, the core and logging at 
 type = "layers"
 layers = [
     "wcatbench.cli",
-    "wcatbench.stores | wcatbench.agents | wcatbench.scoring",
+    "wcatbench.stores | wcatbench.agents | wcatbench.scoring | wcatbench.datasets",
     "wcatbench.core",
     "wcatbench.observability",
     "wcatbench.config",
 ]
 
 [[tool.importlinter.contracts]]
-name = "Adapters never import each other: a store, an agent and a scorer meet only in the core's types"
+name = "Adapters never import each other: they meet only in the core's types"
 type = "independence"
-modules = ["wcatbench.stores", "wcatbench.agents", "wcatbench.scoring"]
+modules = ["wcatbench.stores", "wcatbench.agents", "wcatbench.scoring", "wcatbench.datasets"]
