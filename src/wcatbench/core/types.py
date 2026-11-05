@@ -34,6 +34,14 @@ class Record(Frozen):
     thread: str | None = None
     author: str | None = None
     metadata: dict[str, str] = Field(default_factory=dict)
+    # Set by the loader from the record's place in the whole corpus (r0001, r0002 …), never written to the corpus
+    # file. Stores and agents use it: the hosted builds of November 2026 are keyed by it, and agents cite it.
+    name: str | None = Field(default=None, exclude=True)
+
+    @property
+    def key(self) -> str:
+        """What a store keys this record by, and what its hits name."""
+        return self.name or self.id
 
 
 class Question(Frozen):
@@ -53,7 +61,9 @@ class AnswerKey(Frozen):
 
 
 class Hit(Frozen):
-    record_ids: tuple[str, ...]
+    """One search result. A memory distilled from several records names all of them, at one rank."""
+
+    keys: tuple[str, ...]
     score: float | None = None
     text: str | None = None
     kind: str | None = None

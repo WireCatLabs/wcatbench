@@ -16,6 +16,10 @@ from wcatbench.core.types import AnswerKey, DatasetManifest, Question, Record
 CORPUS, QUESTIONS, KEY, MANIFEST = "corpus.jsonl", "questions.json", "key.json", "manifest.json"
 
 
+def record_name(position: int) -> str:
+    return f"r{position + 1:04}"
+
+
 def corpus_lines(records: Iterable[Record]) -> str:
     return "".join(
         json.dumps(record.model_dump(exclude_defaults=True), ensure_ascii=False) + "\n" for record in records
@@ -47,7 +51,10 @@ def records(folder: Path) -> list[Record]:
     if sha256_file(folder / CORPUS) != expected:
         raise PermanentError(f"{folder / CORPUS} does not match its manifest digest {expected[:12]}")
     with (folder / CORPUS).open() as lines:
-        return [Record.model_validate_json(line) for line in lines]
+        return [
+            Record.model_validate_json(line).model_copy(update={"name": record_name(position)})
+            for position, line in enumerate(lines)
+        ]
 
 
 def questions(folder: Path) -> list[Question]:

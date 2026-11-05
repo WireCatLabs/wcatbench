@@ -1,0 +1,3162 @@
+{
+ "source": "cli-testing performance/agents/knowledge-graph-memory/RESULTS.md, Test 1 table, 2,000 record corpus",
+ "rows": [
+  {
+   "setup": "Supermemory (best of two loads), question as typed",
+   "run": "supermemory-run2-search: Supermemory default, question verbatim",
+   "published": {
+    "questions_scored": 40,
+    "recall@1": 0.475,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "empty_replies": 0
+   },
+   "searches": [
+    {
+     "id": "q01",
+     "query": "What is the current confirmed delivery date for Amber Kite?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/1",
+      "meeting:synthetic/8/cue/1",
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-6/6"
+     ],
+     "seconds": 0.59
+    },
+    {
+     "id": "q02",
+     "query": "What was the original delivery date agreed for Amber Kite, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/1",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1"
+     ],
+     "seconds": 0.467
+    },
+    {
+     "id": "q03",
+     "query": "Who is the confirmed delivery owner of Amber Kite?",
+     "hits": [
+      "document:3",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1"
+     ],
+     "seconds": 0.708
+    },
+    {
+     "id": "q04",
+     "query": "What did Ari Vale commit to delivering for Amber Kite?",
+     "hits": [
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "msg:telegram/synthetic/team/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:email/synthetic%40example.test/thread-78/78"
+     ],
+     "seconds": 0.515
+    },
+    {
+     "id": "q05",
+     "query": "What approved budget amount was agreed for Amber Kite?",
+     "hits": [
+      "meeting:synthetic/8/cue/1",
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/1"
+     ],
+     "seconds": 0.523
+    },
+    {
+     "id": "q06",
+     "query": "What is the current confirmed delivery date for Birch Compass?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:telegram/synthetic/team/9",
+      "meeting:synthetic/16/cue/1",
+      "document:11",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/13"
+     ],
+     "seconds": 0.48
+    },
+    {
+     "id": "q07",
+     "query": "What was the original delivery date agreed for Birch Compass, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:telegram/synthetic/team/9",
+      "document:11",
+      "meeting:synthetic/16/cue/1",
+      "msg:telegram/synthetic/team/13",
+      "msg:telegram/synthetic/team/73"
+     ],
+     "seconds": 0.521
+    },
+    {
+     "id": "q08",
+     "query": "Who is the confirmed delivery owner of Birch Compass?",
+     "hits": [
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1",
+      "document:75"
+     ],
+     "seconds": 0.487
+    },
+    {
+     "id": "q09",
+     "query": "What did Bo Reed commit to delivering for Birch Compass?",
+     "hits": [
+      "document:11",
+      "msg:telegram/synthetic/team/9",
+      "meeting:synthetic/12/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "meeting:synthetic/16/cue/1"
+     ],
+     "seconds": 0.443
+    },
+    {
+     "id": "q10",
+     "query": "What approved budget amount was agreed for Birch Compass?",
+     "hits": [
+      "meeting:synthetic/16/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:11",
+      "document:15",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/9"
+     ],
+     "seconds": 0.477
+    },
+    {
+     "id": "q11",
+     "query": "What is the current confirmed delivery date for Cedar Lantern?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "document:19",
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/20/cue/1"
+     ],
+     "seconds": 0.444
+    },
+    {
+     "id": "q12",
+     "query": "What was the original delivery date agreed for Cedar Lantern, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "document:19",
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:telegram/synthetic/team/21"
+     ],
+     "seconds": 0.526
+    },
+    {
+     "id": "q13",
+     "query": "Who is the confirmed delivery owner of Cedar Lantern?",
+     "hits": [
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/24/cue/1",
+      "meeting:synthetic/20/cue/1"
+     ],
+     "seconds": 0.527
+    },
+    {
+     "id": "q14",
+     "query": "What did Cy Moss commit to delivering for Cedar Lantern?",
+     "hits": [
+      "document:19",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/24/cue/1"
+     ],
+     "seconds": 0.674
+    },
+    {
+     "id": "q15",
+     "query": "What approved budget amount was agreed for Cedar Lantern?",
+     "hits": [
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "meeting:synthetic/20/cue/1",
+      "document:19",
+      "msg:telegram/synthetic/team/17",
+      "document:23"
+     ],
+     "seconds": 0.499
+    },
+    {
+     "id": "q16",
+     "query": "What is the current confirmed delivery date for Dune Harbor?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:31",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/32/cue/1",
+      "document:27",
+      "msg:telegram/synthetic/team/29",
+      "meeting:synthetic/28/cue/1"
+     ],
+     "seconds": 0.455
+    },
+    {
+     "id": "q17",
+     "query": "What was the original delivery date agreed for Dune Harbor, before it changed?",
+     "hits": [
+      "document:31",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25",
+      "document:27",
+      "meeting:synthetic/32/cue/1",
+      "msg:telegram/synthetic/team/29",
+      "meeting:synthetic/28/cue/1"
+     ],
+     "seconds": 0.577
+    },
+    {
+     "id": "q18",
+     "query": "Who is the confirmed delivery owner of Dune Harbor?",
+     "hits": [
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:telegram/synthetic/team/25",
+      "document:31",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/32/cue/1",
+      "meeting:synthetic/28/cue/1"
+     ],
+     "seconds": 0.511
+    },
+    {
+     "id": "q19",
+     "query": "What did Dee Lake commit to delivering for Dune Harbor?",
+     "hits": [
+      "document:27",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:31",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:telegram/synthetic/team/149",
+      "meeting:synthetic/32/cue/1"
+     ],
+     "seconds": 0.471
+    },
+    {
+     "id": "q20",
+     "query": "What approved budget amount was agreed for Dune Harbor?",
+     "hits": [
+      "meeting:synthetic/32/cue/1",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "meeting:synthetic/28/cue/1",
+      "document:27",
+      "msg:telegram/synthetic/team/25",
+      "document:31"
+     ],
+     "seconds": 0.456
+    },
+    {
+     "id": "q21",
+     "query": "What is the current confirmed delivery date for Elm Beacon?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/40/cue/1",
+      "document:35",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/37"
+     ],
+     "seconds": 0.596
+    },
+    {
+     "id": "q22",
+     "query": "What was the original delivery date agreed for Elm Beacon, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "document:35",
+      "meeting:synthetic/40/cue/1",
+      "msg:telegram/synthetic/team/37",
+      "msg:email/synthetic%40example.test/thread-38/38"
+     ],
+     "seconds": 0.528
+    },
+    {
+     "id": "q23",
+     "query": "Who is the confirmed delivery owner of Elm Beacon?",
+     "hits": [
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/40/cue/1",
+      "meeting:synthetic/36/cue/1"
+     ],
+     "seconds": 0.55
+    },
+    {
+     "id": "q24",
+     "query": "What did Eli Pine commit to delivering for Elm Beacon?",
+     "hits": [
+      "document:35",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/40/cue/1"
+     ],
+     "seconds": 0.725
+    },
+    {
+     "id": "q25",
+     "query": "What approved budget amount was agreed for Elm Beacon?",
+     "hits": [
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "meeting:synthetic/36/cue/1",
+      "document:35",
+      "msg:telegram/synthetic/team/33"
+     ],
+     "seconds": 0.517
+    },
+    {
+     "id": "q26",
+     "query": "What is the current confirmed delivery date for Flint Meadow?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:telegram/synthetic/team/41",
+      "document:43",
+      "meeting:synthetic/48/cue/1",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "meeting:synthetic/44/cue/1"
+     ],
+     "seconds": 0.642
+    },
+    {
+     "id": "q27",
+     "query": "What was the original delivery date agreed for Flint Meadow, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:telegram/synthetic/team/41",
+      "document:43",
+      "meeting:synthetic/48/cue/1",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-46/46"
+     ],
+     "seconds": 0.784
+    },
+    {
+     "id": "q28",
+     "query": "Who is the confirmed delivery owner of Flint Meadow?",
+     "hits": [
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/41",
+      "meeting:synthetic/44/cue/1",
+      "meeting:synthetic/48/cue/1"
+     ],
+     "seconds": 0.568
+    },
+    {
+     "id": "q29",
+     "query": "What did Fay Stone commit to delivering for Flint Meadow?",
+     "hits": [
+      "document:43",
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/41",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/48/cue/1"
+     ],
+     "seconds": 0.525
+    },
+    {
+     "id": "q30",
+     "query": "What approved budget amount was agreed for Flint Meadow?",
+     "hits": [
+      "meeting:synthetic/48/cue/1",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:43",
+      "document:47",
+      "msg:telegram/synthetic/team/41"
+     ],
+     "seconds": 0.521
+    },
+    {
+     "id": "q31",
+     "query": "What is the current confirmed delivery date for Grove Atlas?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "meeting:synthetic/56/cue/1",
+      "document:51",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-54/54"
+     ],
+     "seconds": 0.69
+    },
+    {
+     "id": "q32",
+     "query": "What was the original delivery date agreed for Grove Atlas, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "meeting:synthetic/56/cue/1",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "document:51"
+     ],
+     "seconds": 0.525
+    },
+    {
+     "id": "q33",
+     "query": "Who is the confirmed delivery owner of Grove Atlas?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:51",
+      "msg:telegram/synthetic/team/49",
+      "document:55",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/56/cue/1",
+      "msg:telegram/synthetic/team/53",
+      "meeting:synthetic/52/cue/1"
+     ],
+     "seconds": 0.553
+    },
+    {
+     "id": "q34",
+     "query": "What did Gio Fern commit to delivering for Grove Atlas?",
+     "hits": [
+      "document:51",
+      "msg:telegram/synthetic/team/49",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "meeting:synthetic/56/cue/1",
+      "msg:email/synthetic%40example.test/thread-54/54"
+     ],
+     "seconds": 0.588
+    },
+    {
+     "id": "q35",
+     "query": "What approved budget amount was agreed for Grove Atlas?",
+     "hits": [
+      "meeting:synthetic/56/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "meeting:synthetic/52/cue/1",
+      "msg:telegram/synthetic/team/53"
+     ],
+     "seconds": 15.013
+    },
+    {
+     "id": "q36",
+     "query": "What is the current confirmed delivery date for Hazel Bridge?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:telegram/synthetic/team/57",
+      "document:59",
+      "meeting:synthetic/64/cue/1",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61"
+     ],
+     "seconds": 0.55
+    },
+    {
+     "id": "q37",
+     "query": "What was the original delivery date agreed for Hazel Bridge, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:telegram/synthetic/team/57",
+      "document:59",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61",
+      "meeting:synthetic/64/cue/1"
+     ],
+     "seconds": 0.521
+    },
+    {
+     "id": "q38",
+     "query": "Who is the confirmed delivery owner of Hazel Bridge?",
+     "hits": [
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:telegram/synthetic/team/57",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/60/cue/1",
+      "meeting:synthetic/64/cue/1"
+     ],
+     "seconds": 0.479
+    },
+    {
+     "id": "q39",
+     "query": "What did Hal Cove commit to delivering for Hazel Bridge?",
+     "hits": [
+      "document:59",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:email/synthetic%40example.test/thread-54/54"
+     ],
+     "seconds": 0.522
+    },
+    {
+     "id": "q40",
+     "query": "What approved budget amount was agreed for Hazel Bridge?",
+     "hits": [
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:59",
+      "meeting:synthetic/60/cue/1",
+      "document:63",
+      "msg:telegram/synthetic/team/57"
+     ],
+     "seconds": 0.515
+    },
+    {
+     "id": "q41",
+     "query": "What is the current confirmed delivery date for Iris Summit?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:71",
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/72/cue/1",
+      "document:67",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-70/70"
+     ],
+     "seconds": 0.548
+    },
+    {
+     "id": "q42",
+     "query": "What was the original delivery date agreed for Iris Summit, before it changed?",
+     "hits": [
+      "document:71",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:67",
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:telegram/synthetic/team/69"
+     ],
+     "seconds": 0.547
+    },
+    {
+     "id": "q43",
+     "query": "Who is the confirmed delivery owner of Iris Summit?",
+     "hits": [
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/68/cue/1"
+     ],
+     "seconds": 0.427
+    },
+    {
+     "id": "q44",
+     "query": "What did Ira Brook commit to delivering for Iris Summit?",
+     "hits": [
+      "document:67",
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:71",
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-718/718",
+      "msg:email/synthetic%40example.test/thread-62/62"
+     ],
+     "seconds": 10.203
+    },
+    {
+     "id": "q45",
+     "query": "What approved budget amount was agreed for Iris Summit?",
+     "hits": [
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:67",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "meeting:synthetic/68/cue/1",
+      "msg:telegram/synthetic/team/69"
+     ],
+     "seconds": 0.773
+    },
+    {
+     "id": "q46",
+     "query": "What is the current confirmed delivery date for Juniper Valley?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/80/cue/1",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/76/cue/1"
+     ],
+     "seconds": 0.633
+    },
+    {
+     "id": "q47",
+     "query": "What was the original delivery date agreed for Juniper Valley, before it changed?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "document:75",
+      "meeting:synthetic/80/cue/1",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:telegram/synthetic/team/77",
+      "meeting:synthetic/76/cue/1"
+     ],
+     "seconds": 0.678
+    },
+    {
+     "id": "q48",
+     "query": "Who is the confirmed delivery owner of Juniper Valley?",
+     "hits": [
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/76/cue/1"
+     ],
+     "seconds": 0.493
+    },
+    {
+     "id": "q49",
+     "query": "What did Jo Birch commit to delivering for Juniper Valley?",
+     "hits": [
+      "document:75",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "document:11"
+     ],
+     "seconds": 0.558
+    },
+    {
+     "id": "q50",
+     "query": "What approved budget amount was agreed for Juniper Valley?",
+     "hits": [
+      "meeting:synthetic/80/cue/1",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:75",
+      "meeting:synthetic/76/cue/1",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/77"
+     ],
+     "seconds": 0.544
+    }
+   ]
+  },
+  {
+   "setup": "Supermemory (best of two loads), keywords",
+   "run": "supermemory-run2-search: Supermemory default, question as OR words",
+   "published": {
+    "questions_scored": 40,
+    "recall@1": 0.5,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "empty_replies": 0
+   },
+   "searches": [
+    {
+     "id": "q01",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/1",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/5"
+     ],
+     "seconds": 0.492
+    },
+    {
+     "id": "q02",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"amber\" OR \"kite\" OR \"changed\"",
+     "hits": [
+      "document:7",
+      "msg:telegram/synthetic/team/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "meeting:synthetic/8/cue/1",
+      "msg:telegram/synthetic/team/5"
+     ],
+     "seconds": 0.574
+    },
+    {
+     "id": "q03",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "document:3",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/1",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1"
+     ],
+     "seconds": 0.499
+    },
+    {
+     "id": "q04",
+     "query": "\"ari\" OR \"vale\" OR \"commit\" OR \"delivering\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "document:3",
+      "msg:telegram/synthetic/team/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:email/synthetic%40example.test/thread-6/6"
+     ],
+     "seconds": 0.494
+    },
+    {
+     "id": "q05",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1",
+      "document:3",
+      "document:7"
+     ],
+     "seconds": 0.454
+    },
+    {
+     "id": "q06",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:telegram/synthetic/team/9",
+      "document:11",
+      "meeting:synthetic/16/cue/1",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:telegram/synthetic/team/73"
+     ],
+     "seconds": 0.61
+    },
+    {
+     "id": "q07",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"birch\" OR \"compass\" OR \"changed\"",
+     "hits": [
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "document:11",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1"
+     ],
+     "seconds": 0.634
+    },
+    {
+     "id": "q08",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "document:15",
+      "msg:telegram/synthetic/team/9",
+      "document:75",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1"
+     ],
+     "seconds": 0.564
+    },
+    {
+     "id": "q09",
+     "query": "\"bo\" OR \"reed\" OR \"commit\" OR \"delivering\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "document:11",
+      "msg:telegram/synthetic/team/9",
+      "meeting:synthetic/12/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1"
+     ],
+     "seconds": 0.88
+    },
+    {
+     "id": "q10",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "meeting:synthetic/16/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "meeting:synthetic/12/cue/1",
+      "document:15",
+      "msg:telegram/synthetic/team/9",
+      "document:11",
+      "msg:telegram/synthetic/team/13"
+     ],
+     "seconds": 0.538
+    },
+    {
+     "id": "q11",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "document:19",
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:telegram/synthetic/team/21"
+     ],
+     "seconds": 0.513
+    },
+    {
+     "id": "q12",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"cedar\" OR \"lantern\" OR \"changed\"",
+     "hits": [
+      "document:23",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17",
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/24/cue/1",
+      "meeting:synthetic/20/cue/1"
+     ],
+     "seconds": 0.511
+    },
+    {
+     "id": "q13",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/20/cue/1",
+      "meeting:synthetic/24/cue/1"
+     ],
+     "seconds": 0.474
+    },
+    {
+     "id": "q14",
+     "query": "\"cy\" OR \"moss\" OR \"commit\" OR \"delivering\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "document:19",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "document:23",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:email/synthetic%40example.test/thread-22/22"
+     ],
+     "seconds": 0.58
+    },
+    {
+     "id": "q15",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-18/18",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "document:23",
+      "document:19",
+      "msg:telegram/synthetic/team/21"
+     ],
+     "seconds": 0.612
+    },
+    {
+     "id": "q16",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:31",
+      "msg:telegram/synthetic/team/25",
+      "document:27",
+      "msg:telegram/synthetic/team/29",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/32/cue/1"
+     ],
+     "seconds": 0.542
+    },
+    {
+     "id": "q17",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"dune\" OR \"harbor\" OR \"changed\"",
+     "hits": [
+      "document:31",
+      "msg:telegram/synthetic/team/25",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:27",
+      "msg:telegram/synthetic/team/29",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/28/cue/1"
+     ],
+     "seconds": 0.471
+    },
+    {
+     "id": "q18",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "document:27",
+      "msg:telegram/synthetic/team/25",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:31",
+      "meeting:synthetic/28/cue/1",
+      "document:59"
+     ],
+     "seconds": 0.594
+    },
+    {
+     "id": "q19",
+     "query": "\"dee\" OR \"lake\" OR \"commit\" OR \"delivering\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "document:27",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "document:31",
+      "msg:telegram/synthetic/team/149",
+      "msg:email/synthetic%40example.test/thread-738/738"
+     ],
+     "seconds": 0.542
+    },
+    {
+     "id": "q20",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "meeting:synthetic/32/cue/1",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-26/26",
+      "document:31",
+      "msg:telegram/synthetic/team/1849"
+     ],
+     "seconds": 0.651
+    },
+    {
+     "id": "q21",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "document:35",
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:telegram/synthetic/team/37"
+     ],
+     "seconds": 0.758
+    },
+    {
+     "id": "q22",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"elm\" OR \"beacon\" OR \"changed\"",
+     "hits": [
+      "document:39",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33",
+      "document:35",
+      "meeting:synthetic/36/cue/1",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1"
+     ],
+     "seconds": 0.981
+    },
+    {
+     "id": "q23",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/36/cue/1",
+      "meeting:synthetic/40/cue/1"
+     ],
+     "seconds": 0.524
+    },
+    {
+     "id": "q24",
+     "query": "\"eli\" OR \"pine\" OR \"commit\" OR \"delivering\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "document:35",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:39",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/40/cue/1"
+     ],
+     "seconds": 0.537
+    },
+    {
+     "id": "q25",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/33",
+      "document:35",
+      "document:39"
+     ],
+     "seconds": 0.51
+    },
+    {
+     "id": "q26",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:telegram/synthetic/team/41",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/45",
+      "meeting:synthetic/48/cue/1",
+      "meeting:synthetic/44/cue/1"
+     ],
+     "seconds": 0.561
+    },
+    {
+     "id": "q27",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"flint\" OR \"meadow\" OR \"changed\"",
+     "hits": [
+      "document:47",
+      "msg:telegram/synthetic/team/41",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/45",
+      "meeting:synthetic/44/cue/1"
+     ],
+     "seconds": 0.553
+    },
+    {
+     "id": "q28",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-38/38"
+     ],
+     "seconds": 0.602
+    },
+    {
+     "id": "q29",
+     "query": "\"fay\" OR \"stone\" OR \"commit\" OR \"delivering\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "document:43",
+      "msg:telegram/synthetic/team/41",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:email/synthetic%40example.test/thread-618/618"
+     ],
+     "seconds": 0.646
+    },
+    {
+     "id": "q30",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "meeting:synthetic/48/cue/1",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:43",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "msg:telegram/synthetic/team/45"
+     ],
+     "seconds": 0.612
+    },
+    {
+     "id": "q31",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "document:55",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/56/cue/1",
+      "msg:telegram/synthetic/team/53"
+     ],
+     "seconds": 0.557
+    },
+    {
+     "id": "q32",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"grove\" OR \"atlas\" OR \"changed\"",
+     "hits": [
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "document:51",
+      "meeting:synthetic/56/cue/1",
+      "meeting:synthetic/52/cue/1"
+     ],
+     "seconds": 0.578
+    },
+    {
+     "id": "q33",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "meeting:synthetic/52/cue/1",
+      "meeting:synthetic/56/cue/1"
+     ],
+     "seconds": 0.623
+    },
+    {
+     "id": "q34",
+     "query": "\"gio\" OR \"fern\" OR \"commit\" OR \"delivering\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "document:51",
+      "msg:telegram/synthetic/team/49",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/56/cue/1"
+     ],
+     "seconds": 0.65
+    },
+    {
+     "id": "q35",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "meeting:synthetic/56/cue/1",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "msg:telegram/synthetic/team/53"
+     ],
+     "seconds": 0.655
+    },
+    {
+     "id": "q36",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:telegram/synthetic/team/57",
+      "document:59",
+      "msg:telegram/synthetic/team/61",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/64/cue/1",
+      "meeting:synthetic/60/cue/1"
+     ],
+     "seconds": 0.88
+    },
+    {
+     "id": "q37",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"hazel\" OR \"bridge\" OR \"changed\"",
+     "hits": [
+      "msg:telegram/synthetic/team/57",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61"
+     ],
+     "seconds": 0.736
+    },
+    {
+     "id": "q38",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:telegram/synthetic/team/57",
+      "document:63",
+      "meeting:synthetic/60/cue/1",
+      "meeting:synthetic/64/cue/1"
+     ],
+     "seconds": 0.501
+    },
+    {
+     "id": "q39",
+     "query": "\"hal\" OR \"cove\" OR \"commit\" OR \"delivering\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "document:59",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:63",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:email/synthetic%40example.test/thread-62/62"
+     ],
+     "seconds": 0.63
+    },
+    {
+     "id": "q40",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "document:59",
+      "document:63"
+     ],
+     "seconds": 2.091
+    },
+    {
+     "id": "q41",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:71",
+      "msg:telegram/synthetic/team/65",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "msg:telegram/synthetic/team/69"
+     ],
+     "seconds": 0.636
+    },
+    {
+     "id": "q42",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"iris\" OR \"summit\" OR \"changed\"",
+     "hits": [
+      "document:71",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "msg:telegram/synthetic/team/69",
+      "meeting:synthetic/68/cue/1"
+     ],
+     "seconds": 0.543
+    },
+    {
+     "id": "q43",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "meeting:synthetic/68/cue/1",
+      "meeting:synthetic/72/cue/1"
+     ],
+     "seconds": 0.534
+    },
+    {
+     "id": "q44",
+     "query": "\"ira\" OR \"brook\" OR \"commit\" OR \"delivering\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "document:67",
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:71",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/72/cue/1"
+     ],
+     "seconds": 0.581
+    },
+    {
+     "id": "q45",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "document:67",
+      "meeting:synthetic/68/cue/1",
+      "msg:telegram/synthetic/team/69"
+     ],
+     "seconds": 0.569
+    },
+    {
+     "id": "q46",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/80/cue/1",
+      "msg:telegram/synthetic/team/77",
+      "meeting:synthetic/76/cue/1"
+     ],
+     "seconds": 0.544
+    },
+    {
+     "id": "q47",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"juniper\" OR \"valley\" OR \"changed\"",
+     "hits": [
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/76/cue/1",
+      "msg:telegram/synthetic/team/77"
+     ],
+     "seconds": 0.495
+    },
+    {
+     "id": "q48",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73",
+      "document:79",
+      "meeting:synthetic/76/cue/1",
+      "document:67"
+     ],
+     "seconds": 0.528
+    },
+    {
+     "id": "q49",
+     "query": "\"jo\" OR \"birch\" OR \"commit\" OR \"delivering\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "document:75",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "document:11",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-10/10"
+     ],
+     "seconds": 0.802
+    },
+    {
+     "id": "q50",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:75",
+      "msg:telegram/synthetic/team/73",
+      "document:79",
+      "msg:telegram/synthetic/team/77"
+     ],
+     "seconds": 0.529
+    }
+   ]
+  },
+  {
+   "setup": "Mem0, question as typed",
+   "run": "mem0-full-2000: Mem0 default, question verbatim",
+   "published": {
+    "questions_scored": 40,
+    "recall@1": 0.475,
+    "recall@5": 0.95,
+    "recall@10": 0.95,
+    "empty_replies": 0
+   },
+   "searches": [
+    {
+     "id": "q01",
+     "query": "What is the current confirmed delivery date for Amber Kite?",
+     "hits": [
+      "msg:telegram/synthetic/team/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.994
+    },
+    {
+     "id": "q02",
+     "query": "What was the original delivery date agreed for Amber Kite, before it changed?",
+     "hits": [
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1",
+      "msg:telegram/synthetic/team/5",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "document:55",
+      "document:23"
+     ],
+     "seconds": 0.864
+    },
+    {
+     "id": "q03",
+     "query": "Who is the confirmed delivery owner of Amber Kite?",
+     "hits": [
+      "document:3",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/1",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "meeting:synthetic/4/cue/1",
+      "meeting:synthetic/8/cue/1",
+      "document:75",
+      "document:19"
+     ],
+     "seconds": 0.893
+    },
+    {
+     "id": "q04",
+     "query": "What did Ari Vale commit to delivering for Amber Kite?",
+     "hits": [
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "msg:telegram/synthetic/team/1",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/8/cue/1",
+      "msg:email/synthetic%40example.test/thread-550/550"
+     ],
+     "seconds": 0.883
+    },
+    {
+     "id": "q05",
+     "query": "What approved budget amount was agreed for Amber Kite?",
+     "hits": [
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/1",
+      "document:3",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-582/582",
+      "msg:email/synthetic%40example.test/thread-662/662"
+     ],
+     "seconds": 0.846
+    },
+    {
+     "id": "q06",
+     "query": "What is the current confirmed delivery date for Birch Compass?",
+     "hits": [
+      "msg:telegram/synthetic/team/9",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/12/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ],
+     "seconds": 0.761
+    },
+    {
+     "id": "q07",
+     "query": "What was the original delivery date agreed for Birch Compass, before it changed?",
+     "hits": [
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "msg:telegram/synthetic/team/13",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1",
+      "document:55"
+     ],
+     "seconds": 0.87
+    },
+    {
+     "id": "q08",
+     "query": "Who is the confirmed delivery owner of Birch Compass?",
+     "hits": [
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "document:75",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/73"
+     ],
+     "seconds": 0.862
+    },
+    {
+     "id": "q09",
+     "query": "What did Bo Reed commit to delivering for Birch Compass?",
+     "hits": [
+      "document:11",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/589",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-14/14"
+     ],
+     "seconds": 0.997
+    },
+    {
+     "id": "q10",
+     "query": "What approved budget amount was agreed for Birch Compass?",
+     "hits": [
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/260/cue/1",
+      "document:175"
+     ],
+     "seconds": 0.754
+    },
+    {
+     "id": "q11",
+     "query": "What is the current confirmed delivery date for Cedar Lantern?",
+     "hits": [
+      "msg:telegram/synthetic/team/17",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "document:19",
+      "meeting:synthetic/24/cue/1",
+      "meeting:synthetic/20/cue/1",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ],
+     "seconds": 0.888
+    },
+    {
+     "id": "q12",
+     "query": "What was the original delivery date agreed for Cedar Lantern, before it changed?",
+     "hits": [
+      "msg:telegram/synthetic/team/17",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "meeting:synthetic/20/cue/1",
+      "document:19",
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "document:55",
+      "document:39",
+      "document:63"
+     ],
+     "seconds": 0.742
+    },
+    {
+     "id": "q13",
+     "query": "Who is the confirmed delivery owner of Cedar Lantern?",
+     "hits": [
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:telegram/synthetic/team/17",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "meeting:synthetic/20/cue/1",
+      "meeting:synthetic/24/cue/1",
+      "document:35",
+      "document:11",
+      "document:43"
+     ],
+     "seconds": 0.785
+    },
+    {
+     "id": "q14",
+     "query": "What did Cy Moss commit to delivering for Cedar Lantern?",
+     "hits": [
+      "document:19",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "document:23",
+      "meeting:synthetic/24/cue/1",
+      "msg:telegram/synthetic/team/21",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:telegram/synthetic/team/473",
+      "msg:email/synthetic%40example.test/thread-378/378"
+     ],
+     "seconds": 0.89
+    },
+    {
+     "id": "q15",
+     "query": "What approved budget amount was agreed for Cedar Lantern?",
+     "hits": [
+      "meeting:synthetic/24/cue/1",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "document:19",
+      "meeting:synthetic/40/cue/1",
+      "msg:telegram/synthetic/team/589",
+      "meeting:synthetic/16/cue/1"
+     ],
+     "seconds": 0.871
+    },
+    {
+     "id": "q16",
+     "query": "What is the current confirmed delivery date for Dune Harbor?",
+     "hits": [
+      "msg:telegram/synthetic/team/25",
+      "document:31",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "meeting:synthetic/28/cue/1",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.776
+    },
+    {
+     "id": "q17",
+     "query": "What was the original delivery date agreed for Dune Harbor, before it changed?",
+     "hits": [
+      "msg:telegram/synthetic/team/25",
+      "document:31",
+      "meeting:synthetic/28/cue/1",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "document:55",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:47"
+     ],
+     "seconds": 0.764
+    },
+    {
+     "id": "q18",
+     "query": "Who is the confirmed delivery owner of Dune Harbor?",
+     "hits": [
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:telegram/synthetic/team/25",
+      "document:31",
+      "meeting:synthetic/28/cue/1",
+      "msg:telegram/synthetic/team/29",
+      "document:75",
+      "document:59",
+      "document:43",
+      "document:67"
+     ],
+     "seconds": 0.827
+    },
+    {
+     "id": "q19",
+     "query": "What did Dee Lake commit to delivering for Dune Harbor?",
+     "hits": [
+      "document:27",
+      "meeting:synthetic/28/cue/1",
+      "msg:telegram/synthetic/team/25",
+      "msg:telegram/synthetic/team/29",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-142/142",
+      "document:31",
+      "meeting:synthetic/324/cue/1",
+      "msg:telegram/synthetic/team/585"
+     ],
+     "seconds": 0.908
+    },
+    {
+     "id": "q20",
+     "query": "What approved budget amount was agreed for Dune Harbor?",
+     "hits": [
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "document:31",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-142/142",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/56/cue/1"
+     ],
+     "seconds": 0.972
+    },
+    {
+     "id": "q21",
+     "query": "What is the current confirmed delivery date for Elm Beacon?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33",
+      "document:39",
+      "msg:telegram/synthetic/team/37",
+      "document:35",
+      "meeting:synthetic/36/cue/1",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ],
+     "seconds": 0.902
+    },
+    {
+     "id": "q22",
+     "query": "What was the original delivery date agreed for Elm Beacon, before it changed?",
+     "hits": [
+      "msg:telegram/synthetic/team/33",
+      "document:39",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/37",
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1",
+      "document:55",
+      "document:23"
+     ],
+     "seconds": 0.93
+    },
+    {
+     "id": "q23",
+     "query": "Who is the confirmed delivery owner of Elm Beacon?",
+     "hits": [
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:telegram/synthetic/team/33",
+      "document:39",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/37",
+      "meeting:synthetic/40/cue/1",
+      "document:67",
+      "document:11"
+     ],
+     "seconds": 1.005
+    },
+    {
+     "id": "q24",
+     "query": "What did Eli Pine commit to delivering for Elm Beacon?",
+     "hits": [
+      "document:35",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "document:39",
+      "msg:telegram/synthetic/team/37",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1",
+      "meeting:synthetic/584/cue/1"
+     ],
+     "seconds": 0.935
+    },
+    {
+     "id": "q25",
+     "query": "What approved budget amount was agreed for Elm Beacon?",
+     "hits": [
+      "meeting:synthetic/40/cue/1",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "document:35",
+      "document:39",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:telegram/synthetic/team/37",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "meeting:synthetic/24/cue/1",
+      "msg:telegram/synthetic/team/589"
+     ],
+     "seconds": 1.008
+    },
+    {
+     "id": "q26",
+     "query": "What is the current confirmed delivery date for Flint Meadow?",
+     "hits": [
+      "msg:telegram/synthetic/team/41",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ],
+     "seconds": 0.905
+    },
+    {
+     "id": "q27",
+     "query": "What was the original delivery date agreed for Flint Meadow, before it changed?",
+     "hits": [
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/45",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:55",
+      "document:79",
+      "document:39"
+     ],
+     "seconds": 0.849
+    },
+    {
+     "id": "q28",
+     "query": "Who is the confirmed delivery owner of Flint Meadow?",
+     "hits": [
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/45",
+      "document:75",
+      "document:35",
+      "document:67"
+     ],
+     "seconds": 0.824
+    },
+    {
+     "id": "q29",
+     "query": "What did Fay Stone commit to delivering for Flint Meadow?",
+     "hits": [
+      "document:43",
+      "msg:telegram/synthetic/team/41",
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/45",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-626/626",
+      "msg:telegram/synthetic/team/657"
+     ],
+     "seconds": 0.94
+    },
+    {
+     "id": "q30",
+     "query": "What approved budget amount was agreed for Flint Meadow?",
+     "hits": [
+      "msg:telegram/synthetic/team/41",
+      "meeting:synthetic/44/cue/1",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/40/cue/1",
+      "meeting:synthetic/72/cue/1"
+     ],
+     "seconds": 0.827
+    },
+    {
+     "id": "q31",
+     "query": "What is the current confirmed delivery date for Grove Atlas?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:51",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:telegram/synthetic/team/49",
+      "document:55",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.816
+    },
+    {
+     "id": "q32",
+     "query": "What was the original delivery date agreed for Grove Atlas, before it changed?",
+     "hits": [
+      "document:55",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:telegram/synthetic/team/53",
+      "meeting:synthetic/56/cue/1",
+      "document:15",
+      "document:79"
+     ],
+     "seconds": 0.88
+    },
+    {
+     "id": "q33",
+     "query": "Who is the confirmed delivery owner of Grove Atlas?",
+     "hits": [
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/53",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "meeting:synthetic/56/cue/1",
+      "document:75",
+      "document:67"
+     ],
+     "seconds": 0.837
+    },
+    {
+     "id": "q34",
+     "query": "What did Gio Fern commit to delivering for Grove Atlas?",
+     "hits": [
+      "document:51",
+      "meeting:synthetic/52/cue/1",
+      "msg:telegram/synthetic/team/49",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:55",
+      "meeting:synthetic/724/cue/1",
+      "msg:email/synthetic%40example.test/thread-522/522"
+     ],
+     "seconds": 0.861
+    },
+    {
+     "id": "q35",
+     "query": "What approved budget amount was agreed for Grove Atlas?",
+     "hits": [
+      "meeting:synthetic/52/cue/1",
+      "meeting:synthetic/56/cue/1",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "meeting:synthetic/72/cue/1",
+      "msg:telegram/synthetic/team/589"
+     ],
+     "seconds": 0.85
+    },
+    {
+     "id": "q36",
+     "query": "What is the current confirmed delivery date for Hazel Bridge?",
+     "hits": [
+      "msg:telegram/synthetic/team/57",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/61",
+      "document:63",
+      "document:59",
+      "meeting:synthetic/60/cue/1",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ],
+     "seconds": 0.752
+    },
+    {
+     "id": "q37",
+     "query": "What was the original delivery date agreed for Hazel Bridge, before it changed?",
+     "hits": [
+      "msg:telegram/synthetic/team/57",
+      "document:63",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61",
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/64/cue/1",
+      "document:55",
+      "document:39"
+     ],
+     "seconds": 0.833
+    },
+    {
+     "id": "q38",
+     "query": "Who is the confirmed delivery owner of Hazel Bridge?",
+     "hits": [
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:telegram/synthetic/team/57",
+      "document:63",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61",
+      "meeting:synthetic/64/cue/1",
+      "document:35",
+      "document:67"
+     ],
+     "seconds": 0.764
+    },
+    {
+     "id": "q39",
+     "query": "What did Hal Cove commit to delivering for Hazel Bridge?",
+     "hits": [
+      "document:59",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/57",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/624/cue/1"
+     ],
+     "seconds": 0.875
+    },
+    {
+     "id": "q40",
+     "query": "What approved budget amount was agreed for Hazel Bridge?",
+     "hits": [
+      "meeting:synthetic/64/cue/1",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/40/cue/1"
+     ],
+     "seconds": 0.81
+    },
+    {
+     "id": "q41",
+     "query": "What is the current confirmed delivery date for Iris Summit?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ],
+     "seconds": 0.838
+    },
+    {
+     "id": "q42",
+     "query": "What was the original delivery date agreed for Iris Summit, before it changed?",
+     "hits": [
+      "document:71",
+      "msg:telegram/synthetic/team/65",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "meeting:synthetic/68/cue/1",
+      "msg:telegram/synthetic/team/69",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "document:55",
+      "document:79"
+     ],
+     "seconds": 0.827
+    },
+    {
+     "id": "q43",
+     "query": "Who is the confirmed delivery owner of Iris Summit?",
+     "hits": [
+      "document:67",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "meeting:synthetic/72/cue/1",
+      "document:75",
+      "document:35"
+     ],
+     "seconds": 0.881
+    },
+    {
+     "id": "q44",
+     "query": "What did Ira Brook commit to delivering for Iris Summit?",
+     "hits": [
+      "document:67",
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/68/cue/1",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/692/cue/1"
+     ],
+     "seconds": 0.836
+    },
+    {
+     "id": "q45",
+     "query": "What approved budget amount was agreed for Iris Summit?",
+     "hits": [
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/68/cue/1",
+      "document:67",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:email/synthetic%40example.test/thread-498/498",
+      "meeting:synthetic/16/cue/1"
+     ],
+     "seconds": 0.848
+    },
+    {
+     "id": "q46",
+     "query": "What is the current confirmed delivery date for Juniper Valley?",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/73",
+      "document:79",
+      "msg:telegram/synthetic/team/77",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ],
+     "seconds": 0.828
+    },
+    {
+     "id": "q47",
+     "query": "What was the original delivery date agreed for Juniper Valley, before it changed?",
+     "hits": [
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:telegram/synthetic/team/77",
+      "meeting:synthetic/76/cue/1",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/80/cue/1",
+      "document:55",
+      "document:31"
+     ],
+     "seconds": 0.894
+    },
+    {
+     "id": "q48",
+     "query": "Who is the confirmed delivery owner of Juniper Valley?",
+     "hits": [
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/77",
+      "meeting:synthetic/76/cue/1",
+      "meeting:synthetic/80/cue/1",
+      "document:67",
+      "document:27"
+     ],
+     "seconds": 1.141
+    },
+    {
+     "id": "q49",
+     "query": "What did Jo Birch commit to delivering for Juniper Valley?",
+     "hits": [
+      "msg:telegram/synthetic/team/73",
+      "document:75",
+      "meeting:synthetic/76/cue/1",
+      "document:175",
+      "msg:telegram/synthetic/team/625",
+      "meeting:synthetic/260/cue/1",
+      "document:79",
+      "msg:telegram/synthetic/team/77",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:11"
+     ],
+     "seconds": 0.95
+    },
+    {
+     "id": "q50",
+     "query": "What approved budget amount was agreed for Juniper Valley?",
+     "hits": [
+      "meeting:synthetic/80/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/76/cue/1",
+      "document:79",
+      "msg:telegram/synthetic/team/77",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:email/synthetic%40example.test/thread-546/546",
+      "msg:email/synthetic%40example.test/thread-662/662"
+     ],
+     "seconds": 0.836
+    }
+   ]
+  },
+  {
+   "setup": "Mem0, keywords",
+   "run": "mem0-full-2000: Mem0 default, question as OR words",
+   "published": {
+    "questions_scored": 40,
+    "recall@1": 0.45,
+    "recall@5": 0.95,
+    "recall@10": 0.95,
+    "empty_replies": 0
+   },
+   "searches": [
+    {
+     "id": "q01",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.86
+    },
+    {
+     "id": "q02",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"amber\" OR \"kite\" OR \"changed\"",
+     "hits": [
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:telegram/synthetic/team/1",
+      "msg:telegram/synthetic/team/5",
+      "meeting:synthetic/4/cue/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:3",
+      "meeting:synthetic/8/cue/1",
+      "document:79",
+      "document:55"
+     ],
+     "seconds": 0.87
+    },
+    {
+     "id": "q03",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "document:3",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/1",
+      "document:7",
+      "msg:telegram/synthetic/team/5",
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "document:75",
+      "document:35"
+     ],
+     "seconds": 1.037
+    },
+    {
+     "id": "q04",
+     "query": "\"ari\" OR \"vale\" OR \"commit\" OR \"delivering\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "document:3",
+      "meeting:synthetic/4/cue/1",
+      "msg:telegram/synthetic/team/1",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "msg:telegram/synthetic/team/5",
+      "document:7",
+      "meeting:synthetic/8/cue/1",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:telegram/synthetic/team/77"
+     ],
+     "seconds": 0.824
+    },
+    {
+     "id": "q05",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"amber\" OR \"kite\"",
+     "hits": [
+      "meeting:synthetic/8/cue/1",
+      "meeting:synthetic/4/cue/1",
+      "msg:telegram/synthetic/team/1",
+      "msg:telegram/synthetic/team/5",
+      "document:7",
+      "msg:email/synthetic%40example.test/thread-2/2",
+      "msg:email/synthetic%40example.test/thread-6/6",
+      "document:3",
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-662/662"
+     ],
+     "seconds": 0.854
+    },
+    {
+     "id": "q06",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "meeting:synthetic/12/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ],
+     "seconds": 0.939
+    },
+    {
+     "id": "q07",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"birch\" OR \"compass\" OR \"changed\"",
+     "hits": [
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:telegram/synthetic/team/9",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/13",
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/76/cue/1"
+     ],
+     "seconds": 0.888
+    },
+    {
+     "id": "q08",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "document:11",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "document:75",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/73"
+     ],
+     "seconds": 0.857
+    },
+    {
+     "id": "q09",
+     "query": "\"bo\" OR \"reed\" OR \"commit\" OR \"delivering\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "document:11",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:telegram/synthetic/team/13",
+      "meeting:synthetic/16/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "meeting:synthetic/76/cue/1",
+      "document:75"
+     ],
+     "seconds": 0.81
+    },
+    {
+     "id": "q10",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"birch\" OR \"compass\"",
+     "hits": [
+      "meeting:synthetic/16/cue/1",
+      "meeting:synthetic/12/cue/1",
+      "msg:telegram/synthetic/team/9",
+      "document:15",
+      "msg:telegram/synthetic/team/13",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-10/10",
+      "document:11",
+      "meeting:synthetic/260/cue/1",
+      "document:175"
+     ],
+     "seconds": 0.852
+    },
+    {
+     "id": "q11",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "msg:telegram/synthetic/team/17",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/24/cue/1",
+      "meeting:synthetic/20/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ],
+     "seconds": 0.808
+    },
+    {
+     "id": "q12",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"cedar\" OR \"lantern\" OR \"changed\"",
+     "hits": [
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "msg:telegram/synthetic/team/21",
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/24/cue/1",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:31"
+     ],
+     "seconds": 0.897
+    },
+    {
+     "id": "q13",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "document:23",
+      "msg:telegram/synthetic/team/17",
+      "msg:telegram/synthetic/team/21",
+      "meeting:synthetic/20/cue/1",
+      "meeting:synthetic/24/cue/1",
+      "document:35",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.856
+    },
+    {
+     "id": "q14",
+     "query": "\"cy\" OR \"moss\" OR \"commit\" OR \"delivering\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "document:19",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/24/cue/1",
+      "msg:email/synthetic%40example.test/thread-14/14",
+      "msg:telegram/synthetic/team/45",
+      "msg:telegram/synthetic/team/77"
+     ],
+     "seconds": 0.873
+    },
+    {
+     "id": "q15",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"cedar\" OR \"lantern\"",
+     "hits": [
+      "meeting:synthetic/24/cue/1",
+      "msg:telegram/synthetic/team/17",
+      "meeting:synthetic/20/cue/1",
+      "document:23",
+      "msg:telegram/synthetic/team/21",
+      "document:19",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "meeting:synthetic/72/cue/1",
+      "msg:telegram/synthetic/team/589",
+      "msg:email/synthetic%40example.test/thread-546/546"
+     ],
+     "seconds": 0.997
+    },
+    {
+     "id": "q16",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "document:31",
+      "msg:telegram/synthetic/team/25",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "meeting:synthetic/28/cue/1",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ],
+     "seconds": 1.247
+    },
+    {
+     "id": "q17",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"dune\" OR \"harbor\" OR \"changed\"",
+     "hits": [
+      "document:31",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:55",
+      "document:47",
+      "document:63"
+     ],
+     "seconds": 0.938
+    },
+    {
+     "id": "q18",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:telegram/synthetic/team/25",
+      "document:31",
+      "msg:telegram/synthetic/team/29",
+      "meeting:synthetic/28/cue/1",
+      "document:59",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:35"
+     ],
+     "seconds": 0.824
+    },
+    {
+     "id": "q19",
+     "query": "\"dee\" OR \"lake\" OR \"commit\" OR \"delivering\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "document:27",
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "document:31",
+      "msg:telegram/synthetic/team/29",
+      "msg:email/synthetic%40example.test/thread-22/22",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-142/142",
+      "meeting:synthetic/324/cue/1",
+      "msg:telegram/synthetic/team/413"
+     ],
+     "seconds": 0.895
+    },
+    {
+     "id": "q20",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"dune\" OR \"harbor\"",
+     "hits": [
+      "msg:telegram/synthetic/team/25",
+      "meeting:synthetic/28/cue/1",
+      "document:31",
+      "msg:telegram/synthetic/team/29",
+      "document:27",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:email/synthetic%40example.test/thread-142/142",
+      "document:307",
+      "meeting:synthetic/128/cue/1",
+      "msg:telegram/synthetic/team/333"
+     ],
+     "seconds": 0.886
+    },
+    {
+     "id": "q21",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:telegram/synthetic/team/33",
+      "document:39",
+      "msg:telegram/synthetic/team/37",
+      "document:35",
+      "meeting:synthetic/36/cue/1",
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ],
+     "seconds": 0.838
+    },
+    {
+     "id": "q22",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"elm\" OR \"beacon\" OR \"changed\"",
+     "hits": [
+      "document:39",
+      "msg:telegram/synthetic/team/33",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/37",
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1",
+      "document:79",
+      "document:55"
+     ],
+     "seconds": 0.9
+    },
+    {
+     "id": "q23",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:telegram/synthetic/team/33",
+      "document:39",
+      "meeting:synthetic/36/cue/1",
+      "msg:telegram/synthetic/team/37",
+      "meeting:synthetic/40/cue/1",
+      "document:11",
+      "meeting:synthetic/68/cue/1"
+     ],
+     "seconds": 0.884
+    },
+    {
+     "id": "q24",
+     "query": "\"eli\" OR \"pine\" OR \"commit\" OR \"delivering\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "document:35",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "document:39",
+      "msg:telegram/synthetic/team/37",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/40/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-30/30",
+      "msg:telegram/synthetic/team/21"
+     ],
+     "seconds": 0.83
+    },
+    {
+     "id": "q25",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"elm\" OR \"beacon\"",
+     "hits": [
+      "meeting:synthetic/40/cue/1",
+      "msg:telegram/synthetic/team/33",
+      "meeting:synthetic/36/cue/1",
+      "document:39",
+      "msg:telegram/synthetic/team/37",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "document:35",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "meeting:synthetic/24/cue/1",
+      "meeting:synthetic/72/cue/1"
+     ],
+     "seconds": 0.847
+    },
+    {
+     "id": "q26",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ],
+     "seconds": 0.862
+    },
+    {
+     "id": "q27",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"flint\" OR \"meadow\" OR \"changed\"",
+     "hits": [
+      "document:47",
+      "msg:telegram/synthetic/team/41",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/45",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:79",
+      "document:55",
+      "document:31"
+     ],
+     "seconds": 0.888
+    },
+    {
+     "id": "q28",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "meeting:synthetic/44/cue/1",
+      "document:35",
+      "document:75",
+      "document:19"
+     ],
+     "seconds": 0.852
+    },
+    {
+     "id": "q29",
+     "query": "\"fay\" OR \"stone\" OR \"commit\" OR \"delivering\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "document:43",
+      "msg:telegram/synthetic/team/41",
+      "meeting:synthetic/44/cue/1",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-38/38",
+      "msg:telegram/synthetic/team/37",
+      "document:35"
+     ],
+     "seconds": 0.877
+    },
+    {
+     "id": "q30",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"flint\" OR \"meadow\"",
+     "hits": [
+      "meeting:synthetic/44/cue/1",
+      "msg:telegram/synthetic/team/41",
+      "document:47",
+      "msg:telegram/synthetic/team/45",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "document:43",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "meeting:synthetic/40/cue/1",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/72/cue/1"
+     ],
+     "seconds": 0.854
+    },
+    {
+     "id": "q31",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:51",
+      "meeting:synthetic/52/cue/1",
+      "msg:telegram/synthetic/team/49",
+      "document:55",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-58/58"
+     ],
+     "seconds": 0.927
+    },
+    {
+     "id": "q32",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"grove\" OR \"atlas\" OR \"changed\"",
+     "hits": [
+      "document:55",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/49",
+      "msg:telegram/synthetic/team/53",
+      "meeting:synthetic/56/cue/1",
+      "meeting:synthetic/52/cue/1",
+      "document:79",
+      "document:47",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:71"
+     ],
+     "seconds": 0.887
+    },
+    {
+     "id": "q33",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/52/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/53",
+      "document:55",
+      "msg:telegram/synthetic/team/49",
+      "document:75",
+      "meeting:synthetic/68/cue/1",
+      "meeting:synthetic/56/cue/1"
+     ],
+     "seconds": 0.896
+    },
+    {
+     "id": "q34",
+     "query": "\"gio\" OR \"fern\" OR \"commit\" OR \"delivering\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "document:51",
+      "meeting:synthetic/52/cue/1",
+      "msg:telegram/synthetic/team/49",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:email/synthetic%40example.test/thread-46/46",
+      "msg:telegram/synthetic/team/53",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "document:55",
+      "msg:telegram/synthetic/team/45",
+      "meeting:synthetic/68/cue/1"
+     ],
+     "seconds": 0.908
+    },
+    {
+     "id": "q35",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"grove\" OR \"atlas\"",
+     "hits": [
+      "meeting:synthetic/52/cue/1",
+      "meeting:synthetic/56/cue/1",
+      "msg:telegram/synthetic/team/49",
+      "document:51",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "msg:telegram/synthetic/team/53",
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-50/50",
+      "msg:telegram/synthetic/team/625",
+      "document:175"
+     ],
+     "seconds": 0.943
+    },
+    {
+     "id": "q36",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/60/cue/1",
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-34/34",
+      "msg:email/synthetic%40example.test/thread-42/42"
+     ],
+     "seconds": 0.868
+    },
+    {
+     "id": "q37",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"hazel\" OR \"bridge\" OR \"changed\"",
+     "hits": [
+      "document:63",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/61",
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "meeting:synthetic/64/cue/1",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ],
+     "seconds": 0.888
+    },
+    {
+     "id": "q38",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "document:59",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:telegram/synthetic/team/57",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "meeting:synthetic/60/cue/1",
+      "meeting:synthetic/64/cue/1",
+      "document:75",
+      "document:35"
+     ],
+     "seconds": 0.881
+    },
+    {
+     "id": "q39",
+     "query": "\"hal\" OR \"cove\" OR \"commit\" OR \"delivering\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "document:59",
+      "meeting:synthetic/60/cue/1",
+      "msg:telegram/synthetic/team/57",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "meeting:synthetic/64/cue/1",
+      "msg:email/synthetic%40example.test/thread-54/54",
+      "meeting:synthetic/624/cue/1"
+     ],
+     "seconds": 1.049
+    },
+    {
+     "id": "q40",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"hazel\" OR \"bridge\"",
+     "hits": [
+      "meeting:synthetic/64/cue/1",
+      "msg:telegram/synthetic/team/57",
+      "meeting:synthetic/60/cue/1",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "document:63",
+      "msg:telegram/synthetic/team/61",
+      "msg:email/synthetic%40example.test/thread-58/58",
+      "document:59",
+      "meeting:synthetic/80/cue/1",
+      "msg:email/synthetic%40example.test/thread-662/662"
+     ],
+     "seconds": 0.873
+    },
+    {
+     "id": "q41",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-34/34"
+     ],
+     "seconds": 0.955
+    },
+    {
+     "id": "q42",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"iris\" OR \"summit\" OR \"changed\"",
+     "hits": [
+      "document:71",
+      "msg:telegram/synthetic/team/65",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "meeting:synthetic/68/cue/1",
+      "msg:telegram/synthetic/team/69",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "meeting:synthetic/72/cue/1",
+      "document:79",
+      "document:55"
+     ],
+     "seconds": 1.008
+    },
+    {
+     "id": "q43",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "document:67",
+      "meeting:synthetic/68/cue/1",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:telegram/synthetic/team/65",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "meeting:synthetic/72/cue/1",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-74/74"
+     ],
+     "seconds": 0.887
+    },
+    {
+     "id": "q44",
+     "query": "\"ira\" OR \"brook\" OR \"commit\" OR \"delivering\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/68/cue/1",
+      "document:67",
+      "document:71",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:telegram/synthetic/team/69",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "meeting:synthetic/72/cue/1",
+      "msg:email/synthetic%40example.test/thread-62/62",
+      "msg:telegram/synthetic/team/73"
+     ],
+     "seconds": 0.852
+    },
+    {
+     "id": "q45",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"iris\" OR \"summit\"",
+     "hits": [
+      "msg:telegram/synthetic/team/65",
+      "meeting:synthetic/72/cue/1",
+      "meeting:synthetic/68/cue/1",
+      "document:71",
+      "msg:telegram/synthetic/team/69",
+      "msg:email/synthetic%40example.test/thread-66/66",
+      "document:67",
+      "msg:email/synthetic%40example.test/thread-70/70",
+      "msg:email/synthetic%40example.test/thread-498/498",
+      "document:311"
+     ],
+     "seconds": 0.904
+    },
+    {
+     "id": "q46",
+     "query": "\"current\" OR \"confirmed\" OR \"delivery\" OR \"date\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/77",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/76/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "msg:email/synthetic%40example.test/thread-66/66"
+     ],
+     "seconds": 0.91
+    },
+    {
+     "id": "q47",
+     "query": "\"original\" OR \"delivery\" OR \"date\" OR \"agreed\" OR \"juniper\" OR \"valley\" OR \"changed\"",
+     "hits": [
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "meeting:synthetic/76/cue/1",
+      "msg:telegram/synthetic/team/77",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "meeting:synthetic/80/cue/1",
+      "document:55",
+      "document:31"
+     ],
+     "seconds": 1.123
+    },
+    {
+     "id": "q48",
+     "query": "\"confirmed\" OR \"delivery\" OR \"owner\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "document:79",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/77",
+      "meeting:synthetic/76/cue/1",
+      "meeting:synthetic/80/cue/1",
+      "msg:email/synthetic%40example.test/thread-42/42",
+      "meeting:synthetic/68/cue/1"
+     ],
+     "seconds": 0.785
+    },
+    {
+     "id": "q49",
+     "query": "\"jo\" OR \"birch\" OR \"commit\" OR \"delivering\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "msg:telegram/synthetic/team/73",
+      "document:75",
+      "meeting:synthetic/76/cue/1",
+      "document:79",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "msg:telegram/synthetic/team/77",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:175",
+      "document:11",
+      "msg:telegram/synthetic/team/13"
+     ],
+     "seconds": 0.898
+    },
+    {
+     "id": "q50",
+     "query": "\"approved\" OR \"budget\" OR \"amount\" OR \"agreed\" OR \"juniper\" OR \"valley\"",
+     "hits": [
+      "meeting:synthetic/80/cue/1",
+      "meeting:synthetic/76/cue/1",
+      "msg:telegram/synthetic/team/73",
+      "msg:telegram/synthetic/team/77",
+      "msg:email/synthetic%40example.test/thread-74/74",
+      "document:75",
+      "msg:email/synthetic%40example.test/thread-78/78",
+      "document:79",
+      "document:611",
+      "msg:email/synthetic%40example.test/thread-546/546"
+     ],
+     "seconds": 0.837
+    }
+   ]
+  }
+ ]
+}

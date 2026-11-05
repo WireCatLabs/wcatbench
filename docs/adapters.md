@@ -16,8 +16,11 @@ mystore = "my_package.store:MyStore"
 
 Look at [`stores/fts.py`](../src/wcatbench/stores/fts.py), the smallest real one.
 
-- `open(space, workdir)` picks the namespace: a tag, a user id or a folder. One build is one space.
-- `ingest(batch)` sends up to 100 records and returns what was sent and what the service refused. Record ids go in
+- `open(space, workdir, started)` picks the namespace: a tag, a user id or a folder. One build is one space.
+  `started` is when the build first began, kept across resumes. A store that reads a shared event feed stops there.
+- Key every record by `record.key` (its place in the corpus: `r0001`, `r0002` …), and name the same keys in each
+  `Hit`. wcatbench maps them back to corpus ids. Agents cite the same names.
+- `ingest(batch)` sends up to 100 records and returns what was sent and what the service refused. Keys go in
   metadata, never in the text, so a search hit maps back to the corpus.
 - `held()` asks the service what it holds, by record id. Resume sends only records that are absent or failed. A
   record still queued is not missing, so a service that charges per add is never paid twice.

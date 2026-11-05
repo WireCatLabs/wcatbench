@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 from wcatbench.core.protocols import Store
@@ -13,15 +14,15 @@ def describe_fts_store() -> None:
 
     def it_finds_a_record_from_a_question_typed_as_a_sentence(tmp_path: Path, records: list[Record]) -> None:
         store = FtsStore()
-        store.open("space", tmp_path)
+        store.open("space", tmp_path, datetime.now(UTC))
         store.ingest(records)
         hits = store.search("Who owns Amber Kite?", k=2)
         store.close()
-        assert hits[0].record_ids == ("r0001",)
+        assert hits[0].keys == ("r0001",)
 
     def it_holds_each_record_once_after_a_resend(tmp_path: Path, records: list[Record]) -> None:
         store = FtsStore()
-        store.open("space", tmp_path)
+        store.open("space", tmp_path, datetime.now(UTC))
         store.ingest(records)
         store.ingest(records[:1])
         assert store.held() == {record.id: ItemState.DONE for record in records}
@@ -30,7 +31,7 @@ def describe_fts_store() -> None:
 
     def it_finds_nothing_for_a_query_without_words(tmp_path: Path) -> None:
         store = FtsStore()
-        store.open("space", tmp_path)
+        store.open("space", tmp_path, datetime.now(UTC))
         assert store.search("?!", k=5) == []
         store.clear()
         store.close()

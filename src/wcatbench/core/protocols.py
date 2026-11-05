@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol, runtime_checkable
 
@@ -26,7 +27,10 @@ class Store(Protocol):
     hosted: bool
 
     def version(self) -> str: ...
-    def open(self, space: str, workdir: Path) -> None: ...
+    def open(self, space: str, workdir: Path, started: datetime) -> None:
+        """`started` is when the build began: a store that reads a shared event feed stops there."""
+        ...
+
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt: ...
     def held(self) -> dict[str, ItemState]:
         """What the store itself says it holds, by record id. Resume trusts this over our own ledger."""
