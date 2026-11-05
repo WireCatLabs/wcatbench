@@ -17,6 +17,10 @@ class Settings(BaseSettings):
         default=Path.home() / ".local" / "share" / "wcatbench",
         description="Datasets, store builds and runs live here.",
     )
+    keyring_account: str = Field(
+        default="wcatbench",
+        description="Account of the keyring entries for hosted stores: service supermemory or mem0, this account.",
+    )
     log_format: Literal["console", "json"] = "console"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 

@@ -36,6 +36,8 @@ wcatbench = "wcatbench.cli:app"
 # Built-in adapters register the same way a third-party package does, so the core never imports one by name.
 [project.entry-points."wcatbench.stores"]
 fts = "wcatbench.stores.fts:FtsStore"
+supermemory = "wcatbench.stores.supermemory:SupermemoryStore"
+mem0 = "wcatbench.stores.mem0:Mem0Store"
 
 [project.entry-points."wcatbench.agents"]
 oracle = "wcatbench.agents.oracle:OracleAgent"

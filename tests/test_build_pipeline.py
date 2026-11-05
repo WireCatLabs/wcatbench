@@ -116,6 +116,45 @@ def describe_build() -> None:
         make(store, dataset, tmp_path, records=100).run(resume=True, wait_seconds=0, poll_seconds=1)
         assert store.sent == ["r0003"]
 
+    def it_does_not_resend_an_accepted_record_the_store_stopped_listing(dataset: Path, tmp_path: Path) -> None:
+        store = QueueStore(polls=99)
+        make(store, dataset, tmp_path, records=10).run(resume=False, wait_seconds=0)
+        del store.items["r0004"]
+        store.sent.clear()
+        summary = make(store, dataset, tmp_path, records=10).run(resume=True, wait_seconds=0)
+        assert store.sent == []
+        assert summary["accepted_not_listed"] == 1
+
+    def it_imports_the_ledger_of_the_earlier_scripts(dataset: Path, tmp_path: Path) -> None:
+        old = tmp_path / "old.jsonl"
+        lines = [
+            {
+                "at": "x",
+                "batch": 0,
+                "rids": ["r0001", "r0002"],
+                "sent": 2,
+                "failed": [{"rid": "r0002", "error": "e"}],
+                "s": 1.0,
+            },
+            {"at": "x", "note": "not a batch"},
+        ]
+        old.write_text("".join(json.dumps(line) + "\n" for line in lines))
+        build = make(QueueStore(), dataset, tmp_path / "build", records=10)
+        build.open(resume=True)
+        assert build.import_ledger(old) == 1
+        assert build.sent_before() == {"r0001"}
+        with pytest.raises(PermanentError, match="not empty"):
+            build.import_ledger(old)
+
+    def it_adopts_a_build_known_to_have_sent_everything(dataset: Path, tmp_path: Path) -> None:
+        build = make(QueueStore(), dataset, tmp_path, records=10)
+        build.open(resume=True)
+        with pytest.raises(PermanentError, match="no ledger"):
+            build.import_ledger(tmp_path / "missing.jsonl")
+        build.adopt_all_sent()
+        assert len(build.sent_before()) == 10
+        assert build.to_resend({}, build.selection.records) == []
+
     def it_refuses_to_resume_with_another_selection(dataset: Path, tmp_path: Path) -> None:
         make(QueueStore(), dataset, tmp_path, records=100).run(resume=False, wait_seconds=0)
         with pytest.raises(PermanentError, match="records differ"):

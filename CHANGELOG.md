@@ -18,6 +18,15 @@
   batches, resumes from what the store holds, waits until it is ready to answer, and scores recall@1, 5 and 10 of
   its own search. The recall scorer gives the published Supermemory and Mem0 numbers on their saved searches.
 
+- **Supermemory and Mem0 stores.** One build is one Supermemory container tag or one Mem0 user. A build made by
+  the earlier cli-testing scripts can be adopted with `store status --import-ledger` or `--all-sent`.
+
+### Fixed
+
+- **A resume never sends a record the service already accepted.** While Mem0 processes, its event feed can move an
+  event to a page already read, and one walk then misses it: on 2026-11-05 one walk of 6,500 adds listed 2 as
+  absent. Mem0 is now read twice and merged, and a record the ledger shows as accepted is reported, not sent again.
+
 ### Changed
 
 - **A record's time field is now `timestamp`.** It matches the corpus file, so the published digests hold.
