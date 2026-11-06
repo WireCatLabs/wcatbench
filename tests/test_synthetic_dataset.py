@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from collections import Counter
 from collections.abc import Iterator
@@ -78,6 +79,38 @@ def describe_synthetic_dataset() -> None:
     def it_refuses_a_size_between_the_two_corpora(tmp_path: Path) -> None:
         with pytest.raises(PermanentError, match="at least 3000"):
             SyntheticDataset().build(tmp_path, {"records": 2500})
+
+
+def describe_version_3() -> None:
+    @pytest.fixture(scope="module")
+    def built_v3(tmp_path_factory: pytest.TempPathFactory) -> Path:
+        folder = tmp_path_factory.mktemp("v3")
+        SyntheticDataset().build(folder, {"records": 10000, "version": 3})
+        return folder
+
+    def it_keeps_the_10k_corpus_byte_for_byte_and_appends_after_it(built_v3: Path) -> None:
+        lines = (built_v3 / dataset_files.CORPUS).read_bytes().splitlines(keepends=True)
+        assert hashlib.sha256(b"".join(lines[:10000])).hexdigest() == CORPUS_10K
+        assert dataset_files.manifest(built_v3).version == 3
+        assert len(lines) > 10000
+
+    def it_asks_50_different_questions_of_many_kinds(built_v3: Path) -> None:
+        kinds = json.loads((built_v3 / "kinds.json").read_text())
+        texts = [question.text for question in dataset_files.questions(built_v3)]
+        assert len(set(texts)) == 50
+        assert len({row["kind"] for row in kinds}) == 21
+        assert max(Counter(row["kind"] for row in kinds).values()) == 3
+
+    def it_scores_the_oracle_on_everything(built_v3: Path) -> None:
+        assert totals(built_v3, OracleAgent()) == {"correct": 50, "correct_strict": 50, "cited_correctly": 50}
+
+    def it_cites_only_records_that_exist(built_v3: Path) -> None:
+        ids = {record.id for record in dataset_files.records(built_v3)}
+        assert all(set(key.sources) <= ids for key in dataset_files.keys(built_v3).values())
+
+    def it_grows_the_mem0_subset_by_every_new_record(built_v3: Path) -> None:
+        subset = json.loads((built_v3 / "subset-mem0.json").read_text())
+        assert subset["records"] == 6500 + dataset_files.manifest(built_v3).records - 10000
 
 
 def describe_dataset_build_command() -> None:
