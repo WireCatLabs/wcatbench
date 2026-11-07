@@ -247,6 +247,10 @@ def store_search(
     rewrite: Annotated[
         list[str] | None, typer.Option(help=f"Question forms, repeatable: {', '.join(REWRITES)}. Default both.")
     ] = None,
+    questions: Annotated[
+        str | None,
+        typer.Option(help="Ask another dataset's questions over this build; its corpus must be the same."),
+    ] = None,
 ) -> None:
     """Ask the store's own search every question and score recall@1, 5 and 10. No answer model."""
     forms = rewrite or list(REWRITES)
@@ -257,8 +261,11 @@ def store_search(
         build = _build(store, dataset, space, subset)
         with closing(build.store):
             build.open(resume=True)
+            asked = _dataset_folder(questions) if questions else build.dataset
+            if dataset_files.manifest(asked).corpus_sha256 != build.manifest.corpus_sha256:
+                raise PermanentError(f"{questions} has another corpus than {dataset}; its questions do not apply")
             folder = build.folder / "searches" / f"{datetime.now(UTC):%Y%m%dT%H%M%S%f}"
-            results = search_run(build.store, build.dataset, dataset_files.records(build.dataset), folder, forms)
+            results = search_run(build.store, asked, dataset_files.records(build.dataset), folder, forms)
     except PermanentError as error:
         raise _fail(error) from error
     typer.echo(f"{folder}")
