@@ -352,11 +352,11 @@ def letta(calls: Calls, tmp_path: Path) -> LettaStore:
 
 
 def describe_letta_store() -> None:
-    def routes(**more: Callable[[httpx.Request], Any]) -> dict[str, Callable[[httpx.Request], Any]]:
+    def _routes(**more: Callable[[httpx.Request], Any]) -> dict[str, Callable[[httpx.Request], Any]]:
         return {"GET /v1/archives/": lambda _: [], "POST /v1/archives/": lambda _: {"id": "archive-1"}, **more}
 
     def it_keeps_what_it_sent_because_an_archive_cannot_list_its_passages(tmp_path: Path) -> None:
-        calls = Calls(routes(**{"POST /v1/archives/archive-1/passages/batch": lambda _: []}))
+        calls = Calls(_routes(**{"POST /v1/archives/archive-1/passages/batch": lambda _: []}))
         letta(calls, tmp_path).ingest([record(1), record(2)])
         (body,) = calls.bodies("POST /v1/archives/archive-1/passages/batch")
         assert body["passages"][0]["metadata"] == {"rid": "r0001", "kind": "notes"}
@@ -364,6 +364,6 @@ def describe_letta_store() -> None:
 
     def it_reads_the_record_key_from_a_passage(tmp_path: Path) -> None:
         reply = [{"passage": {"text": "t", "metadata": {"rid": "r0007"}}, "score": 0.9}, {"passage": {}}]
-        calls = Calls(routes(**{"POST /v1/passages/search": lambda _: reply}))
+        calls = Calls(_routes(**{"POST /v1/passages/search": lambda _: reply}))
         hits = letta(calls, tmp_path).search("when", 5)
         assert [hit.keys for hit in hits] == [("r0007",), ()]
