@@ -34,7 +34,8 @@ def write(folder: Path, records: list[Record], questions: list[Question], keys: 
     """Returns the corpus and key digests."""
     (folder / CORPUS).write_text(corpus_lines(records))
     write_json(folder / QUESTIONS, [question.model_dump(exclude_defaults=True) for question in questions])
-    write_json(folder / KEY, [key.model_dump(mode="json") for key in keys])
+    rows = [key.model_dump(mode="json", exclude={"form"} if key.form is None else None) for key in keys]
+    write_json(folder / KEY, rows)
     return sha256_file(folder / CORPUS), sha256_file(folder / KEY)
 
 

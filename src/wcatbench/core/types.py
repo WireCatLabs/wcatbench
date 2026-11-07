@@ -58,6 +58,9 @@ class AnswerKey(Frozen):
     answers: tuple[str, ...]
     sources: tuple[str, ...] = ()
     stale_answers: tuple[str, ...] = ()
+    # How answers compare: "amount", "datetime", "date", "count" or "weekday". None is the exact match of the
+    # published rounds, and a key without a form is written without the field so its digest stays the same.
+    form: str | None = None
 
 
 class Hit(Frozen):
