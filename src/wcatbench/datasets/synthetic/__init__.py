@@ -80,5 +80,10 @@ class SyntheticDataset:
         dataset_files.write_json(out / "kinds.json", kinds)
         # Mem0's subset grows by every new record: they are all the version 3 questions are about, or close noise.
         ids = [*subset["ids"], *(record["id"] for record in added)]
-        dataset_files.write_json(out / "subset-mem0.json", {"records": len(ids), "ids": ids})
+        wanted = set(ids)
+        chosen = dataset_files.corpus_lines(
+            Record.model_validate(row) for row in [*rows, *added] if row["id"] in wanted
+        )
+        sha = hashlib.sha256(chosen.encode()).hexdigest()
+        dataset_files.write_json(out / "subset-mem0.json", {"records": len(ids), "sha256": sha, "ids": ids})
         return [*rows, *added], questions, {"version_2_corpus_sha256": base_sha, "mem0_subset_v3": len(ids)}

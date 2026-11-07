@@ -17,6 +17,7 @@ from wcatbench.core import dataset_files
 from wcatbench.core.errors import PermanentError
 from wcatbench.core.types import Privacy
 from wcatbench.datasets.synthetic import SyntheticDataset
+from wcatbench.pipeline.build import Selection
 from wcatbench.scoring.answer import AnswerScorer
 
 # The digests published with the cli-testing rounds. A change here means the old results no longer name this data.
@@ -111,6 +112,7 @@ def describe_version_3() -> None:
     def it_grows_the_mem0_subset_by_every_new_record(built_v3: Path) -> None:
         subset = json.loads((built_v3 / "subset-mem0.json").read_text())
         assert subset["records"] == 6500 + dataset_files.manifest(built_v3).records - 10000
+        assert len(Selection.load(built_v3, "mem0").records) == subset["records"]
 
 
 def describe_dataset_build_command() -> None:
