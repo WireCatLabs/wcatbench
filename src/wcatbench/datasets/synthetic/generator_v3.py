@@ -366,9 +366,80 @@ NOISE = [
 NOISE_TOPICS = ["parking", "coffee machine", "laptop stand", "taxi", "team lunch", "book club", "train", "hotel"]
 
 
+# The paraphrased question set: the first question of each kind below asked in other words, with the project
+# name kept (without it the question has no single answer) and the record's own phrase gone. The records and
+# the answer key do not change, so a store built for version 3 answers both sets.
+PARAPHRASES: dict[str, list[tuple[str, str]]] = {
+    "price after a revision": [
+        ("current agreed yearly price of the", "yearly fee we now pay for"),
+        (" hosting agreement", "'s rented servers"),
+    ],
+    "total of partial payments": [
+        ("How much has been paid in total toward the", "What sum has come in so far for"),
+        (" consulting retainer so far", "'s advisory arrangement"),
+    ],
+    "balance still owed": [
+        ("How much is still owed on the", "What is left to pay for"),
+        (" hardware order", "'s equipment purchase"),
+    ],
+    "cost after a refund": [
+        ("What did the", "What was the final spend on"),
+        (" conference tickets cost in the end, after any refund", "'s event passes, money back counted"),
+    ],
+    "who paid": [("Who paid the", "Who put down the money for"), (" team retreat deposit", "'s offsite advance")],
+    "meeting moved, date and time": [
+        ("When is the", "When does"),
+        (" steering committee meeting now", "'s oversight board sit next"),
+    ],
+    "time zone conversion": [
+        ("When is the", "At what moment in Spain is"),
+        (" partner call, in Madrid time", "'s conversation with the outside company"),
+    ],
+    "relative date": [
+        ("On what date is the", "Which day was set for"),
+        (" design critique", "'s feedback session on the designs"),
+    ],
+    "cancelled": [("When is the", "When will"), (" customer workshop", "'s client training day happen")],
+    "cancelled, then back on": [("When is the", "When will"), (" hackathon", "'s coding marathon happen")],
+    "recurring meeting, new weekday": [
+        ("On which weekday does the", "Which day of the week is"),
+        (" weekly design sync take place now", "'s regular design catch-up held on now"),
+    ],
+    "who signed off": [
+        ("Who signed off the", "Who gave final approval to"),
+        (" vendor shortlist", "'s list of candidate suppliers"),
+    ],
+    "two sources disagree": [
+        ("Which venue is booked for the", "Where will"),
+        (" launch party", "'s release celebration be held"),
+    ],
+    "how many times rescheduled": [
+        ("How many times has the", "How often was"),
+        (" security drill been rescheduled", "'s safety exercise moved"),
+    ],
+    "fee never approved": [
+        ("What fee was approved for the", "What price did we accept from"),
+        (" translation vendor", "'s localisation supplier"),
+    ],
+    "current date after many changes": [
+        ("What is the current confirmed delivery date for the", "By when must the"),
+        ("?", " be shipped now, as last agreed?"),
+    ],
+    "owner after a handover": [("Who is the confirmed delivery owner of the", "Which person answers for shipping the")],
+    "revised commitment": [("commit to delivering for the", "promise to hand over for the")],
+}
+
+
+def paraphrased(question: str, kind: str) -> str:
+    for old, new in PARAPHRASES[kind]:
+        _invariant(old in question, f"{kind}: {old!r} is in {question!r}")
+        question = question.replace(old, new, 1)
+    return question
+
+
 def extension(
-    v2_records: list[Row], v2_questions: list[Row], seed: int = V3_SEED, noise: int = 200
-) -> tuple[list[Row], list[Row], list[dict[str, str]]]:
+    v2_records: list[Row], v2_questions: list[Row], seed: int = V3_SEED, noise: int = 200, paraphrase: bool = False
+) -> tuple[list[Row], list[Row], list[dict[str, Any]]]:
     """The records appended to version 2, the 50 questions and each question's family and kind."""
     v3 = V3(seed, [record["text"] for record in v2_records])
     rng = v3.rng
@@ -423,7 +494,12 @@ def extension(
     records = [{"id": i.id, "kind": i.kind, "timestamp": iso(i.day, i.minute), "text": i.text} for i in items]
 
     questions, kinds = [], []
+    reworded: set[str] = set()
     for index, (family, kind, (question, answer, cited, stale, form)) in enumerate(asks, start=1):
+        reword = paraphrase and kind in PARAPHRASES and kind not in reworded
+        if reword:
+            question = paraphrased(question, kind)
+            reworded.add(kind)
         questions.append(
             {
                 "id": f"q{index:02}",
@@ -435,10 +511,18 @@ def extension(
                 **({"form": form} if form else {}),
             }
         )
-        kinds.append({"id": f"q{index:02}", "family": FAMILIES[family], "kind": kind})
+        kinds.append(
+            {
+                "id": f"q{index:02}",
+                "family": FAMILIES[family],
+                "kind": kind,
+                **({"paraphrased": True} if reword else {}),
+            }
+        )
     for subject in v3.subjects:
         _invariant(subject not in v3.v2, f"{subject!r} appears in no version 2 record")
     _invariant(len(questions) == 50, f"50 questions, got {len(questions)}")
+    _invariant(not paraphrase or reworded == set(PARAPHRASES), "every paraphrased kind was reworded once")
     _invariant(len({q["question"] for q in questions}) == 50, "50 different questions")
     _invariant(all(r["timestamp"] < "2026-10-19" for r in records), "every new record before the questions")
     _invariant(

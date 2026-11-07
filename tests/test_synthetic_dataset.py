@@ -115,6 +115,21 @@ def describe_version_3() -> None:
         assert len(Selection.load(built_v3, "mem0").records) == subset["records"]
 
 
+def describe_paraphrased_questions() -> None:
+    def it_rewords_18_questions_over_the_same_records_and_key(tmp_path: Path) -> None:
+        plain, reworded = tmp_path / "plain", tmp_path / "reworded"
+        plain.mkdir(), reworded.mkdir()
+        first = SyntheticDataset().build(plain, {"records": 10000, "version": 3})
+        second = SyntheticDataset().build(reworded, {"records": 10000, "version": 3, "paraphrase": 1})
+        before, after = dataset_files.questions(plain), dataset_files.questions(reworded)
+        changed = [q.id for q, p in zip(before, after, strict=True) if q.text != p.text]
+        marked = [row["id"] for row in json.loads((reworded / "kinds.json").read_text()) if row.get("paraphrased")]
+        assert first.corpus_sha256 == second.corpus_sha256
+        assert first.key_sha256 == second.key_sha256
+        assert len(changed) == 18
+        assert changed == marked
+
+
 def describe_dataset_build_command() -> None:
     @pytest.fixture(autouse=True)
     def home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Path]:

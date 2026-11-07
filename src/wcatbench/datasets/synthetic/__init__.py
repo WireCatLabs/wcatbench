@@ -59,7 +59,12 @@ class SyntheticDataset:
             name=self.name,
             version=1 if size == SMALL else params.get("version", 2),
             privacy=Privacy.SYNTHETIC,
-            params={"records": size, "seed": seed, **({"version": 3} if params.get("version") == 3 else {})},
+            params={
+                "records": size,
+                "seed": seed,
+                **({"version": 3} if params.get("version") == 3 else {}),
+                **({"paraphrase": 1} if params.get("paraphrase") else {}),
+            },
             records=len(records),
             questions=len(questions),
             corpus_sha256=corpus_sha,
@@ -76,7 +81,9 @@ class SyntheticDataset:
         """Version 2's records unchanged and the new ones after them, so a version 2 store takes only the rest."""
         lines = dataset_files.corpus_lines(Record.model_validate(row) for row in rows)
         base_sha = hashlib.sha256(lines.encode()).hexdigest()
-        added, questions, kinds = generator_v3.extension(rows, asked_rows, params.get("v3_seed", generator_v3.V3_SEED))
+        added, questions, kinds = generator_v3.extension(
+            rows, asked_rows, params.get("v3_seed", generator_v3.V3_SEED), paraphrase=bool(params.get("paraphrase"))
+        )
         dataset_files.write_json(out / "kinds.json", kinds)
         # Mem0's subset grows by every new record: they are all the version 3 questions are about, or close noise.
         ids = [*subset["ids"], *(record["id"] for record in added)]

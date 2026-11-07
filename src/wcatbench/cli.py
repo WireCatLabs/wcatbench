@@ -108,7 +108,9 @@ def dataset_build(
         dataset = registry.load("datasets", name)()
         with tempfile.TemporaryDirectory(dir=datasets, prefix=".building-") as scratch:
             manifest = dataset.build(Path(scratch), _params(param or []))
-            target = datasets / f"{name}-{manifest.records}-{manifest.corpus_sha256[:8]}"
+            # The paraphrased questions share the corpus, so its folder needs a name of its own.
+            suffix = "-paraphrased" if manifest.params.get("paraphrase") else ""
+            target = datasets / f"{name}-{manifest.records}-{manifest.corpus_sha256[:8]}{suffix}"
             if not target.exists():
                 shutil.copytree(scratch, target)
     except PermanentError as error:
