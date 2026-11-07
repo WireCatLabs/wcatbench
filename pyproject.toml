@@ -29,6 +29,8 @@ dependencies = [
 [project.optional-dependencies]
 # Reports query the JSONL files a run writes; not needed to run a round.
 report = ["duckdb>=1.4"]
+# The Graphiti store drives the library itself: its REST server stops for good on the first failed episode.
+graphiti = ["graphiti-core[falkordb]==0.31.2"]
 
 [project.scripts]
 wcatbench = "wcatbench.cli:app"
@@ -42,6 +44,7 @@ hindsight = "wcatbench.stores.hindsight:HindsightStore"
 honcho = "wcatbench.stores.honcho:HonchoStore"
 letta = "wcatbench.stores.letta:LettaStore"
 cognee = "wcatbench.stores.cognee:CogneeStore"
+graphiti = "wcatbench.stores.graphiti:GraphitiStore"
 
 [project.entry-points."wcatbench.agents"]
 oracle = "wcatbench.agents.oracle:OracleAgent"

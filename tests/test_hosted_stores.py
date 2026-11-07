@@ -399,18 +399,21 @@ def describe_cognee_store() -> None:
         assert [hit.keys for hit in store.search("when", 5)] == [("r0002",)]
 
     def it_starts_cognify_once_and_waits_for_every_item(tmp_path: Path) -> None:
-        pending = iter([{"pending": 3}, {"pending": 0}])
+        pending = iter([{"pending": 0, "completed": 0}, {"pending": 1, "completed": 0}, {"pending": 0, "completed": 1}])
+        runs = iter([{"d1": "DATASET_PROCESSING_COMPLETED"}, {"d1": "DATASET_PROCESSING_STARTED"}])
         calls = Calls(
             _routes(
                 **{
                     "GET /api/v1/datasets/d1/processing-status": lambda _: next(pending),
-                    "GET /api/v1/datasets/status": lambda _: {"d1": "DATASET_PROCESSING_COMPLETED"},
+                    "GET /api/v1/datasets/status": lambda _: next(runs),
                     "POST /api/v1/cognify": lambda _: {},
                 }
             )
         )
         store = cognee(calls, tmp_path)
         store.ingest([record(1)])
-        assert store.settled({}) is False
-        assert store.settled({}) is True
+        held = store.held()
+        assert store.settled(held) is False
+        assert store.settled(held) is False
+        assert store.settled(held) is True
         assert len(calls.bodies("POST /api/v1/cognify")) == 1

@@ -97,12 +97,15 @@ class CogneeStore:
 
     def running(self) -> bool:
         reply = self.api.request("GET", f"/api/v1/datasets/status?dataset={self.dataset_id}")
-        return "Started" in str(reply.get(self.dataset_id, ""))
+        state = str(reply.get(self.dataset_id, "")).upper()
+        return "STARTED" in state or "INITIATED" in state
 
     def settled(self, held: dict[str, ItemState]) -> bool:
         if not self.dataset_id:
             return False
-        if not self.progress().get("pending"):
+        progress = self.progress()
+        # Right after `add`, processing-status may count nothing yet; settled means every record went through cognify.
+        if not progress.get("pending") and progress.get("completed", 0) >= len(held) > 0:
             return True
         if not self.running():
             self.api.request("POST", "/api/v1/cognify", {"datasetIds": [self.dataset_id], "runInBackground": True})
