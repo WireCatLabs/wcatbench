@@ -19,6 +19,7 @@ from wcatbench.core import dataset_files, registry
 from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 from wcatbench.pipeline.build import Build, Selection
+from wcatbench.pipeline.fixture import export_fixture, score_predictions
 from wcatbench.pipeline.search import REWRITES, search_run
 
 app = typer.Typer(
@@ -116,6 +117,35 @@ def dataset_build(
     built = dataset_files.manifest(target)
     typer.echo(f"{target}")
     typer.echo(f"records {built.records}, questions {built.questions}, corpus sha256 {built.corpus_sha256}")
+
+
+@dataset_app.command("export-fixture")
+def dataset_export_fixture(
+    dataset: Annotated[str, typer.Argument(help="A dataset folder, or its name from `dataset build`.")],
+    out: Annotated[Path, typer.Argument(help="A new folder for cli-testing's agent runners (--fixture).")],
+) -> None:
+    """Write a dataset as the fixture folder cli-testing's agent runners read."""
+    try:
+        manifest = export_fixture(_dataset_folder(dataset), out.expanduser())
+    except PermanentError as error:
+        raise _fail(error) from error
+    typer.echo(f"{out}: fixture version {manifest['fixture_version']}, {manifest['records']} records")
+
+
+@app.command()
+def score(
+    dataset: Annotated[str, typer.Option("--dataset", "-d", help="A dataset folder, or its name.")],
+    predictions: Annotated[Path, typer.Option(help="An agent runner's predictions.json.")],
+    engine: Annotated[str, typer.Option(help="What answered, recorded in scores.json.")],
+    output: Annotated[Path, typer.Option(help="A new folder for scores.json and per-question.json.")],
+) -> None:
+    """Score an agent runner's answers against a dataset's key, in total and by family of question."""
+    try:
+        rows = json.loads(predictions.expanduser().read_text())
+        result = score_predictions(_dataset_folder(dataset), rows, engine, output.expanduser())
+    except PermanentError as error:
+        raise _fail(error) from error
+    typer.echo(json.dumps(result, indent=2))
 
 
 def _fail(error: PermanentError) -> typer.Exit:
