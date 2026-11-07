@@ -36,5 +36,21 @@ class JsonApi:
             raise PermanentError(f"{method} {path} -> HTTP {reply.status_code}: {reply.text[:300]}")
         return reply.json() if reply.content else {}
 
+    @retrying()
+    def request_form(self, method: str, path: str, fields: list[tuple[str, str]], timeout: float = 60.0) -> Any:
+        """A multipart form, each field a part; a field may repeat (Cognee's raw_data takes one part per item)."""
+        self.calls += 1
+        try:
+            reply = self.client.request(method, path, files=[(k, (None, v)) for k, v in fields], timeout=timeout)
+        except httpx.TimeoutException as error:
+            raise TransientError(f"{method} {path} timed out after {timeout:.0f} s") from error
+        except httpx.TransportError as error:
+            raise TransientError(f"{method} {path}: {type(error).__name__}") from error
+        if reply.status_code in TRANSIENT:
+            raise TransientError(f"{method} {path} -> HTTP {reply.status_code}")
+        if reply.is_error:
+            raise PermanentError(f"{method} {path} -> HTTP {reply.status_code}: {reply.text[:300]}")
+        return reply.json() if reply.content else {}
+
     def close(self) -> None:
         self.client.close()

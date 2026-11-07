@@ -28,7 +28,7 @@ def describe_registry() -> None:
         assert "fts" in registry.available("stores")
 
     def it_names_the_choices_when_an_adapter_is_missing() -> None:
-        with pytest.raises(PermanentError, match="installed: fts"):
+        with pytest.raises(PermanentError, match=r"installed: .*fts"):
             registry.load("stores", "zep")
 
     def it_loads_an_adapter_by_name() -> None:

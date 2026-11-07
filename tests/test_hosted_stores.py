@@ -13,6 +13,7 @@ from wcatbench.core.errors import PermanentError, TransientError
 from wcatbench.core.http import JsonApi
 from wcatbench.core.protocols import Store
 from wcatbench.core.types import ItemState, Record
+from wcatbench.stores.cognee import CogneeStore
 from wcatbench.stores.hindsight import HindsightStore
 from wcatbench.stores.honcho import HonchoStore
 from wcatbench.stores.letta import LettaStore
@@ -367,3 +368,49 @@ def describe_letta_store() -> None:
         calls = Calls(_routes(**{"POST /v1/passages/search": lambda _: reply}))
         hits = letta(calls, tmp_path).search("when", 5)
         assert [hit.keys for hit in hits] == [("r0007",), ()]
+
+
+def cognee(calls: Calls, tmp_path: Path, mode: str = "graph") -> CogneeStore:
+    store = CogneeStore(base_url="http://cognee.test", transport=httpx.MockTransport(calls))
+    store.mode = mode
+    store.open("wcatbench_cognee_pilot", tmp_path / "store", STARTED)
+    return store
+
+
+def describe_cognee_store() -> None:
+    def _routes(**more: Callable[[httpx.Request], Any]) -> dict[str, Callable[[httpx.Request], Any]]:
+        return {"GET /api/v1/datasets": lambda _: [], "POST /api/v1/add": lambda _: {"dataset_id": "d1"}, **more}
+
+    def it_opens_each_text_with_its_date_and_kind_so_equal_texts_stay_apart(tmp_path: Path) -> None:
+        calls = Calls(_routes())
+        store = cognee(calls, tmp_path)
+        store.ingest([record(1), record(2)])
+        (sent,) = [r for r in calls.seen if r.url.path == "/api/v1/add"]
+        assert b"[2026-01-05 09:00 notes] text 1" in sent.content
+        assert store.held() == {"r0001": ItemState.DONE, "r0002": ItemState.DONE}
+
+    def it_names_the_records_behind_the_chunks_a_graph_search_used(tmp_path: Path) -> None:
+        chunk = {"node_attributes": {"type": "DocumentChunk", "text": "[2026-01-05 09:00 notes] text 2"}}
+        entity = {"node_attributes": {"type": "Entity", "text": None}}
+        reply = [{"objects_result": [{"node1": chunk, "node2": entity}, {"node1": entity, "node2": chunk}]}]
+        calls = Calls(_routes(**{"POST /api/v1/search": lambda _: reply}))
+        store = cognee(calls, tmp_path)
+        store.ingest([record(2)])
+        assert [hit.keys for hit in store.search("when", 5)] == [("r0002",)]
+
+    def it_starts_cognify_once_and_waits_for_every_item(tmp_path: Path) -> None:
+        pending = iter([{"pending": 3}, {"pending": 0}])
+        calls = Calls(
+            _routes(
+                **{
+                    "GET /api/v1/datasets/d1/processing-status": lambda _: next(pending),
+                    "GET /api/v1/datasets/status": lambda _: {"d1": "DATASET_PROCESSING_COMPLETED"},
+                    "POST /api/v1/cognify": lambda _: {},
+                }
+            )
+        )
+        store = cognee(calls, tmp_path)
+        store.ingest([record(1)])
+        assert store.settled({}) is False
+        assert store.settled({}) is True
+        assert len(calls.bodies("POST /api/v1/cognify")) == 1
