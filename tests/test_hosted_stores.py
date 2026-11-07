@@ -14,6 +14,7 @@ from wcatbench.core.http import JsonApi
 from wcatbench.core.protocols import Store
 from wcatbench.core.types import ItemState, Record
 from wcatbench.stores.hindsight import HindsightStore
+from wcatbench.stores.honcho import HonchoStore
 from wcatbench.stores.mem0 import Mem0Store
 from wcatbench.stores.supermemory import SupermemoryStore
 
@@ -274,5 +275,70 @@ def describe_hindsight_store() -> None:
         stats = iter([{"pending_operations": 0, "pending_consolidation": 3}, {"pending_operations": 0}])
         calls = Calls({f"PUT {BANK}": lambda _: {}, f"GET {BANK}/stats": lambda _: next(stats)})
         store = hindsight(calls, tmp_path)
+        assert store.settled({}) is False
+        assert store.settled({}) is True
+
+
+WS = "/v3/workspaces/wcatbench_honcho_pilot"
+
+
+def honcho(calls: Calls, tmp_path: Path) -> HonchoStore:
+    store = HonchoStore(base_url="http://honcho.test", transport=httpx.MockTransport(calls))
+    store.open("wcatbench_honcho_pilot", tmp_path, STARTED)
+    return store
+
+
+def honcho_routes(**more: Callable[[httpx.Request], Any]) -> dict[str, Callable[[httpx.Request], Any]]:
+    return {
+        "POST /v3/workspaces": lambda _: {},
+        f"POST {WS}/peers": lambda _: {},
+        f"POST {WS}/sessions/list": lambda _: {"items": [{"id": "notes"}], "pages": 1},
+        **more,
+    }
+
+
+def describe_honcho_store() -> None:
+    def it_sends_each_record_as_the_owners_message_in_its_kinds_session(tmp_path: Path) -> None:
+        mail = record(3).model_copy(update={"kind": "mail"})
+        calls = Calls(
+            honcho_routes(
+                **{
+                    f"POST {WS}/sessions": lambda _: {},
+                    f"POST {WS}/sessions/notes/messages": lambda _: [],
+                    f"POST {WS}/sessions/mail/messages": lambda _: [],
+                }
+            )
+        )
+        receipt = honcho(calls, tmp_path).ingest([record(1), mail, record(2)])
+        (notes,) = calls.bodies(f"POST {WS}/sessions/notes/messages")
+        assert receipt.sent == ("r0001", "r0002", "r0003")
+        assert calls.bodies(f"POST {WS}/sessions") == [{"id": "mail", "peers": {"owner": {}}}]
+        assert notes["messages"][0] == {
+            "content": "text 1",
+            "peer_id": "owner",
+            "created_at": "2026-01-05T09:00:00Z",
+            "metadata": {"rid": "r0001", "kind": "notes"},
+        }
+
+    def it_names_the_records_behind_a_conclusion(tmp_path: Path) -> None:
+        listed = {"items": [{"id": "m1", "metadata": {"rid": "r0001"}}, {"id": "m2", "metadata": {"rid": "r0002"}}]}
+        conclusions = [{"content": "owner heard X", "level": "explicit", "source_message_ids": ["m2", "m1", "m9"]}]
+        calls = Calls(
+            honcho_routes(
+                **{
+                    f"POST {WS}/sessions/notes/messages/list": lambda _: {**listed, "pages": 1},
+                    f"POST {WS}/conclusions/query": lambda _: conclusions,
+                }
+            )
+        )
+        (hit,) = honcho(calls, tmp_path).search("when", 5)
+        (query,) = calls.bodies(f"POST {WS}/conclusions/query")
+        assert hit.keys == ("r0002", "r0001")
+        assert query["filters"] == {"observer": "owner", "observed": "owner"}
+
+    def it_is_settled_only_when_the_queue_is_empty(tmp_path: Path) -> None:
+        states = iter([{"pending_work_units": 0, "in_progress_work_units": 1}, {"pending_work_units": 0}])
+        calls = Calls(honcho_routes(**{f"GET {WS}/queue/status": lambda _: next(states)}))
+        store = honcho(calls, tmp_path)
         assert store.settled({}) is False
         assert store.settled({}) is True
