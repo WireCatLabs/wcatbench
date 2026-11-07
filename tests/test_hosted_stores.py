@@ -15,6 +15,7 @@ from wcatbench.core.protocols import Store
 from wcatbench.core.types import ItemState, Record
 from wcatbench.stores.hindsight import HindsightStore
 from wcatbench.stores.honcho import HonchoStore
+from wcatbench.stores.letta import LettaStore
 from wcatbench.stores.mem0 import Mem0Store
 from wcatbench.stores.supermemory import SupermemoryStore
 
@@ -342,3 +343,27 @@ def describe_honcho_store() -> None:
         store = honcho(calls, tmp_path)
         assert store.settled({}) is False
         assert store.settled({}) is True
+
+
+def letta(calls: Calls, tmp_path: Path) -> LettaStore:
+    store = LettaStore(base_url="http://letta.test", transport=httpx.MockTransport(calls))
+    store.open("wcatbench_letta_pilot", tmp_path / "store", STARTED)
+    return store
+
+
+def describe_letta_store() -> None:
+    def routes(**more: Callable[[httpx.Request], Any]) -> dict[str, Callable[[httpx.Request], Any]]:
+        return {"GET /v1/archives/": lambda _: [], "POST /v1/archives/": lambda _: {"id": "archive-1"}, **more}
+
+    def it_keeps_what_it_sent_because_an_archive_cannot_list_its_passages(tmp_path: Path) -> None:
+        calls = Calls(routes(**{"POST /v1/archives/archive-1/passages/batch": lambda _: []}))
+        letta(calls, tmp_path).ingest([record(1), record(2)])
+        (body,) = calls.bodies("POST /v1/archives/archive-1/passages/batch")
+        assert body["passages"][0]["metadata"] == {"rid": "r0001", "kind": "notes"}
+        assert set(letta(calls, tmp_path).held()) == {"r0001", "r0002"}
+
+    def it_reads_the_record_key_from_a_passage(tmp_path: Path) -> None:
+        reply = [{"passage": {"text": "t", "metadata": {"rid": "r0007"}}, "score": 0.9}, {"passage": {}}]
+        calls = Calls(routes(**{"POST /v1/passages/search": lambda _: reply}))
+        hits = letta(calls, tmp_path).search("when", 5)
+        assert [hit.keys for hit in hits] == [("r0007",), ()]

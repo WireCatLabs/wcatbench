@@ -40,6 +40,7 @@ supermemory = "wcatbench.stores.supermemory:SupermemoryStore"
 mem0 = "wcatbench.stores.mem0:Mem0Store"
 hindsight = "wcatbench.stores.hindsight:HindsightStore"
 honcho = "wcatbench.stores.honcho:HonchoStore"
+letta = "wcatbench.stores.letta:LettaStore"
 
 [project.entry-points."wcatbench.agents"]
 oracle = "wcatbench.agents.oracle:OracleAgent"
