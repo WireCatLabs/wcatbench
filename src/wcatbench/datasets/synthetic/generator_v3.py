@@ -430,6 +430,27 @@ PARAPHRASES: dict[str, list[tuple[str, str]]] = {
 }
 
 
+# A story's twin is told about a random other project, and with seed 20261107 that project was sometimes one the
+# same kind of question asks about, so two stories share a subject. The records stay as published (stores already
+# hold them); these keys are read off both stories instead. Found by the agents, which all answered these the same.
+KEY_FIXES: dict[str, dict[str, Any]] = {
+    # The asked story ends later, so its key holds; the twin's confirmed value is one more stale answer.
+    "Juniper Valley hosting agreement": {"stale": ["EUR 27,750"]},
+    "Grove Atlas hosting agreement": {"stale": ["EUR 29,000"]},
+    "Grove Atlas design critique": {"stale": ["2026-04-26"]},
+    # The twin was booked last: Harbour Loft, and the asked story's Old Mill Hall is now off.
+    "Iris Summit launch party": {
+        "answers": ["Harbour Loft"],
+        "stale": ["Old Mill Hall", "Glasshouse"],
+        "cite_text": "booked Harbour Loft",
+    },
+    # Three moves in the asked story, two in the twin, and the twin's new date for it counts as a sixth.
+    "Amber Kite security drill": {"answers": ["5", "6"], "stale": ["3"], "cite_text": "rescheduled to"},
+}
+# Shared subjects whose questions still have one right answer: the twin never approved a fee either.
+HARMLESS = {"Cedar Lantern translation vendor", "Flint Meadow translation vendor"}
+
+
 def paraphrased(question: str, kind: str) -> str:
     for old, new in PARAPHRASES[kind]:
         _invariant(old in question, f"{kind}: {old!r} is in {question!r}")
@@ -493,6 +514,22 @@ def extension(
             item.id = source_ref(item.kind, number)
     records = [{"id": i.id, "kind": i.kind, "timestamp": iso(i.day, i.minute), "text": i.text} for i in items]
 
+    shared = {subject for subject in v3.subjects if v3.subjects.count(subject) > 1}
+    asked_shared = {subject for subject in shared if any(subject in ask[0] for _, _, ask in asks)}
+    _invariant(asked_shared <= set(KEY_FIXES) | HARMLESS, f"every asked shared subject has a key fix: {asked_shared}")
+    fixed: list[tuple[str, str, Ask]] = []
+    for family, kind, (question, answer, cited, stale, form) in asks:
+        fix = next((KEY_FIXES[s] for s in asked_shared if s in question and s in KEY_FIXES), None)
+        if fix:
+            subject = next(s for s in asked_shared if s in question)
+            answer_out: str | list[str] = fix.get("answers", answer)
+            stale = [*(s for s in stale if s not in fix.get("answers", [])), *fix["stale"]]
+            if "cite_text" in fix:
+                cited = [i for i in items if subject in i.text and fix["cite_text"] in i.text]
+            fixed.append((family, kind, (question, answer_out, cited, list(dict.fromkeys(stale)), form)))  # type: ignore[arg-type]
+        else:
+            fixed.append((family, kind, (question, answer, cited, stale, form)))
+    asks = fixed
     questions, kinds = [], []
     reworded: set[str] = set()
     for index, (family, kind, (question, answer, cited, stale, form)) in enumerate(asks, start=1):
@@ -505,7 +542,7 @@ def extension(
                 "id": f"q{index:02}",
                 "question": question,
                 "as_of": AS_OF,
-                "answers": [answer],
+                "answers": answer if isinstance(answer, list) else [answer],
                 "required_citations": [c if isinstance(c, str) else c.id for c in cited],
                 "stale_answers": stale,
                 **({"form": form} if form else {}),
