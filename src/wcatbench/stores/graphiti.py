@@ -86,6 +86,7 @@ class GraphitiStore:
 
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt:
         from graphiti_core.nodes import EpisodeType
+        from redis.exceptions import ConnectionError as DatabaseGone
 
         started = time.perf_counter()
         sent: list[str] = []
@@ -102,6 +103,11 @@ class GraphitiStore:
                         group_id=self.group,
                     )
                 )
+            # A lost database is not this record's fault: marking every remaining record failed took 6,686 records
+            # in seconds when FalkorDB 4.14.6 crashed. Stop instead; --resume continues from the ledger.
+            except DatabaseGone as error:
+                self.save()
+                raise PermanentError(f"FalkorDB stopped answering at {record.key}: {error}") from error
             # One bad episode must not stop the build, the failure the REST server has.
             except Exception as error:  # noqa: BLE001
                 refused[record.key] = f"{type(error).__name__}: {str(error)[:200]}"
