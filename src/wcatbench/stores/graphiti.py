@@ -29,6 +29,7 @@ from wcatbench.core.types import BatchReceipt, Hit, ItemState, Record
 MODEL = os.environ.get("WCATBENCH_GRAPHITI_MODEL", "gpt-4o-mini")
 EMBEDDING = "text-embedding-3-small"
 LEDGER = "graphiti-episodes.json"
+SKIP = frozenset(filter(None, os.environ.get("WCATBENCH_GRAPHITI_SKIP", "").split(",")))
 
 
 class GraphitiStore:
@@ -106,6 +107,12 @@ class GraphitiStore:
         sent: list[str] = []
         refused: dict[str, str] = {}
         for record in batch:
+            # FalkorDB 4.14.6 and 4.22.3 crash (signal 11) on the entity lookup these records lead to; they are
+            # refused unsent so the build can finish, and the report names them.
+            if record.key in SKIP:
+                refused[record.key] = "skipped: crashes FalkorDB"
+                self.failed[record.key] = refused[record.key]
+                continue
             try:
                 result = self.run(
                     self.graph.add_episode(
