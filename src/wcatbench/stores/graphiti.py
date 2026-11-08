@@ -80,6 +80,17 @@ class GraphitiStore:
         if self.ledger.exists():
             saved = json.loads(self.ledger.read_text())
             self.episodes, self.failed = saved["episodes"], saved.get("failed", {})
+            # A FalkorDB crash loses what it wrote since its last snapshot (39 episodes on 8 Nov), while the
+            # ledger still lists them, so the graph decides what a resume sends again.
+            # FalkorDB keeps each group in a graph of its own name, not in the driver's default one.
+            held = self.run(
+                driver.clone(database=space).execute_query(
+                    "MATCH (e:Episodic) WHERE e.group_id = $group RETURN e.uuid AS uuid", group=space
+                )
+            )
+            stored = {row["uuid"] for row in held[0]} if held else set()
+            if stored:
+                self.episodes = {uuid: key for uuid, key in self.episodes.items() if uuid in stored}
 
     def save(self) -> None:
         # Written aside and renamed: a full disk once cut the ledger mid-write and lost the build's place.
