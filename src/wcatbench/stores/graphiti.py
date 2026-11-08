@@ -82,7 +82,10 @@ class GraphitiStore:
             self.episodes, self.failed = saved["episodes"], saved.get("failed", {})
 
     def save(self) -> None:
-        self.ledger.write_text(json.dumps({"episodes": self.episodes, "failed": self.failed}))
+        # Written aside and renamed: a full disk once cut the ledger mid-write and lost the build's place.
+        partial = self.ledger.with_suffix(".tmp")
+        partial.write_text(json.dumps({"episodes": self.episodes, "failed": self.failed}))
+        partial.replace(self.ledger)
 
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt:
         from graphiti_core.nodes import EpisodeType
