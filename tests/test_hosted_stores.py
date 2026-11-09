@@ -13,6 +13,7 @@ from wcatbench.core.errors import PermanentError, TransientError
 from wcatbench.core.http import JsonApi
 from wcatbench.core.protocols import Store
 from wcatbench.core.types import ItemState, Record
+from wcatbench.stores.hindsight import HindsightStore
 from wcatbench.stores.mem0 import Mem0Store
 from wcatbench.stores.supermemory import SupermemoryStore
 
@@ -230,3 +231,48 @@ def describe_mem0_store() -> None:
     def it_needs_open_before_use() -> None:
         with pytest.raises(PermanentError, match="open"):
             Mem0Store().describe()
+
+
+BANK = "/v1/default/banks/wcatbench_hindsight_pilot100"
+
+
+def hindsight(calls: Calls, tmp_path: Path) -> HindsightStore:
+    store = HindsightStore(base_url="http://hindsight.test", transport=httpx.MockTransport(calls))
+    store.open("wcatbench_hindsight_pilot100", tmp_path, STARTED)
+    return store
+
+
+def describe_hindsight_store() -> None:
+    def it_retains_each_record_with_its_own_time_and_id(tmp_path: Path) -> None:
+        calls = Calls({f"PUT {BANK}": lambda _: {}, f"POST {BANK}/memories": lambda _: {"success": True}})
+        receipt = hindsight(calls, tmp_path).ingest([record(1), record(2)])
+        (body,) = calls.bodies(f"POST {BANK}/memories")
+        assert receipt.sent == ("r0001", "r0002")
+        assert body["async"] is True
+        assert body["items"][0] == {
+            "content": "text 1",
+            "timestamp": "2026-01-05T09:00:00Z",
+            "context": "notes",
+            "document_id": "r0001",
+            "metadata": {"rid": "r0001"},
+        }
+
+    def it_names_the_records_behind_an_observation(tmp_path: Path) -> None:
+        reply = {
+            "results": [
+                {"id": "f1", "text": "a fact", "type": "world", "document_id": "r0007"},
+                {"id": "o1", "text": "an observation", "type": "observation", "source_fact_ids": ["f2", "f3"]},
+            ],
+            "source_facts": {"f2": {"document_id": "r0002"}, "f3": {"document_id": "r0003"}},
+        }
+        calls = Calls({f"PUT {BANK}": lambda _: {}, f"POST {BANK}/memories/recall": lambda _: reply})
+        hits = hindsight(calls, tmp_path).search("when", 10)
+        assert [hit.keys for hit in hits] == [("r0007",), ("r0002", "r0003")]
+        assert hits[1].kind == "observation"
+
+    def it_is_settled_only_when_consolidation_is_done_too(tmp_path: Path) -> None:
+        stats = iter([{"pending_operations": 0, "pending_consolidation": 3}, {"pending_operations": 0}])
+        calls = Calls({f"PUT {BANK}": lambda _: {}, f"GET {BANK}/stats": lambda _: next(stats)})
+        store = hindsight(calls, tmp_path)
+        assert store.settled({}) is False
+        assert store.settled({}) is True
