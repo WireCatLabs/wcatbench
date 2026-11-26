@@ -228,10 +228,10 @@ def describe_memo_store() -> None:
         monkeypatch.setattr(memo.subprocess, "run", cli)
         store = memo.MemoStore(binary="memo")
         store.open("rules-trial", tmp_path, STARTED)
-        store.ingest([record(1)])
+        store.ingest([record(1, "2026-03-02 · Ирина Козлова\nСокол: таймаут 7 секунд")])
         hits = store.search("таймаут", 5)
         assert hits[0].keys == ("r1",)
-        assert hits[0].text == "2026-03-02\nтаймаут 7"
+        assert hits[0].text == "2026-03-02 · Ирина Козлова\nСокол: таймаут 7 секунд"
         assert hits[1].keys == ()
         assert store.held() == {"r1": memo.ItemState.DONE}
         assert (tmp_path / "rules-trial" / "data" / "Сокол-таймаут-7-секунд.md").exists()

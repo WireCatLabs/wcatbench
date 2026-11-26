@@ -97,9 +97,9 @@ class MemoStore:
         started = time.perf_counter()
         taken = set(self.names)
         for record in batch:
-            title = next((t for t, key in self.names.items() if key == record.key), None) or file_title(
-                record.text, taken
-            )
+            # The first line is the date and author: a title made of it says nothing about the topic.
+            body = record.text.split("\n", 1)[-1]
+            title = next((t for t, key in self.names.items() if key == record.key), None) or file_title(body, taken)
             self.names[title] = record.key
             path = self.base / "data" / f"{title}.md"
             path.write_text(record.text + "\n")
@@ -142,9 +142,10 @@ class MemoStore:
         hits = []
         for item in reply.get("items", [])[:k]:
             key = self.key_of(item)
-            # The excerpt leaves out a note's first line, here the date; the hit's own timestamp carries it.
-            stamp = str(item.get("timestamp") or "")[:10]
-            text = f"{stamp}\n{item.get('excerpt') or item.get('text') or ''}".strip()
+            note = self.base / "data" / f"{Path(str(item.get('title') or '')).stem}.md"
+            # The whole note, as `memo read` gives it and as the other stores give a hit: the excerpt drops the
+            # first line, which holds the date and author.
+            text = note.read_text().strip() if key and note.exists() else str(item.get("excerpt") or "")
             hits.append(Hit(keys=(key,) if key else (), text=text, kind=item.get("kind")))
         return hits
 

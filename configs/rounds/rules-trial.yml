@@ -26,6 +26,12 @@ amendments:
   - date: 2026-11-27
     what: "A known check the agent left UNKNOWN is split: `missed_available` if its rule was in the context, else `abstained_not_retrieved`."
     why: "Otherwise a retrieval loss reads as the agent's loss. Sessions are rescored from saved check outcomes."
+  - date: 2026-11-27
+    what: "memo notes are titled from the text after the date and author line, and a memo hit is the whole note."
+    why: >-
+      With the date line, titles became date, author and project only (`2026-03-02-Ирина-Козлова-Сокол`), the noise
+      BUG-618 keeps out of the vector, and memo's excerpt drops the first line, so hits lost the author. The first
+      memo build and its 6 sessions are kept in /var/tmp/wcat-dapi/superseded-memo-titles and reported apart.
 
 hypothesis:
   h1: >-
