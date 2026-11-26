@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""Sign the owner's ChatGPT (Codex) account into the rules-trial Hermes folder, by device code.
+
+Only HERMES_HOME below is written. The owner's ~/.hermes and ~/.codex are never read: HOME and CODEX_HOME point to
+throwaway folders, and D-Bus is off so the system keyring is out of reach. Nothing secret is printed: the sign-in
+listing can hold the account's e-mail, so only a yes or no leaves this script.
+"""
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+HERMES_PYTHON = Path("/var/tmp/wcat-dapi/hermes-agent/venv/bin/python")
+HERMES_SCRIPT = Path("/var/tmp/wcat-dapi/hermes-agent/hermes")
+HERMES_HOME = Path("/var/tmp/wcat-dapi/hermes-home")
+THROWAWAY_HOME = Path("/var/tmp/wcat-dapi/hermes-signin-home")
+EMPTY_CODEX_HOME = Path("/var/tmp/wcat-dapi/codex-empty")
+PROVIDER = "openai-codex"
+
+
+def environment() -> dict[str, str]:
+    return {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C.UTF-8",
+        "TERM": os.environ.get("TERM", "xterm"),
+        "HOME": str(THROWAWAY_HOME),
+        "HERMES_HOME": str(HERMES_HOME),
+        "CODEX_HOME": str(EMPTY_CODEX_HOME),
+        "DBUS_SESSION_BUS_ADDRESS": "disabled:",
+        "PYTHONDONTWRITEBYTECODE": "1",
+    }
+
+
+def hermes(*args: str, capture: bool) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(HERMES_PYTHON), str(HERMES_SCRIPT), *args],
+        env=environment(),
+        cwd=THROWAWAY_HOME,
+        text=True,
+        capture_output=capture,
+        check=False,
+    )
+
+
+def signed_in() -> bool:
+    listing = hermes("auth", "list", capture=True)
+    return listing.returncode == 0 and any(line.startswith(f"{PROVIDER} (") for line in listing.stdout.splitlines())
+
+
+def main() -> int:
+    if not HERMES_PYTHON.exists():
+        print(f"Hermes is not installed at {HERMES_PYTHON}. Ask the benchmarks agent to install it first.")
+        return 1
+    # The sign-in token lands in HERMES_HOME, and /var/tmp is shared with every user of this machine.
+    for folder in (HERMES_HOME.parent, HERMES_HOME, THROWAWAY_HOME, EMPTY_CODEX_HOME):
+        folder.mkdir(mode=0o700, parents=True, exist_ok=True)
+        folder.chmod(0o700)
+    print(f"Hermes folder: {HERMES_HOME}")
+    if signed_in():
+        print("Already signed in to openai-codex. Nothing to do.")
+        return 0
+    print("Open the link below, enter the code, and approve with your ChatGPT account.\n")
+    hermes("auth", "add", PROVIDER, "--type", "oauth", "--no-browser", capture=False)
+    if signed_in():
+        print("\nSigned in. The benchmarks agent can run now.")
+        return 0
+    print("\nThe sign-in did not finish. Run this script again.")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

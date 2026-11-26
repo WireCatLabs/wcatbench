@@ -19,6 +19,8 @@ from wcatbench.core import dataset_files, registry
 from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 from wcatbench.pipeline.build import Build, Selection
+from wcatbench.pipeline.rules_trial import VARIANTS
+from wcatbench.pipeline.rules_trial import Round as RulesTrialRound
 from wcatbench.pipeline.search import REWRITES, search_run
 
 app = typer.Typer(
@@ -235,3 +237,78 @@ def store_search(
             f"{form}: recall@1 {row['recall@1']:.2f}, @5 {row['recall@5']:.2f}, @10 {row['recall@10']:.2f}, "
             f"empty {row['empty_replies']}"
         )
+
+
+trial_app = typer.Typer(help="Agent trials: sessions in a jail, hidden checks, staged scores.", no_args_is_help=True)
+app.add_typer(trial_app, name="trial")
+RunOption = Annotated[str, typer.Option("--run", help="Run folder name under the data folder's runs/.")]
+DesignOption = Annotated[str, typer.Option("--design", help="his (3 tasks x 2 applications), ours or all.")]
+
+
+def _round(dataset: str, run: str, model: str) -> RulesTrialRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return RulesTrialRound(
+        dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / "builds", agent=agent
+    )
+
+
+@trial_app.command("run")
+def trial_run(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Run one variant's sessions. A finished session is skipped on the next run."""
+    try:
+        _round(dataset, run, model).go(variant, design)
+    except PermanentError as error:
+        raise _fail(error) from error
+
+
+@trial_app.command("report")
+def trial_report(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+) -> None:
+    """Per-stage totals for one variant, as JSON. Stages are never added into one score."""
+    typer.echo(json.dumps(_round(dataset, run, "unused").report(variant, design), ensure_ascii=False, indent=2))
+
+
+@trial_app.command("contexts")
+def trial_contexts(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+) -> None:
+    """Build and freeze one variant's retrievals with no agent: the free stored and retrieved stages."""
+    try:
+        contexts = _round(dataset, run, "unused").contexts(variant)
+    except PermanentError as error:
+        raise _fail(error) from error
+    typer.echo(json.dumps({qid: entry["tokens"] for qid, entry in sorted(contexts.items())}))
+
+
+@trial_app.command("probe")
+def trial_probe(dataset: DatasetOption, run: RunOption) -> None:
+    """No model: prove the agent's jail hides the owner's home, the answer key and the hidden checks."""
+    result = _round(dataset, run, "unused").probe()
+    typer.echo("\n".join(result["output"]))
+    if result["readable"]:
+        raise typer.Exit(code=1)
+
+
+@trial_app.command("summary")
+def trial_summary(dataset: DatasetOption, run: RunOption, design: DesignOption = "his") -> None:
+    """Every variant's stages as one Markdown table; writes rows-<design>.jsonl and summary-<design>.md to the run."""
+    trial_round = _round(dataset, run, "unused")
+    table, rows = trial_round.summary(design)
+    (trial_round.run / f"summary-{design}.md").write_text(table)
+    with (trial_round.run / f"rows-{design}.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
