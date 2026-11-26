@@ -51,7 +51,8 @@ def rows(
         if check["kind"] == "known":
             row["rule"] = check["rule"]
             row["stored"] = None if stored_text is None else found(check["value"], stored_text)
-            row["retrieved"] = found(check["value"], context or "")
+            # No context at all (no memory, or an archive the agent searches itself): the stage does not apply.
+            row["retrieved"] = found(check["value"], context) if context else None
             row["has_old"] = bool(check["replaces"])
             row["old_inactive"] = (not found(check["old"], context)) if check["replaces"] and context else None
             row["applied"] = status == "pass"
@@ -74,7 +75,9 @@ def totals(all_rows: list[dict[str, Any]]) -> dict[str, Any]:
     with_old = [row for row in known if row["old_inactive"] is not None]
     return {
         "stored": [sum(bool(row["stored"]) for row in with_store), len(with_store)] if with_store else None,
-        "retrieved": [sum(row["retrieved"] for row in known), len(known)],
+        "retrieved": [sum(bool(row["retrieved"]) for row in known), len(known)]
+        if any(row["retrieved"] is not None for row in known)
+        else None,
         "old_inactive": [sum(bool(row["old_inactive"]) for row in with_old), len(with_old)] if with_old else None,
         "applied": [sum(row["applied"] for row in known), len(known)],
         "unknown": [sum(row["unknown_ok"] for row in unknown), len(unknown)],

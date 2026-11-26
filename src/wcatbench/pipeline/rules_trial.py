@@ -325,6 +325,11 @@ class Round:
             "planned": len(results),
             "session_outcomes": [result["outcome"] for result in done],
             "seconds": round(sum(result["seconds"] for result in done), 1),
+            "agent_tokens": [
+                sum(result["usage"]["input_tokens"] for result in done),
+                sum(result["usage"]["output_tokens"] for result in done),
+            ],
+            "context_tokens": sum(result["context_tokens"] for result in done),
             **staged.totals(rows),
         }
 
@@ -332,8 +337,9 @@ class Round:
         """A Markdown table with one column per stage, and every check row of every session."""
         lines = [
             "| Variant | Sessions | Stored | Retrieved | Old version inactive | Applied (known) | Unknown | "
-            "Missed available | Not retrieved | Wrong concrete | Broken | Invalid | Seconds | Total as in his table |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+            "Missed available | Not retrieved | Wrong concrete | Broken | Invalid | Seconds | Agent tokens in/out | "
+            "Total as in his table |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
         all_rows: list[dict[str, Any]] = []
         for variant in VARIANTS:
@@ -355,7 +361,8 @@ class Round:
                 f"{frac(report['unknown'])} | {outcomes.get('missed_available', 0)} | "
                 f"{outcomes.get('abstained_not_retrieved', 0)} | "
                 f"{outcomes.get('wrong_concrete', 0)} | {outcomes.get('broken', 0)} | {outcomes.get('invalid', 0)} | "
-                f"{report['seconds']} | {frac(report['his_total_for_comparison'])} |"
+                f"{report['seconds']} | {report['agent_tokens'][0]}/{report['agent_tokens'][1]} | "
+                f"{frac(report['his_total_for_comparison'])} |"
             )
         return "\n".join(lines) + "\n", all_rows
 

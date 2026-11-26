@@ -114,7 +114,7 @@ def describe_round() -> None:
         trial.go("none")
         table, rows = trial.summary("his")
         assert table.count("\n| none |") == 1
-        assert "| none | 6/6 | n/a | 0/78 |" in table
+        assert "| none | 6/6 | n/a | n/a | n/a | 0/78 |" in table
         assert len(rows) == 108
 
     def it_runs_the_probe_in_the_agents_jail(dataset: Path, tmp_path: Path) -> None:
