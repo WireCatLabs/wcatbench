@@ -52,6 +52,9 @@ class FtsStore:
     def settled(self, held: dict[str, ItemState]) -> bool:
         return True
 
+    def contents(self) -> list[str]:
+        return [row[0] for row in self.db.execute("SELECT text FROM records")]
+
     def search(self, query: str, k: int) -> list[Hit]:
         # A question typed as a sentence is turned into OR words: FTS5's default is AND, which finds nothing.
         words = _WORD.findall(query)

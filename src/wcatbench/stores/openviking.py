@@ -39,6 +39,8 @@ class OpenVikingStore:
     name = "openviking"
     hosted = True
     evolution = False
+    # e1 names a file by date and key; the corrections gate rewrites one file per rule, so it names by key only.
+    dated_names = True
 
     def __init__(self) -> None:
         self.root: Path | None = None
@@ -150,7 +152,7 @@ class OpenVikingStore:
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt:
         started = time.perf_counter()
         for record in batch:
-            name = f"{record.timestamp[:10]}-{record.key}.md"
+            name = f"{record.timestamp[:10]}-{record.key}.md" if self.dated_names else f"{record.key}.md"
             (self.base / "files" / name).write_text(record.text + "\n")
             self.names[Path(name).stem] = record.key
         (self.base / "names.json").write_text(json.dumps(self.names, indent=2))

@@ -19,6 +19,8 @@ from wcatbench.core import dataset_files, registry
 from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 from wcatbench.pipeline.build import Build, Selection
+from wcatbench.pipeline.corrections import STORES as GATE_STORES
+from wcatbench.pipeline.corrections import Gate
 from wcatbench.pipeline.dialogue import VARIANTS as DIALOGUE_VARIANTS
 from wcatbench.pipeline.dialogue import DialogueRound
 from wcatbench.pipeline.rules_trial import VARIANTS
@@ -390,4 +392,24 @@ def trial_unrestricted_summary(
     with (trial_round.run / f"rows-unrestricted-{design}.jsonl").open("w") as lines:
         for row in rows:
             lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+@trial_app.command("corrections")
+def trial_corrections(
+    store: Annotated[str, typer.Argument(help=f"One of: {', '.join(GATE_STORES)}.")],
+    run: RunOption,
+) -> None:
+    """Experiment 3: three versions of eleven rules into one store, then the 44 checks of the gate. No agent."""
+    home = get_settings().home
+    result = Gate(builds=home / "builds-e3", run=home / "runs" / run).check(store)
+    typer.echo(f"{store}: {result['passed']}/{result['total']} gate {'pass' if result['gate'] else 'fail'}")
+
+
+@trial_app.command("corrections-summary")
+def trial_corrections_summary(run: RunOption) -> None:
+    """Experiment 3's table; writes e3/summary.md to the run."""
+    home = get_settings().home
+    table = Gate(builds=home / "builds-e3", run=home / "runs" / run).summary()
+    (home / "runs" / run / "e3" / "summary.md").write_text(table)
     typer.echo(table)

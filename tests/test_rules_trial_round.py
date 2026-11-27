@@ -550,3 +550,23 @@ def describe_unrestricted_round() -> None:
             len(list((tmp_path / "run" / "trials" / "u-archive" / "t2.p0.a1" / "workspace" / "archive").iterdir()))
             == 36
         )
+
+
+def describe_corrections_gate() -> None:
+    def it_edits_one_document_per_rule_in_a_document_store(tmp_path: Path) -> None:
+        from wcatbench.pipeline.corrections import Gate
+
+        gate = Gate(builds=tmp_path / "builds", run=tmp_path / "run")
+        result = gate.check("fts")
+        assert result["total"] == 44
+        assert result["by_check"]["stored_current"] == 11
+        assert result["by_check"]["stored_old_gone"] == 11
+        assert gate.check("fts") == result
+        assert "| fts |" in gate.summary()
+
+    def it_gives_a_statement_store_each_version_as_a_new_statement() -> None:
+        from wcatbench.pipeline.corrections import versions
+
+        assert [record.key for record in versions("mem0-oss", 1)][:2] == ["C01-v2", "C02-v2"]
+        assert versions("memo", 2)[0].key == "C01"
+        assert versions("memo", 2)[0].text.startswith("2026-08-19 · Анна Белова\n")

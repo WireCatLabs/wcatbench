@@ -146,6 +146,7 @@ select = ["E", "F", "W", "I", "B", "UP", "A", "S", "BLE", "SIM", "RUF", "PT", "P
 "src/wcatbench/pipeline/rules_trial.py" = ["RUF001", "S108"]
 "src/wcatbench/pipeline/dialogue.py" = ["RUF001", "S108"]
 "src/wcatbench/pipeline/unrestricted.py" = ["RUF001", "S108"]
+"src/wcatbench/pipeline/corrections.py" = ["RUF001"]
 # Run in another project's virtualenv; stdout is their only channel back.
 "src/wcatbench/stores/*_worker.py" = ["T201", "PTH118", "PTH123"]
 # Paths inside the bubblewrap jail, never on this machine's /tmp.
