@@ -12,6 +12,8 @@ import time
 from openviking import SyncHTTPClient
 from openviking_sdk._utils import run_async as run_on_sdk_loop
 
+DONE = ("completed", "failed", "cancelled")
+
 
 def main() -> None:
     request = json.loads(sys.stdin.read())
@@ -38,7 +40,10 @@ def main() -> None:
             task_id = (reply.get("result") or reply).get("task_id") if isinstance(reply, dict) else None
             for _ in range(600):
                 task = client.get_task(task_id) if task_id else None
-                if not task or (task.get("result") or task).get("status") in ("completed", "failed", "cancelled"):
+                # The task record carries its own status; a reply wrapped as {"result": task} carries it inside.
+                inner = task.get("result") if task and isinstance(task.get("result"), dict) else {}
+                status = (task or {}).get("status") if (task or {}).get("status") in DONE else inner.get("status")
+                if not task or status in DONE:
                     break
                 time.sleep(2)
             client.wait_processed()
