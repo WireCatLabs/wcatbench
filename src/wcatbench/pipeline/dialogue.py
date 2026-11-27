@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import shutil
 import subprocess  # nosec B404
 from collections import Counter
@@ -28,12 +29,12 @@ from wcatbench.datasets.rules_trial import dialogue
 from wcatbench.pipeline import memory_bank
 from wcatbench.pipeline.rules_trial import K, cut, run_hidden
 from wcatbench.scoring import staged
-from wcatbench.stores.memo import MemoStore
+from wcatbench.stores.memo import EMBEDDING_MODEL, MemoStore
 from wcatbench.stores.openviking import OpenVikingEvolutionStore, OpenVikingStore
 
 NODE = Path("/var/tmp/wcat-dapi/node")  # nosec B108
 MEMO_CLI = Path("/var/tmp/wcat-dapi/memo-cli")  # nosec B108
-MEMO_TEMPLATE = Path("/var/tmp/wcat-dapi/memo-template")  # nosec B108
+MEMO_TEMPLATE = Path(os.environ.get("WCATBENCH_MEMO_TEMPLATE", f"/var/tmp/wcat-dapi/memo-template-{EMBEDDING_MODEL}"))  # nosec B108
 
 VARIANTS = (
     "none",
@@ -77,18 +78,18 @@ NOTE = {
 
 
 def memo_template() -> Path:
-    """A memo store with e5-small downloaded and chosen, copied into each chain, so no session pays the download."""
+    """A memo store with its embedding model downloaded and chosen, copied into each chain: no session downloads it."""
     if (MEMO_TEMPLATE / "ready").exists():
         return MEMO_TEMPLATE
     MEMO_TEMPLATE.mkdir(parents=True, exist_ok=True)
     jail = Jail(read_only=(NODE, MEMO_CLI), writable=((MEMO_TEMPLATE, "/memo"),), workdir="/memo", env=MEMO_ENV)
-    for args in (["models", "download", "e5-small"], ["models", "set", "e5-small"]):
+    for args in (["models", "download", EMBEDDING_MODEL], ["models", "set", EMBEDDING_MODEL]):
         done = subprocess.run(  # noqa: S603  # nosec B603
             jail.command(["memo", *args, "--json"]), capture_output=True, text=True, check=False, timeout=1800
         )
         if done.returncode != 0:
             raise RuntimeError(f"memo {' '.join(args)} failed: {done.stderr[-300:]}")
-    (MEMO_TEMPLATE / "ready").write_text("e5-small\n")
+    (MEMO_TEMPLATE / "ready").write_text(f"{EMBEDDING_MODEL}\n")
     return MEMO_TEMPLATE
 
 

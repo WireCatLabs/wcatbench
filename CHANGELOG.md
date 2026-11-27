@@ -47,6 +47,9 @@
 
 ### Fixed
 
+- **memo runs on its documented default model.** The rules-trial memo store and the experiment 2 memo template
+  use EmbeddingGemma, the default of @wirecat/cli-memo 0.154.0, not e5-small. `WCATBENCH_MEMO_MODEL=e5-small`
+  reruns the first rows, and `WCATBENCH_MEMO_TEMPLATE` moves the template.
 - **Hermes sessions with the run folder on another disk.** The session's files leave the shared Hermes folder
   file by file and the dead gateway sockets are dropped, so the next session starts.
 - **A resume never sends a record the service already accepted.** While Mem0 processes, its event feed can move an

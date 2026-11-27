@@ -22,7 +22,9 @@ from typing import Any
 from wcatbench.core.errors import PermanentError
 from wcatbench.core.types import BatchReceipt, Hit, ItemState, Record
 
-EMBEDDING_MODEL = "e5-small"
+# The default of @wirecat/cli-memo 0.154.0 (cli-core 1.1.0, dist/embeddings/models.js DEFAULT_TEXT_MODEL). The first
+# rules-trial memo rows ran on e5-small, the default before 8 Nov 2026: set WCATBENCH_MEMO_MODEL=e5-small to rerun them.
+EMBEDDING_MODEL = os.environ.get("WCATBENCH_MEMO_MODEL", "embeddinggemma")
 _UNSAFE = re.compile(r"[^\w\-]+", re.UNICODE)
 
 
