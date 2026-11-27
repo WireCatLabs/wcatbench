@@ -29,6 +29,7 @@ from wcatbench.scoring import staged
 from wcatbench.stores.memo import MemoStore
 
 PROXY_PORT = 18990
+TOOLS_ROOT = Path("/var/tmp/wcat-dapi/agent-tools")
 MAX_K = 20
 STRATEGY_VERSION = "1"
 
@@ -140,7 +141,8 @@ class UnrestrictedRound(Round):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.variants = tuple(VARIANTS)
-        self.tools_dir = self.run / "unrestricted-tools"
+        # Outside the run folder: the agent sees this path, and a path into the runs counts as a leak.
+        self.tools_dir = TOOLS_ROOT / self.run.name
         self.tools_dir.mkdir(parents=True, exist_ok=True)
         tool = self.tools_dir / "search"
         tool.write_text(SEARCH_TOOL)

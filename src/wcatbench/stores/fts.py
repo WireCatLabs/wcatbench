@@ -33,7 +33,8 @@ class FtsStore:
 
     def open(self, space: str, workdir: Path, started: datetime) -> None:
         workdir.mkdir(parents=True, exist_ok=True)
-        self._db = sqlite3.connect(workdir / f"{space}.sqlite")
+        # The unrestricted proxy searches from its own thread, one query at a time under a lock.
+        self._db = sqlite3.connect(workdir / f"{space}.sqlite", check_same_thread=False)
         self.db.execute("CREATE VIRTUAL TABLE IF NOT EXISTS records USING fts5(id UNINDEXED, kind UNINDEXED, text)")
 
     def ingest(self, batch: Sequence[Record]) -> BatchReceipt:

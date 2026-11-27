@@ -32,6 +32,29 @@ amendments:
       With the date line, titles became date, author and project only (`2026-03-02-Ирина-Козлова-Сокол`), the noise
       BUG-618 keeps out of the vector, and memo's excerpt drops the first line, so hits lost the author. The first
       memo build and its 6 sessions are kept in /var/tmp/wcat-dapi/superseded-memo-titles and reported apart.
+  - date: 2026-11-27
+    what: "An OpenViking hit is one distinct record: find asks for k x 4, folds the L0, L1 and L2 levels by record and reads the record file."
+    why: >-
+      OpenViking 0.4.17.1 stores a record as a folder with `.abstract.md`, `.overview.md` and the record file, and
+      find ranks the three apart. In the first contexts 19 of 43 hits were a summary with no record. Pre-fix
+      contexts, sessions and status rows are kept in /var/tmp/wcat-dapi/superseded-ov-levels and reported apart.
+  - date: 2026-11-27
+    what: "Two more stages: retrieved_source (the rule's source id is among the hits) and old_inactive_source."
+    why: "Mem0 and Hindsight rewrite text, often in English, so a value regex misses a rule that is there. Both are shown."
+  - date: 2026-11-27
+    what: "Spend cap raised to 20 USD of API, by the owner. The agent stays on the Codex subscription."
+    why: "Overnight instruction relayed by the lead; extra judges, if any, also go through a subscription."
+  - date: 2026-11-27
+    what: "e3 gate: statement stores (mem0-oss, agentmemory) get a new key per version, document stores an edit of one key; three quiet polls between versions; patterns accept the English and paraphrased forms."
+    why: >-
+      A first Hindsight run read before its async queue finished (2/44, kept in superseded-e3-hindsight-race).
+      Patterns were Russian only and failed a correct Hindsight paraphrase. Scored from saved hits, so no rebuild.
+  - date: 2026-11-27
+    what: "New row group `ours, unrestricted`: the agent searches memory itself with one generic strategy prompt."
+    why: >-
+      Owner request. Prompt tuned only on rules-trial-dev (seed 20261127, other projects, rules and values), then
+      frozen as STRATEGY_VERSION in wcatbench.pipeline.unrestricted and run once on the test tasks. His design rows
+      are unchanged.
 
 hypothesis:
   h1: >-
@@ -153,8 +176,8 @@ experiments:
   e3: {after: e2, design: "corrections gate: 44 store and retrieval checks after two revisions, every system"}
 
 budget:
-  api_cap_usd: 10
-  stop_and_ask_at_usd: 10
+  api_cap_usd: 20
+  stop_and_ask_at_usd: 20
   estimate_usd:
     agent: "0: Hermes answers through the owner's Codex subscription. Codex rate limits, not dollars, may cap it"
     sessions_e1: "12 variants x (6 his + 9 ours) = about 180 Hermes sessions"

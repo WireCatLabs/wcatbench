@@ -525,6 +525,7 @@ def describe_unrestricted_round() -> None:
 
         monkeypatch.setattr(unrestricted.UnrestrictedRound, "open_store", lambda *_: FixedStore())
         monkeypatch.setattr(unrestricted, "PROXY_PORT", 18997)
+        monkeypatch.setattr(unrestricted, "TOOLS_ROOT", tmp_path / "tools")
         monkeypatch.setattr(unrestricted, "SEARCH_TOOL", unrestricted.SEARCH_TOOL.replace("18990", "18997"))
         agent = ToolAgent()
         trial = unrestricted.UnrestrictedRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
@@ -538,9 +539,12 @@ def describe_unrestricted_round() -> None:
         table, _ = trial.summary("his")
         assert "| u-files-top5 | 3/3 |" in table
 
-    def it_puts_the_archive_in_the_workspace_and_gives_it_no_tool(dataset: Path, tmp_path: Path) -> None:
+    def it_puts_the_archive_in_the_workspace_and_gives_it_no_tool(
+        dataset: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         from wcatbench.pipeline import unrestricted
 
+        monkeypatch.setattr(unrestricted, "TOOLS_ROOT", tmp_path / "tools")
         agent = ToolAgent()
         trial = unrestricted.UnrestrictedRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
         trial.session("u-archive", "t2.p0", 1)

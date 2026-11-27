@@ -12,7 +12,17 @@ import re
 from collections import Counter
 from typing import Any
 
-FORBIDDEN = ("checks.json", "runner.py", "key.json", "rules_trial", "wcatbench-home", "/home/leemour/Projects")
+# The answer key, the hidden checks, the generator and the run folders. A store's build folder is not here: memo's
+# unrestricted row reads its own store there.
+FORBIDDEN = (
+    "checks.json",
+    "runner.py",
+    "key.json",
+    "rules_trial",
+    "wcatbench-home/datasets",
+    "wcatbench-home/runs",
+    "/home/leemour/Projects",
+)
 
 
 def found(pattern: str | None, text: str) -> bool:
