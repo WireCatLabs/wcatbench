@@ -12,3 +12,4 @@ Things to remove later, one per line: the path, why, the date. Removals happen i
 - /var/tmp/wcat-dapi/wcatbench-home/builds-dev and builds-e3: dev set and e3 gate store builds. 2026-11-27
 - /var/tmp/wcat-dapi/superseded-memo-titles, superseded-ov-levels, superseded-e3-hindsight-race: pre-fix evidence, reported apart. 2026-11-27
 - /var/tmp/wcat-dapi/agentmemory: AgentMemory npm install and its throwaway home. 2026-11-27
+- /var/tmp/wcat-dapi/wcatbench-home/runs/e1-prefix: symlinks to the pre-fix memo and OpenViking evidence, for their summary rows. 2026-11-27

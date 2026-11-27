@@ -29,7 +29,7 @@ from wcatbench.scoring import staged
 from wcatbench.stores.memo import MemoStore
 
 PROXY_PORT = 18990
-TOOLS_ROOT = Path("/var/tmp/wcat-dapi/agent-tools")
+TOOLS_ROOT = Path("/var/tmp/wcat-dapi/agent-tools")  # nosec B108
 MAX_K = 20
 STRATEGY_VERSION = "1"
 

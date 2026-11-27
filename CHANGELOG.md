@@ -14,6 +14,16 @@
 - **Stores for memo, AgentMemory 0.9.30, Mem0 OSS 2.2.1, Hindsight slim 1.0.0 and OpenViking 0.4.17.1.** Each one
   runs on this machine with its own folders. Mem0 OSS and OpenViking run from their own virtualenvs.
 - **`bin/hermes-codex-signin`.** Signs the owner's ChatGPT account into the throwaway Hermes folder by device code.
+- **Experiment 2, rules learned from a conversation.** `wcatbench trial dialogue` runs chains of sessions A, B and
+  C for two scenarios, with the rules carried only by the variant's memory: none, the agent's own notes file, memo
+  written by the agent, memo fed the transcript, and OpenViking with Agent Evolution off and on.
+- **Experiment 3, the corrections gate.** `wcatbench trial corrections` writes 11 rules in three versions into
+  every store and checks, with no agent, that the current version is stored and found and the old ones are gone.
+- **Ours, unrestricted.** `wcatbench trial unrestricted` lets the agent search memory itself with one frozen
+  strategy prompt, the same for every engine, tuned only on the new `rules-trial-dev` dataset (seed 20261127).
+  Tool calls, agent tokens and each search are recorded per session.
+- **Two source stages.** Retrieved and old version inactive are also counted by source id, for stores that rewrite
+  the text.
 
 - **The first skeleton of wcatbench.** The adapter contracts for stores, agents, bindings and datasets, a run ledger
   that resumes, redacted JSON logs, a local SQLite full-text store, the oracle and no-op agents, and the
