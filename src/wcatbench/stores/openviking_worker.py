@@ -10,6 +10,7 @@ import sys
 import time
 
 from openviking import SyncHTTPClient
+from openviking_sdk._utils import run_async as run_on_sdk_loop
 
 
 def main() -> None:
@@ -31,7 +32,9 @@ def main() -> None:
             client.create_session(session_id=request["session"])
             for message in request["messages"]:
                 client.add_message(request["session"], message["role"], content=message["content"])
-            reply = client.commit_session(request["session"])
+            # In 0.4.17.1 the client's commit runs on openviking_cli's event loop while its other calls run on
+            # openviking_sdk's, and fails ("bound to a different event loop"). Run it on the SDK's loop.
+            reply = run_on_sdk_loop(client._async_client.commit_session(request["session"]))
             task_id = (reply.get("result") or reply).get("task_id") if isinstance(reply, dict) else None
             for _ in range(600):
                 task = client.get_task(task_id) if task_id else None

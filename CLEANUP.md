@@ -13,3 +13,5 @@ Things to remove later, one per line: the path, why, the date. Removals happen i
 - /var/tmp/wcat-dapi/superseded-memo-titles, superseded-ov-levels, superseded-e3-hindsight-race: pre-fix evidence, reported apart. 2026-11-27
 - /var/tmp/wcat-dapi/agentmemory: AgentMemory npm install and its throwaway home. 2026-11-27
 - /var/tmp/wcat-dapi/wcatbench-home/runs/e1-prefix: symlinks to the pre-fix memo and OpenViking evidence, for their summary rows. 2026-11-27
+- /var/tmp/wcat-dapi/superseded-e2-ov-loop: experiment 2 OpenViking chains that failed on the SDK event-loop bug, kept as evidence. 2026-11-27
+- /var/tmp/wcat-dapi/hermes-stray-e2-kill: Hermes home files left by a session I stopped mid-run (contains no sign-in). 2026-11-27
