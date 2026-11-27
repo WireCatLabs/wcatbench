@@ -23,6 +23,7 @@ dependencies = [
     "pydantic>=2.12",
     "pydantic-settings>=2.11",
     "tenacity>=9.1",
+    "tiktoken>=0.14.0",
     "typer>=0.20",
 ]
 
@@ -39,13 +40,22 @@ fts = "wcatbench.stores.fts:FtsStore"
 supermemory = "wcatbench.stores.supermemory:SupermemoryStore"
 mem0 = "wcatbench.stores.mem0:Mem0Store"
 hindsight = "wcatbench.stores.hindsight:HindsightStore"
+memo = "wcatbench.stores.memo:MemoStore"
+agentmemory = "wcatbench.stores.agentmemory:AgentMemoryStore"
+mem0-oss = "wcatbench.stores.mem0_oss:Mem0OssStore"
+hindsight-slim = "wcatbench.stores.hindsight_slim:HindsightSlimStore"
+openviking = "wcatbench.stores.openviking:OpenVikingStore"
+openviking-evo = "wcatbench.stores.openviking:OpenVikingEvolutionStore"
 
 [project.entry-points."wcatbench.agents"]
 oracle = "wcatbench.agents.oracle:OracleAgent"
 noop = "wcatbench.agents.noop:NoopAgent"
+hermes = "wcatbench.agents.hermes:HermesAgent"
 
 [project.entry-points."wcatbench.datasets"]
 synthetic = "wcatbench.datasets.synthetic:SyntheticDataset"
+rules-trial = "wcatbench.datasets.rules_trial:RulesTrialDataset"
+rules-trial-dev = "wcatbench.datasets.rules_trial:RulesTrialDevDataset"
 
 [project.entry-points."wcatbench.scorers"]
 answer = "wcatbench.scoring.answer:AnswerScorer"
@@ -105,6 +115,8 @@ markers = [
 [tool.coverage.run]
 source = ["src/wcatbench"]
 branch = true
+# Run in another project's virtualenv, never imported here.
+omit = ["src/wcatbench/stores/*_worker.py"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -128,7 +140,18 @@ target-version = "py313"
 select = ["E", "F", "W", "I", "B", "UP", "A", "S", "BLE", "SIM", "RUF", "PT", "PTH", "RET", "C4", "N", "T20", "ERA"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "S603", "S607"]
+"tests/**" = ["S101", "S603", "S607", "RUF001"]
+# Russian task and corpus text: Cyrillic letters are the content, not look-alikes.
+"src/wcatbench/datasets/rules_trial/*" = ["RUF001"]
+"src/wcatbench/pipeline/rules_trial.py" = ["RUF001", "S108"]
+"src/wcatbench/pipeline/dialogue.py" = ["RUF001", "S108"]
+"src/wcatbench/pipeline/unrestricted.py" = ["RUF001", "S108"]
+"src/wcatbench/pipeline/corrections.py" = ["RUF001"]
+# Run in another project's virtualenv; stdout is their only channel back.
+"src/wcatbench/stores/*_worker.py" = ["T201", "PTH118", "PTH123"]
+# Paths inside the bubblewrap jail, never on this machine's /tmp.
+"src/wcatbench/core/jail.py" = ["S108"]
+"src/wcatbench/agents/hermes.py" = ["S108"]
 
 [tool.mypy]
 python_version = "3.13"
@@ -136,6 +159,8 @@ strict = true
 warn_unused_configs = true
 mypy_path = "src"
 packages = ["wcatbench"]
+# Workers run inside another project's virtualenv, against libraries wcatbench does not install.
+exclude = ["_worker\\.py$"]
 
 
 [tool.bandit]

@@ -19,7 +19,15 @@ from wcatbench.core import dataset_files, registry
 from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 from wcatbench.pipeline.build import Build, Selection
+from wcatbench.pipeline.corrections import STORES as GATE_STORES
+from wcatbench.pipeline.corrections import Gate
+from wcatbench.pipeline.dialogue import VARIANTS as DIALOGUE_VARIANTS
+from wcatbench.pipeline.dialogue import DialogueRound
+from wcatbench.pipeline.rules_trial import VARIANTS
+from wcatbench.pipeline.rules_trial import Round as RulesTrialRound
 from wcatbench.pipeline.search import REWRITES, search_run
+from wcatbench.pipeline.unrestricted import VARIANTS as UNRESTRICTED
+from wcatbench.pipeline.unrestricted import UnrestrictedRound
 
 app = typer.Typer(
     help="Benchmark AI agent memory: any agent, any memory store, the same questions.", no_args_is_help=True
@@ -235,3 +243,173 @@ def store_search(
             f"{form}: recall@1 {row['recall@1']:.2f}, @5 {row['recall@5']:.2f}, @10 {row['recall@10']:.2f}, "
             f"empty {row['empty_replies']}"
         )
+
+
+trial_app = typer.Typer(help="Agent trials: sessions in a jail, hidden checks, staged scores.", no_args_is_help=True)
+app.add_typer(trial_app, name="trial")
+RunOption = Annotated[str, typer.Option("--run", help="Run folder name under the data folder's runs/.")]
+DesignOption = Annotated[str, typer.Option("--design", help="his (3 tasks x 2 applications), ours or all.")]
+
+
+def _round(dataset: str, run: str, model: str) -> RulesTrialRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return RulesTrialRound(
+        dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / "builds", agent=agent
+    )
+
+
+@trial_app.command("run")
+def trial_run(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Run one variant's sessions. A finished session is skipped on the next run."""
+    try:
+        _round(dataset, run, model).go(variant, design)
+    except PermanentError as error:
+        raise _fail(error) from error
+
+
+@trial_app.command("report")
+def trial_report(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+) -> None:
+    """Per-stage totals for one variant, as JSON. Stages are never added into one score."""
+    typer.echo(json.dumps(_round(dataset, run, "unused").report(variant, design), ensure_ascii=False, indent=2))
+
+
+@trial_app.command("contexts")
+def trial_contexts(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(VARIANTS)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+) -> None:
+    """Build and freeze one variant's retrievals with no agent: the free stored and retrieved stages."""
+    try:
+        contexts = _round(dataset, run, "unused").contexts(variant)
+    except PermanentError as error:
+        raise _fail(error) from error
+    typer.echo(json.dumps({qid: entry["tokens"] for qid, entry in sorted(contexts.items())}))
+
+
+@trial_app.command("probe")
+def trial_probe(dataset: DatasetOption, run: RunOption) -> None:
+    """No model: prove the agent's jail hides the owner's home, the answer key and the hidden checks."""
+    result = _round(dataset, run, "unused").probe()
+    typer.echo("\n".join(result["output"]))
+    if result["readable"]:
+        raise typer.Exit(code=1)
+
+
+@trial_app.command("summary")
+def trial_summary(dataset: DatasetOption, run: RunOption, design: DesignOption = "his") -> None:
+    """Every variant's stages as one Markdown table; writes rows-<design>.jsonl and summary-<design>.md to the run."""
+    trial_round = _round(dataset, run, "unused")
+    table, rows = trial_round.summary(design)
+    (trial_round.run / f"summary-{design}.md").write_text(table)
+    with (trial_round.run / f"rows-{design}.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+E2_VARIANTS = ", ".join(DIALOGUE_VARIANTS)
+
+
+def _dialogue(dataset: str, run: str, model: str) -> DialogueRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return DialogueRound(dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / "builds", agent=agent)
+
+
+@trial_app.command("dialogue")
+def trial_dialogue(
+    variant: Annotated[str, typer.Argument(help=f"One of: {E2_VARIANTS}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    reps: Annotated[int, typer.Option("--reps", help="Independent chains per scenario.")] = 2,
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Experiment 2: chains of sessions A, B and C per scenario. A finished session is skipped on the next run."""
+    if variant not in DIALOGUE_VARIANTS:
+        raise typer.BadParameter(f"unknown variant {variant}; one of: {E2_VARIANTS}")
+    _dialogue(dataset, run, model).go(variant, reps)
+
+
+@trial_app.command("dialogue-summary")
+def trial_dialogue_summary(dataset: DatasetOption, run: RunOption) -> None:
+    """Experiment 2's table; writes e2/summary.md and e2/rows.jsonl to the run."""
+    trial_round = _dialogue(dataset, run, "unused")
+    table, rows = trial_round.summary()
+    (trial_round.run / "e2" / "summary.md").write_text(table)
+    with (trial_round.run / "e2" / "rows.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+def _unrestricted(dataset: str, run: str, model: str, builds: str | None) -> UnrestrictedRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return UnrestrictedRound(
+        dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / (builds or "builds"), agent=agent
+    )
+
+
+BuildsOption = Annotated[str | None, typer.Option("--builds", help="Builds folder under the home (dev set: its own).")]
+
+
+@trial_app.command("unrestricted")
+def trial_unrestricted(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(UNRESTRICTED)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+    builds: BuildsOption = None,
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Ours, unrestricted: the agent searches memory itself with the frozen strategy prompt."""
+    if variant not in UNRESTRICTED:
+        raise typer.BadParameter(f"unknown variant {variant}; one of: {', '.join(UNRESTRICTED)}")
+    _unrestricted(dataset, run, model, builds).go(variant, design)
+
+
+@trial_app.command("unrestricted-summary")
+def trial_unrestricted_summary(
+    dataset: DatasetOption, run: RunOption, design: DesignOption = "his", builds: BuildsOption = None
+) -> None:
+    """The unrestricted rows as one table; writes summary-unrestricted-<design>.md to the run."""
+    trial_round = _unrestricted(dataset, run, "unused", builds)
+    table, rows = trial_round.summary(design)
+    (trial_round.run / f"summary-unrestricted-{design}.md").write_text(table)
+    with (trial_round.run / f"rows-unrestricted-{design}.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+@trial_app.command("corrections")
+def trial_corrections(
+    store: Annotated[str, typer.Argument(help=f"One of: {', '.join(GATE_STORES)}.")],
+    run: RunOption,
+) -> None:
+    """Experiment 3: three versions of eleven rules into one store, then the 44 checks of the gate. No agent."""
+    home = get_settings().home
+    result = Gate(builds=home / "builds-e3", run=home / "runs" / run).check(store)
+    typer.echo(f"{store}: {result['passed']}/{result['total']} gate {'pass' if result['gate'] else 'fail'}")
+
+
+@trial_app.command("corrections-summary")
+def trial_corrections_summary(run: RunOption) -> None:
+    """Experiment 3's table; writes e3/summary.md to the run."""
+    home = get_settings().home
+    table = Gate(builds=home / "builds-e3", run=home / "runs" / run).summary()
+    (home / "runs" / run / "e3" / "summary.md").write_text(table)
+    typer.echo(table)

@@ -1,0 +1,13 @@
+from sokol.unknown import UNKNOWN
+
+CATALOG_TTL_SECONDS = 120
+MAX_CACHE_ENTRIES = 20000
+KEY_PREFIX = "sokol:v2:"
+TASK_EXPIRY_MINUTES = 45
+QUEUE_WORKERS = 6
+CACHE_COMPRESSION = UNKNOWN
+REDIS_DB_INDEX = UNKNOWN
+
+
+def may_cache(kind):
+    return kind == "catalog"

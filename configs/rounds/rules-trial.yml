@@ -1,0 +1,197 @@
+# Round: rules-trial. A reproduction of the design of Danil Pismenny's agent memory trials on our own synthetic data.
+# It is not a rerun of his test: his scripts, data and logs are not published.
+# Sources: https://pismenny.ru/articles/agent-memory-trials.html (draft, 2026-10-21, read 2026-11-26)
+#          https://pismenny.ru/articles/evaluating-agent-memory.html (2026-10-17, read 2026-11-26)
+# Pre-registered on 2026-11-26, before any data. Changes after the first run are listed under `amendments`.
+
+round: rules-trial
+status: pre-registered
+amendments:
+  - date: 2026-11-26
+    what: "Agent model gpt-5.6-terra through Hermes's openai-codex provider."
+    why: "Codex refuses gpt-5.5 for a ChatGPT account (HTTP 400 at the first session). gpt-5.6-terra answered."
+  - date: 2026-11-26
+    what: "memo gets the sources as a notes folder (`folders add --format markdown`, then `sync` until nothing is left)."
+    why: "Documents from `memo import` get no vectors in 0.154.0, so search would be keyword only."
+  - date: 2026-11-26
+    what: "Hindsight slim reranker `rrf`."
+    why: "The slim image bundles no local reranker model, and rrf needs none."
+  - date: 2026-11-27
+    what: "Dataset rules-trial-36-7f6c06a7: each source text opens with its date and author line."
+    why: >-
+      Mem0 OSS 2.2.1 takes no timestamp (a platform-only parameter), so without the line it cannot tell which of two
+      rules is newer. The line gives every store the same text. Sessions of none, files-his and files-history ran on
+      187b3c8e, whose task, check, runner and file bytes are identical (cmp); only the corpus differs. All store
+      variants were built on 7f6c06a7.
+  - date: 2026-11-27
+    what: "A known check the agent left UNKNOWN is split: `missed_available` if its rule was in the context, else `abstained_not_retrieved`."
+    why: "Otherwise a retrieval loss reads as the agent's loss. Sessions are rescored from saved check outcomes."
+  - date: 2026-11-27
+    what: "memo notes are titled from the text after the date and author line, and a memo hit is the whole note."
+    why: >-
+      With the date line, titles became date, author and project only (`2026-03-02-Ирина-Козлова-Сокол`), the noise
+      BUG-618 keeps out of the vector, and memo's excerpt drops the first line, so hits lost the author. The first
+      memo build and its 6 sessions are kept in /var/tmp/wcat-dapi/superseded-memo-titles and reported apart.
+  - date: 2026-11-27
+    what: "An OpenViking hit is one distinct record: find asks for k x 4, folds the L0, L1 and L2 levels by record and reads the record file."
+    why: >-
+      OpenViking 0.4.17.1 stores a record as a folder with `.abstract.md`, `.overview.md` and the record file, and
+      find ranks the three apart. In the first contexts 19 of 43 hits were a summary with no record. Pre-fix
+      contexts, sessions and status rows are kept in /var/tmp/wcat-dapi/superseded-ov-levels and reported apart.
+  - date: 2026-11-27
+    what: "Two more stages: retrieved_source (the rule's source id is among the hits) and old_inactive_source."
+    why: "Mem0 and Hindsight rewrite text, often in English, so a value regex misses a rule that is there. Both are shown."
+  - date: 2026-11-27
+    what: "Spend cap raised to 20 USD of API, by the owner. The agent stays on the Codex subscription."
+    why: "Overnight instruction relayed by the lead; extra judges, if any, also go through a subscription."
+  - date: 2026-11-27
+    what: "e3 gate: statement stores (mem0-oss, agentmemory) get a new key per version, document stores an edit of one key; three quiet polls between versions; patterns accept the English and paraphrased forms."
+    why: >-
+      A first Hindsight run read before its async queue finished (2/44, kept in superseded-e3-hindsight-race).
+      Patterns were Russian only and failed a correct Hindsight paraphrase. Scored from saved hits, so no rebuild.
+  - date: 2026-11-27
+    what: "New row group `ours, unrestricted`: the agent searches memory itself with one generic strategy prompt."
+    why: >-
+      Owner request. Prompt tuned only on rules-trial-dev (seed 20261127: same target project, look-alike project and people, a new task with new rules and values), then
+      frozen as STRATEGY_VERSION in wcatbench.pipeline.unrestricted and run once on the test tasks. His design rows
+      are unchanged.
+  - date: 2026-11-27
+    what: "Strategy prompt version 1 frozen with no revision, then run once on the test tasks (his design, 6 sessions per variant)."
+    why: >-
+      Dev runs dev1 and dev2 (4 sessions each on task d1): u-archive, u-memo and u-files-top5 all 7/7 known and 2/2
+      unknown. The first u-files-top5 dev sessions saw no memory (a proxy thread bug, fixed in code, not in the
+      prompt) and were rerun as dev2. The prompt was written by the test corpus's author after the e1 results were
+      known; dev only confirmed it.
+
+hypothesis:
+  h1: >-
+    On experiment 1, Hermes + memo applies known rules about as well as his files control
+    and as well as or better than every memory system pinned below.
+  h2: >-
+    memo loses "old version inactive" checks, because it has no supersession yet (roadmap step 5):
+    an old revision or a cancelled permission can fill a top-5 slot.
+  h3: "Every variant declines the unknown checks, so the unknown column does not separate variants (his 30/30 for all)."
+
+threshold:
+  memo_matches_files_exp1: >-
+    memo's "applied correctly" count is within 4 of 78 below the files (his) row, and memo has no more wrong
+    concrete answers than files on known checks, and memo's unknown checks are not below files.
+    Decided on the known checks alone. Totals with unknown checks are shown, never used for the verdict.
+  admission_gates:
+    oracle: "An agent given the answer key's rules scores 78/78 and 30/30. Otherwise the tasks are broken."
+    too_easy: "No memory must score at most 10/78 on known checks (his pilot was dropped at 35/36 with empty memory)."
+    stored_gate: >-
+      A system whose stored stage is under 60/78 on known checks is reported, but not ranked
+      (his Hindsight rule: failed the pre-check, not ranked).
+
+datasets:
+  rules-trial:
+    generator: wcatbench.datasets.rules_trial
+    seed: 20261126
+    language: "ru (the brief's choice: his pages do not state the task language)"
+    privacy: synthetic
+    corpus_sources: 36
+    target_rules: 8
+    distractors: [similar_projects, old_revisions, corrections, cancelled_permissions]
+    markers: >-
+      Each rule carries a distinctive concrete value (a number, a port, a named flag), fixed in the generator with
+      its source id. Stored and retrieved are scored on that value, so a store that rewrites text into facts is not
+      failed for losing an id string.
+    tasks: 3
+    checks_per_task: {known: 13, unknown: 5}
+    form: >-
+      Small coding tasks in a synthetic Python project. Each check is one hidden pytest test that the agent
+      cannot see. An unknown check passes when the agent writes the UNKNOWN sentinel the task spec defines.
+
+stages:
+  # One row per check. Totals per stage. Stages are never added into one score.
+  stored: {numerator: "known checks whose rule value is in the store's own content dump", denominator: 78}
+  retrieved: {numerator: "known checks whose rule value is in the top-5 context within 2,000 tokens", denominator: 78}
+  old_inactive:
+    numerator: "checks with an older or cancelled version where that version is absent from the context or marked replaced"
+    denominator: "checks with an older or cancelled version (fixed in the generator)"
+  applied: {numerator: "known checks whose hidden test passes", denominator: 78}
+  unknown: {numerator: "unknown checks where the agent wrote UNKNOWN", denominator: 30}
+  outcome_kinds: [applied, justified_unknown, missed_available, wrong_concrete]
+  his_total: "His table 1 adds known and unknown into a total out of 108. We show that total for comparison only."
+
+retrieval:
+  k: 5
+  max_tokens: 2000
+  tokenizer: "tiktoken o200k_base, the same counter for every system"
+  frozen: "One retrieval per task and phrasing, reused by both applications (his design)."
+  delivery: >-
+    The harness runs store.search on the task text, cuts with o200k, freezes the block and puts it in the task
+    workspace. No Hermes memory plugin in e1. memo takes the same frozen path. memo as a CLI skill is a separate row.
+  extra_draws: "Ours: 3 phrasings per task, so 9 independent retrievals per variant. Labelled ours."
+
+agent:
+  name: hermes
+  version: "v0.23.4, own clone under /var/tmp/wcat-dapi/hermes-agent at a fixed commit, recorded"
+  home: "/var/tmp/wcat-dapi/hermes-home, throwaway, signed in by the owner with device code (NEED-2155)"
+  provider: openai-codex
+  model: "gpt-5.6-terra (openai-codex provider), one model for every variant"
+  temperature: "provider default unless Codex accepts a setting; recorded either way"
+  builtin_memory: off
+  toolsets: [file, terminal]
+  sandbox: "core.sandbox: throwaway HOME, DBUS_SESSION_BUS_ADDRESS=disabled:, empty CODEX_HOME, hidden tests outside"
+
+memory_write_model:
+  llm: "OpenAI gpt-5-mini, temperature where accepted, for every system that extracts"
+  embeddings: "OpenAI text-embedding-3-small for every system that embeds through an API"
+  key: "keyring service openai account default, resolved in-process"
+
+variants:
+  - {id: files-his, label: his, what: "all 8 current target rules, whole file"}
+  - {id: files-history, label: ours, what: "the 8 rules plus their old revisions and cancelled permissions, whole file"}
+  - {id: files-top5, label: ours, what: "all 36 sources, SQLite FTS top 5 within 2,000 tokens"}
+  - {id: archive-in-workspace, label: ours, what: "no memory, the 36 sources as files the agent may grep (M's main control)"}
+  - {id: none, label: his, what: "no memory, no archive"}
+  - id: openviking-evo-off
+    label: his
+    version: "openviking 0.4.17.1 (PyPI)"
+    defaults_checked: "embedding provider volcengine, rerank doubao-seed-rerank (Volcengine), VLM provider unset"
+    pointed_to: "embedding openai, VLM openai, rerank off. Tracing and usage reporter are off by default, vectordb local"
+  - {id: openviking-evo-on, label: ours, version: "openviking 0.4.17.1", note: "Agent Evolution on"}
+  - id: agentmemory
+    label: his
+    version: "@agentmemory/agentmemory 0.9.30 (npm), iii engine 0.22.1"
+    defaults_checked: "keyless BM25, providers auto-detected from env keys, iii telemetry off by default"
+    pointed_to: >-
+      EMBEDDING_PROVIDER=openai (text-embedding-3-small: the local MiniLM is English only, the corpus is Russian),
+      no LLM key in env, auto-compress off, throwaway HOME, setup and connect never run
+  - id: mem0-oss
+    label: his
+    version: "mem0ai 2.2.1 (PyPI), self-hosted, local Qdrant"
+    defaults_checked: "LLM openai gpt-5-mini, embeddings openai text-embedding-3-small, PostHog telemetry on"
+    pointed_to: "the shared write model above, MEM0_TELEMETRY=False, history DB and Qdrant under /var/tmp/wcat-dapi"
+  - id: hindsight-slim
+    label: his
+    version: "ghcr.io/vectorize-io/hindsight:1.0.0-slim"
+    defaults_checked: "LLM openai gpt-4o-mini, embeddings local bge-small-en-v1.5, reranker local"
+    pointed_to: "the shared write model, embeddings openai, reranker whatever slim allows without a model, recorded"
+  - {id: memo-cli, label: ours, what: "memo as a CLI skill: Hermes runs memo search itself, no frozen block"}
+  - id: memo
+    label: ours
+    version: "@wirecat/cli-memo 0.154.0 (npm)"
+    defaults_checked: "local embeddings, multilingual-e5-small (memo models list), no model API"
+    pointed_to: "throwaway config and state dirs, DBUS_SESSION_BUS_ADDRESS=disabled: on the CLI run only"
+
+experiments:
+  e1: {sessions: "3 tasks x 2 applications per variant (his), plus 3 phrasings x 3 tasks x 1 application (ours)"}
+  e2: {after: e1, design: "2 scenarios x sessions A/B/C", memo_modes: [agent-writes-notes, no-agent-writes]}
+  e3: {after: e2, design: "corrections gate: 44 store and retrieval checks after two revisions, every system"}
+
+budget:
+  api_cap_usd: 20
+  stop_and_ask_at_usd: 20
+  estimate_usd:
+    agent: "0: Hermes answers through the owner's Codex subscription. Codex rate limits, not dollars, may cap it"
+    sessions_e1: "12 variants x (6 his + 9 ours) = about 180 Hermes sessions"
+    files_none_archive_memo_agentmemory: "0 (embeddings for 36 sources are under 0.01)"
+    mem0_oss: "0.05 to 0.20"
+    hindsight_slim: "0.10 to 0.40"
+    openviking_each: "0.05 to 0.30"
+    e1_total: "under 1.50"
+    e2_e3_total: "under 3"
+  record: [cost_per_variant, ingest_cost, seconds_per_session, ingest_seconds]
