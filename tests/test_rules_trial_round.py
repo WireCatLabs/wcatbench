@@ -556,7 +556,7 @@ def describe_corrections_gate() -> None:
     def it_edits_one_document_per_rule_in_a_document_store(tmp_path: Path) -> None:
         from wcatbench.pipeline.corrections import Gate
 
-        gate = Gate(builds=tmp_path / "builds", run=tmp_path / "run")
+        gate = Gate(builds=tmp_path / "builds", run=tmp_path / "run", poll=0)
         result = gate.check("fts")
         assert result["total"] == 44
         assert result["by_check"]["stored_current"] == 11

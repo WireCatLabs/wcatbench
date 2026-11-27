@@ -129,6 +129,10 @@ class MemoStore:
     def settled(self, held: dict[str, ItemState]) -> bool:
         return True
 
+    def contents(self) -> list[str]:
+        """What memo itself holds: the text of every note it lists (its own view, not our files)."""
+        return [str(item.get("text") or "") for item in self.memo("notes", "list", "--limit", "500").get("items", [])]
+
     def key_of(self, item: dict[str, Any]) -> str | None:
         for field in ("title", "path", "name", "ref"):
             value = str(item.get(field) or "")

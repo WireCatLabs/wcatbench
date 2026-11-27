@@ -52,6 +52,7 @@ def found(pattern: str, text: str) -> bool:
 class Gate:
     builds: Path
     run: Path
+    poll: float = 10.0
 
     def build(self, name: str) -> Any:
         store = registry.load("stores", name)()
@@ -65,10 +66,14 @@ class Gate:
             if n in applied:
                 continue
             receipt = store.ingest(versions(name, n))
+            # An async store can report nothing pending before it has queued the batch: wait for three quiet polls,
+            # so the next revision never races this one.
+            quiet = 0
             for _ in range(360):
-                if store.settled(store.held()):
+                time.sleep(self.poll)
+                quiet = quiet + 1 if store.settled(store.held()) else 0
+                if quiet == 3:
                     break
-                time.sleep(10)
             applied.append(n)
             done.parent.mkdir(parents=True, exist_ok=True)
             done.write_text(json.dumps(applied))
