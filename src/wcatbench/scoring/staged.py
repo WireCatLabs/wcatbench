@@ -55,17 +55,29 @@ def rows(
             row["retrieved"] = found(check["value"], context) if context else None
             row["has_old"] = bool(check["replaces"])
             row["old_inactive"] = (not found(check["old"], context)) if check["replaces"] and context else None
+            # By source id: an extracting store rewrites or translates the text, which the value pattern can miss.
+            row["retrieved_source"] = None if context_sources is None else check.get("source") in context_sources
+            row["old_inactive_source"] = (
+                None
+                if context_sources is None or not check["replaces"]
+                else not set(check["replaces"]) & context_sources
+            )
             row["applied"] = status == "pass"
         else:
             row["trap"] = check["trap"]
             row["trap_in_context"] = None if context_sources is None else check["trap"] in context_sources
             row["unknown_ok"] = status == "unknown"
         row["outcome"] = "invalid" if status == "invalid" else outcome_kind(check, status)
-        if row["outcome"] == "missed_available" and not row["retrieved"]:
+        if row["outcome"] == "missed_available" and not (row["retrieved"] or row.get("retrieved_source")):
             # The agent declined, and the rule never reached it: that is the store's loss, not the agent's.
             row["outcome"] = "abstained_not_retrieved"
         out.append(row)
     return out
+
+
+def fraction(rows: list[dict[str, Any]], stage: str) -> list[int] | None:
+    applies = [row for row in rows if row.get(stage) is not None]
+    return [sum(bool(row[stage]) for row in applies), len(applies)] if applies else None
 
 
 def totals(all_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -79,6 +91,8 @@ def totals(all_rows: list[dict[str, Any]]) -> dict[str, Any]:
         if any(row["retrieved"] is not None for row in known)
         else None,
         "old_inactive": [sum(bool(row["old_inactive"]) for row in with_old), len(with_old)] if with_old else None,
+        "retrieved_source": fraction(known, "retrieved_source"),
+        "old_inactive_source": fraction(known, "old_inactive_source"),
         "applied": [sum(row["applied"] for row in known), len(known)],
         "unknown": [sum(row["unknown_ok"] for row in unknown), len(unknown)],
         "outcomes": dict(Counter(row["outcome"] for row in all_rows)),

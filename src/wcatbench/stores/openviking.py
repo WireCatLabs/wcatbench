@@ -167,31 +167,43 @@ class OpenVikingStore:
         return True
 
     def key_of(self, uri: str) -> str | None:
-        return self.names.get(Path(uri.rstrip("/")).stem)
+        """A record is a folder of three levels (`.abstract.md`, `.overview.md` and the file): any of them is it."""
+        for part in uri.rstrip("/").split("/"):
+            if Path(part).stem in self.names:
+                return self.names[Path(part).stem]
+        return None
+
+    def file_of(self, key: str) -> str:
+        stem = next(stem for stem, name in self.names.items() if name == key)
+        return f"{TARGET}/{stem}/{stem}.md"
 
     def contents(self) -> list[str]:
-        listing = self.call("ls", uri=TARGET)
-        rows = listing if isinstance(listing, list) else listing.get("items", listing.get("result", []))
-        texts = []
-        for row in rows:
-            uri = row.get("uri") if isinstance(row, dict) else str(row)
-            if uri and uri.endswith(".md"):
-                texts.append(str(self.call("read", uri=uri)["text"]))
-        return texts
+        return [str(self.call("read", uri=self.file_of(key))["text"]) for key in self.names.values()]
 
     def search(self, query: str, k: int) -> list[Hit]:
-        reply = self.call("find", query=query, target=TARGET, k=k)
+        """k distinct records, each as its whole file.
+
+        `find` ranks the three levels of one record apart, so one record can take three of k places, and an abstract
+        hit carries a summary, not the record. A wider `find` is folded to records in rank order, as the other
+        stores return records.
+        """
+        reply = self.call("find", query=query, target=TARGET, k=k * 4)
         found = reply.get("resources", []) + reply.get("memories", [])
         found.sort(key=lambda row: row.get("score") or 0.0, reverse=True)
-        hits = []
-        for row in found[:k]:
+        hits: list[Hit] = []
+        seen: set[str] = set()
+        for row in found:
+            if len(hits) == k:
+                break
             uri = str(row.get("uri", ""))
             key = self.key_of(uri)
-            text = (
-                str(self.call("read", uri=uri)["text"])
-                if key
-                else str(row.get("abstract") or row.get("overview") or "")
-            )
+            if key in seen:
+                continue
+            if key:
+                seen.add(key)
+                text = str(self.call("read", uri=self.file_of(key))["text"])
+            else:
+                text = str(row.get("abstract") or row.get("overview") or "")
             hits.append(
                 Hit(keys=(key,) if key else (), text=text, score=row.get("score"), kind=row.get("context_type"))
             )

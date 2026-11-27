@@ -170,6 +170,22 @@ def describe_staged_scorer() -> None:
         assert rows[0]["outcome"] == "wrong_concrete"
         assert rows[0]["trap_in_context"] is True
 
+    def it_also_counts_retrieval_by_source_for_a_store_that_rewrites_text() -> None:
+        rows = staged.rows(
+            [check(source="s02")],
+            "x",
+            "the timeout is seven seconds",
+            {"t1.k01": {"status": "pass"}},
+            True,
+            {"s02", "s01"},
+        )
+        assert (rows[0]["retrieved"], rows[0]["retrieved_source"], rows[0]["old_inactive_source"]) == (
+            False,
+            True,
+            False,
+        )
+        assert staged.totals(rows)["retrieved_source"] == [1, 1]
+
     def it_counts_a_session_that_reached_the_key_as_invalid() -> None:
         rows = staged.rows([check()], None, None, {"t1.k01": {"status": "pass"}}, False)
         assert rows[0]["applied"] is False

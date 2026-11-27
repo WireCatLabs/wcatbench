@@ -114,7 +114,7 @@ def describe_round() -> None:
         trial.go("none")
         table, rows = trial.summary("his")
         assert table.count("\n| none |") == 1
-        assert "| none | 6/6 | n/a | n/a | n/a | 0/78 |" in table
+        assert "| none | 6/6 | n/a | n/a | n/a | n/a | n/a | 0/78 |" in table
         assert len(rows) == 108
 
     def it_runs_the_probe_in_the_agents_jail(dataset: Path, tmp_path: Path) -> None:
@@ -303,11 +303,13 @@ def describe_openviking_store() -> None:
             {
                 "add": {"root_uri": "viking://resources/rules-trial"},
                 "find": {
-                    "resources": [{"uri": "viking://resources/rules-trial/2026-03-02-r1.md", "score": 0.5}],
+                    "resources": [
+                        {"uri": "viking://resources/rules-trial/2026-03-02-r1/.abstract.md", "score": 0.6},
+                        {"uri": "viking://resources/rules-trial/2026-03-02-r1/2026-03-02-r1.md", "score": 0.5},
+                    ],
                     "memories": [{"uri": "viking://user/memories/x", "abstract": "про таймаут", "score": 0.9}],
                 },
                 "read": {"text": "таймаут 7 секунд"},
-                "ls": [{"uri": "viking://resources/rules-trial/2026-03-02-r1.md"}, {"uri": "viking://resources/x/"}],
             }
         )
         monkeypatch.setattr(openviking.subprocess, "run", cli)

@@ -336,10 +336,11 @@ class Round:
     def summary(self, design: str) -> tuple[str, list[dict[str, Any]]]:
         """A Markdown table with one column per stage, and every check row of every session."""
         lines = [
-            "| Variant | Sessions | Stored | Retrieved | Old version inactive | Applied (known) | Unknown | "
+            "| Variant | Sessions | Stored | Retrieved | Retrieved by source | Old version inactive | "
+            "Old inactive by source | Applied (known) | Unknown | "
             "Missed available | Not retrieved | Wrong concrete | Broken | Invalid | Seconds | Agent tokens in/out | "
             "Total as in his table |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
         all_rows: list[dict[str, Any]] = []
         for variant in VARIANTS:
@@ -357,7 +358,8 @@ class Round:
             outcomes = report["outcomes"]
             lines.append(
                 f"| {variant} | {report['sessions']}/{report['planned']} | {frac(report['stored'])} | "
-                f"{frac(report['retrieved'])} | {frac(report['old_inactive'])} | {frac(report['applied'])} | "
+                f"{frac(report['retrieved'])} | {frac(report['retrieved_source'])} | {frac(report['old_inactive'])} | "
+                f"{frac(report['old_inactive_source'])} | {frac(report['applied'])} | "
                 f"{frac(report['unknown'])} | {outcomes.get('missed_available', 0)} | "
                 f"{outcomes.get('abstained_not_retrieved', 0)} | "
                 f"{outcomes.get('wrong_concrete', 0)} | {outcomes.get('broken', 0)} | {outcomes.get('invalid', 0)} | "
