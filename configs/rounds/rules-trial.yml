@@ -180,7 +180,7 @@ variants:
   - id: memory-bank
     label: his (his own memory, our mapping of the sources)
     version: "github.com/dapi/memory-bank e1b428dd7aed66eda99b3cbc6073c29f7da921de (2026-09-13)"
-    defaults_checked: "README: template/memory-bank becomes memory-bank/, template/init.sh becomes ./init.sh; routing block in AGENTS.md (docs/agent-instructions.md)"
+    defaults_checked: "README: template/memory-bank becomes memory-bank/, template/init.sh becomes ./init.sh, and the routing block goes in AGENTS.md (docs/agent-instructions.md)"
     pointed_to: >-
       26 decisions as historical ADRs (accepted, no supersedes), 10 chats, notes and the meeting as evidence in
       brownfield-intake-prd.md outside the bank (docs/brownfield-adaptation-protocol.md steps 2 and 6). The template is unchanged.
