@@ -52,7 +52,7 @@ amendments:
   - date: 2026-11-27
     what: "New row group `ours, unrestricted`: the agent searches memory itself with one generic strategy prompt."
     why: >-
-      Owner request. Prompt tuned only on rules-trial-dev (seed 20261127, other projects, rules and values), then
+      Owner request. Prompt tuned only on rules-trial-dev (seed 20261127: same target project, look-alike project and people, a new task with new rules and values), then
       frozen as STRATEGY_VERSION in wcatbench.pipeline.unrestricted and run once on the test tasks. His design rows
       are unchanged.
   - date: 2026-11-27
@@ -60,7 +60,8 @@ amendments:
     why: >-
       Dev runs dev1 and dev2 (4 sessions each on task d1): u-archive, u-memo and u-files-top5 all 7/7 known and 2/2
       unknown. The first u-files-top5 dev sessions saw no memory (a proxy thread bug, fixed in code, not in the
-      prompt) and were rerun as dev2.
+      prompt) and were rerun as dev2. The prompt was written by the test corpus's author after the e1 results were
+      known; dev only confirmed it.
 
 hypothesis:
   h1: >-
