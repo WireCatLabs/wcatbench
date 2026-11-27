@@ -176,7 +176,23 @@ class HermesAgent:
         into.mkdir(parents=True, exist_ok=True)
         for entry in list(self.home.iterdir()):
             if entry.name not in KEEP:
-                shutil.move(str(entry), str(into / entry.name))
+                move(entry, into / entry.name)
+
+
+def move(source: Path, target: Path) -> None:
+    """Rename where it can. Across disks: copy and remove, dropping the gateway sockets, dead with the session."""
+    try:
+        source.rename(target)
+    except OSError:
+        if source.is_socket():
+            source.unlink()
+        elif source.is_dir() and not source.is_symlink():
+            target.mkdir(exist_ok=True)
+            for child in list(source.iterdir()):
+                move(child, target / child.name)
+            source.rmdir()
+        else:
+            shutil.move(str(source), str(target))
 
 
 def transcript_text(after: Path) -> str:

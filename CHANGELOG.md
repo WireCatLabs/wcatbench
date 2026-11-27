@@ -4,6 +4,9 @@
 
 ### Added
 
+- **Danil Pismenny's Memory Bank as a variant.** dapi/memory-bank at the pinned commit e1b428d, installed as its
+  README says, in experiment 1 (his design, a whole-files control and the unrestricted row) and experiment 2 (the
+  agent keeps the bank across sessions). The install refuses a clone at another commit.
 - **The rules-trial round.** A reproduction of the design of Danil Pismenny's agent memory trials on our own
   synthetic data: 36 Russian sources, 3 coding tasks with hidden checks (13 known and 5 unknown each), and the
   `staged` scorer, which counts stored, retrieved, old version inactive, applied and unknown apart, one row per
@@ -44,6 +47,8 @@
 
 ### Fixed
 
+- **Hermes sessions with the run folder on another disk.** The session's files leave the shared Hermes folder
+  file by file and the dead gateway sockets are dropped, so the next session starts.
 - **A resume never sends a record the service already accepted.** While Mem0 processes, its event feed can move an
   event to a page already read, and one walk then misses it: on 2026-11-05 one walk of 6,500 adds listed 2 as
   absent. Mem0 is now read twice and merged, and a record the ledger shows as accepted is reported, not sent again.

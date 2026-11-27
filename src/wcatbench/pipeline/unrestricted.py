@@ -13,6 +13,7 @@ search through a local proxy, so no key reaches the jail.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import threading
 from datetime import UTC, datetime
@@ -23,19 +24,21 @@ from urllib.parse import parse_qs, urlparse
 
 from wcatbench.agents.hermes import Tools, tool_activity
 from wcatbench.core.types import Outcome
+from wcatbench.pipeline import memory_bank
 from wcatbench.pipeline.dialogue import MEMO_CLI, NODE
 from wcatbench.pipeline.rules_trial import Round
 from wcatbench.scoring import staged
 from wcatbench.stores.memo import MemoStore
 
 PROXY_PORT = 18990
-TOOLS_ROOT = Path("/var/tmp/wcat-dapi/agent-tools")  # nosec B108
+TOOLS_ROOT = Path(os.environ.get("WCATBENCH_TOOLS_ROOT", "/var/tmp/wcat-dapi/agent-tools"))  # nosec B108
 MAX_K = 20
 STRATEGY_VERSION = "1"
 
 # variant: (tool, store adapter or None, the e1 variant whose stored text it shares)
 VARIANTS: dict[str, tuple[str, str | None, str | None]] = {
     "u-archive": ("archive", None, None),
+    "u-memory-bank": ("memory-bank", None, None),
     "u-memo": ("memo", "memo", "memo"),
     "u-files-top5": ("proxy", "fts", "files-top5"),
     "u-agentmemory": ("proxy", "agentmemory", "agentmemory"),
@@ -59,6 +62,10 @@ STRATEGY = """Как работать с памятью проекта:
 
 TOOL_LINE = {
     "archive": "Память проекта: папка `archive/`, один файл на запись. Ищи в ней сам (`grep -ri`, `rg`), читай файлы.",
+    "memory-bank": (
+        "Память проекта: папка `memory-bank/` (Memory Bank), как с ней работать, сказано в `AGENTS.md`. Ищи в ней сам "
+        "(`grep -ri`, `rg`), читай файлы."
+    ),
     "memo": (
         "Память проекта: команда `memo` (WireCat memo). Как ей пользоваться, написано в `memo skill show`: прочитай "
         "это в начале. Ищи через `memo search all '<запрос>' --json`, запись целиком — `memo notes show <ref>`. Память "
@@ -175,6 +182,8 @@ class UnrestrictedRound(Round):
     def prompt(self, variant: str, qid: str, into: Path) -> str:
         shutil.copytree(self.dataset / "project", into)
         tool, _, _ = VARIANTS[variant]
+        if tool == "memory-bank":
+            memory_bank.install(into, self.records)
         if tool == "archive":
             (into / "archive").mkdir()
             for record in self.records:
