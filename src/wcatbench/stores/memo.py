@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 import subprocess  # nosec B404
 import time
 from collections.abc import Sequence
@@ -25,6 +24,8 @@ from wcatbench.core.types import BatchReceipt, Hit, ItemState, Record
 # The default of @wirecat/cli-memo 0.154.0 (cli-core 1.1.0, dist/embeddings/models.js DEFAULT_TEXT_MODEL). The first
 # rules-trial memo rows ran on e5-small, the default before 8 Nov 2026: set WCATBENCH_MEMO_MODEL=e5-small to rerun them.
 EMBEDDING_MODEL = os.environ.get("WCATBENCH_MEMO_MODEL", "embeddinggemma")
+# The pinned install, never the `memo` on PATH: a newer global memo writes a store schema 0.154.0 cannot read.
+PINNED_BINARY = os.environ.get("WCATBENCH_MEMO_BIN", "/var/tmp/wcat-dapi/memo-cli/node_modules/.bin/memo")  # noqa: S108  # nosec B108
 _UNSAFE = re.compile(r"[^\w\-]+", re.UNICODE)
 
 
@@ -43,7 +44,7 @@ class MemoStore:
     hosted = False
 
     def __init__(self, binary: str | None = None) -> None:
-        self.binary = binary or shutil.which("memo") or "memo"
+        self.binary = binary or PINNED_BINARY
         self.root: Path | None = None
         self.names: dict[str, str] = {}
 
