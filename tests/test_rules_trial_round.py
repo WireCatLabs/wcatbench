@@ -659,3 +659,24 @@ def describe_unrestricted_memory_bank() -> None:
         trial.session("u-memory-bank", "t2.p0", 1)
         assert unrestricted.STRATEGY in agent.prompts[0]
         assert "`memory-bank/`" in agent.prompts[0]
+
+
+def describe_hermes_collect() -> None:
+    def it_copies_across_disks_and_drops_dead_sockets(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        import socket
+
+        source = tmp_path / "home" / "state"
+        source.mkdir(parents=True)
+        (source / "kept.txt").write_text("x")
+        with socket.socket(socket.AF_UNIX) as sock:
+            sock.bind(str(source / "g.sock"))
+        (tmp_path / "after" / "state").mkdir(parents=True)
+
+        def cross_device(self: Path, target: Path) -> None:
+            raise OSError(18, "Invalid cross-device link")
+
+        monkeypatch.setattr(Path, "rename", cross_device)
+        hermes.move(source, tmp_path / "after" / "state")
+        assert (tmp_path / "after" / "state" / "kept.txt").read_text() == "x"
+        assert not (tmp_path / "after" / "state" / "g.sock").exists()
+        assert not source.exists()
