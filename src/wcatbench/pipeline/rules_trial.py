@@ -23,6 +23,7 @@ from typing import Any
 import tiktoken
 from loguru import logger
 
+from wcatbench.agents.hermes import tool_activity
 from wcatbench.core import dataset_files, registry
 from wcatbench.core.jail import Jail
 from wcatbench.core.types import Outcome, Question, Record
@@ -110,6 +111,7 @@ class Round:
     builds: Path
     agent: Any
     applications: int = 2
+    variants: tuple[str, ...] = tuple(VARIANTS)
 
     def __post_init__(self) -> None:
         self.records: list[Record] = dataset_files.records(self.dataset)
@@ -334,6 +336,7 @@ class Round:
                 sum(result["usage"]["output_tokens"] for result in done),
             ],
             "context_tokens": sum(result["context_tokens"] for result in done),
+            "tool_calls": sum(int(result.get("tool_calls") or 0) for result in done),
             **staged.totals(rows),
         }
 
@@ -343,11 +346,12 @@ class Round:
             "| Variant | Sessions | Stored | Retrieved | Retrieved by source | Old version inactive | "
             "Old inactive by source | Applied (known) | Unknown | "
             "Missed available | Not retrieved | Wrong concrete | Broken | Invalid | Seconds | Agent tokens in/out | "
+            "Tool calls | "
             "Total as in his table |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
         all_rows: list[dict[str, Any]] = []
-        for variant in VARIANTS:
+        for variant in self.variants:
             report = self.report(variant, design)
             if not report["sessions"]:
                 continue
@@ -368,6 +372,7 @@ class Round:
                 f"{outcomes.get('abstained_not_retrieved', 0)} | "
                 f"{outcomes.get('wrong_concrete', 0)} | {outcomes.get('broken', 0)} | {outcomes.get('invalid', 0)} | "
                 f"{report['seconds']} | {report['agent_tokens'][0]}/{report['agent_tokens'][1]} | "
+                f"{report['tool_calls']} | "
                 f"{frac(report['his_total_for_comparison'])} |"
             )
         return "\n".join(lines) + "\n", all_rows
@@ -387,4 +392,6 @@ class Round:
         task = qid.split(".")[0]
         checks = [check for check in self.checks if check["task"] == task]
         result["rows"] = staged.rows(checks, stored, entry.get("text"), statuses, valid, sources)
+        if "tool_calls" not in result:
+            result["tool_calls"] = tool_activity(path.parent / "hermes-home-after")["tool_calls"]
         return result

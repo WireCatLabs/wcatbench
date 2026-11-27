@@ -55,6 +55,7 @@ hermes = "wcatbench.agents.hermes:HermesAgent"
 [project.entry-points."wcatbench.datasets"]
 synthetic = "wcatbench.datasets.synthetic:SyntheticDataset"
 rules-trial = "wcatbench.datasets.rules_trial:RulesTrialDataset"
+rules-trial-dev = "wcatbench.datasets.rules_trial:RulesTrialDevDataset"
 
 [project.entry-points."wcatbench.scorers"]
 answer = "wcatbench.scoring.answer:AnswerScorer"
@@ -144,6 +145,7 @@ select = ["E", "F", "W", "I", "B", "UP", "A", "S", "BLE", "SIM", "RUF", "PT", "P
 "src/wcatbench/datasets/rules_trial/*" = ["RUF001"]
 "src/wcatbench/pipeline/rules_trial.py" = ["RUF001", "S108"]
 "src/wcatbench/pipeline/dialogue.py" = ["RUF001", "S108"]
+"src/wcatbench/pipeline/unrestricted.py" = ["RUF001", "S108"]
 # Run in another project's virtualenv; stdout is their only channel back.
 "src/wcatbench/stores/*_worker.py" = ["T201", "PTH118", "PTH123"]
 # Paths inside the bubblewrap jail, never on this machine's /tmp.

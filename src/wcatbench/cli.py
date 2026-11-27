@@ -24,6 +24,8 @@ from wcatbench.pipeline.dialogue import DialogueRound
 from wcatbench.pipeline.rules_trial import VARIANTS
 from wcatbench.pipeline.rules_trial import Round as RulesTrialRound
 from wcatbench.pipeline.search import REWRITES, search_run
+from wcatbench.pipeline.unrestricted import VARIANTS as UNRESTRICTED
+from wcatbench.pipeline.unrestricted import UnrestrictedRound
 
 app = typer.Typer(
     help="Benchmark AI agent memory: any agent, any memory store, the same questions.", no_args_is_help=True
@@ -346,6 +348,46 @@ def trial_dialogue_summary(dataset: DatasetOption, run: RunOption) -> None:
     table, rows = trial_round.summary()
     (trial_round.run / "e2" / "summary.md").write_text(table)
     with (trial_round.run / "e2" / "rows.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+def _unrestricted(dataset: str, run: str, model: str, builds: str | None) -> UnrestrictedRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return UnrestrictedRound(
+        dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / (builds or "builds"), agent=agent
+    )
+
+
+BuildsOption = Annotated[str | None, typer.Option("--builds", help="Builds folder under the home (dev set: its own).")]
+
+
+@trial_app.command("unrestricted")
+def trial_unrestricted(
+    variant: Annotated[str, typer.Argument(help=f"One of: {', '.join(UNRESTRICTED)}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    design: DesignOption = "his",
+    builds: BuildsOption = None,
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Ours, unrestricted: the agent searches memory itself with the frozen strategy prompt."""
+    if variant not in UNRESTRICTED:
+        raise typer.BadParameter(f"unknown variant {variant}; one of: {', '.join(UNRESTRICTED)}")
+    _unrestricted(dataset, run, model, builds).go(variant, design)
+
+
+@trial_app.command("unrestricted-summary")
+def trial_unrestricted_summary(
+    dataset: DatasetOption, run: RunOption, design: DesignOption = "his", builds: BuildsOption = None
+) -> None:
+    """The unrestricted rows as one table; writes summary-unrestricted-<design>.md to the run."""
+    trial_round = _unrestricted(dataset, run, "unused", builds)
+    table, rows = trial_round.summary(design)
+    (trial_round.run / f"summary-unrestricted-{design}.md").write_text(table)
+    with (trial_round.run / f"rows-unrestricted-{design}.jsonl").open("w") as lines:
         for row in rows:
             lines.write(json.dumps(row, ensure_ascii=False) + "\n")
     typer.echo(table)

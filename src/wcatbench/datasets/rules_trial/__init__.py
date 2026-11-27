@@ -14,12 +14,13 @@ from __future__ import annotations
 
 import random
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from wcatbench.core import dataset_files
 from wcatbench.core.manifest import sha256_file
 from wcatbench.core.types import AnswerKey, DatasetManifest, Privacy, Question, Record
-from wcatbench.datasets.rules_trial import content
+from wcatbench.datasets.rules_trial import content, dev
 
 VERSION = 1
 PHRASINGS = 3
@@ -92,7 +93,7 @@ if __name__ == "__main__":
 '''
 
 
-def records(seed: int = SEED) -> list[Record]:
+def records(seed: int = SEED, source: ModuleType = content) -> list[Record]:
     """The seed only shuffles the order the sources reach a store in: every text is written by hand.
 
     The date and author open each text, so every store gets them the same way: Mem0 OSS takes no timestamp
@@ -108,22 +109,22 @@ def records(seed: int = SEED) -> list[Record]:
             author=author,
             metadata={"project": project},
         )
-        for sid, project, kind, author, stamp, text in content.SOURCES
+        for sid, project, kind, author, stamp, text in source.SOURCES
     ]
     random.Random(seed).shuffle(rows)  # noqa: S311  # nosec B311
     return rows
 
 
-def task_text(task: dict[str, Any], phrasing: int) -> str:
+def task_text(task: dict[str, Any], phrasing: int, source: ModuleType = content) -> str:
     """The first paragraph is the retrieval query. The rest is the spec and the rules the hidden checks follow."""
-    return f"{task['intro'][phrasing]}\n\n{task['spec']}\n{content.COMMON_RULES}"
+    return f"{task['intro'][phrasing]}\n\n{task['spec']}\n{source.COMMON_RULES}"
 
 
-def checks() -> list[dict[str, Any]]:
+def checks(source: ModuleType = content) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for task in content.TASKS:
+    for task in source.TASKS:
         for check_id, rule_id, expr, expected in task["known"]:
-            rule = content.RULES[rule_id]
+            rule = source.RULES[rule_id]
             rows.append(
                 {
                     "id": check_id,
@@ -147,17 +148,17 @@ def checks() -> list[dict[str, Any]]:
                     "module": task["module"],
                     "kind": "unknown",
                     "expr": name,
-                    "expected": content.UNKNOWN_SENTINEL,
+                    "expected": source.UNKNOWN_SENTINEL,
                     "trap": trap,
                 }
             )
     return rows
 
 
-def rule_files() -> dict[str, str]:
-    by_id = {sid: (project, stamp, text) for sid, project, _, _, stamp, text in content.SOURCES}
-    active = [content.RULES[rule]["source"] for rule in sorted(content.RULES)]
-    replaced = [old for rule in content.RULES.values() for old in rule["replaces"]]
+def rule_files(source: ModuleType = content) -> dict[str, str]:
+    by_id = {sid: (project, stamp, text) for sid, project, _, _, stamp, text in source.SOURCES}
+    active = [source.RULES[rule]["source"] for rule in sorted(source.RULES)]
+    replaced = [old for rule in source.RULES.values() for old in rule["replaces"]]
 
     def render(ids: list[str]) -> str:
         ordered = sorted(ids, key=lambda sid: by_id[sid][1])
@@ -171,16 +172,20 @@ def rule_files() -> dict[str, str]:
 
 class RulesTrialDataset:
     name = "rules-trial"
+    source: ModuleType = content
+    seed = SEED
 
     def build(self, out: Path, params: dict[str, int]) -> DatasetManifest:
-        seed = params.get("seed", SEED)
-        corpus = records(seed)
+        seed = params.get("seed", self.seed)
+        corpus = records(seed, self.source)
         questions = [
-            Question(id=f"{task['id']}.p{phrasing}", text=task_text(task, phrasing), category="rules-trial")
-            for task in content.TASKS
+            Question(
+                id=f"{task['id']}.p{phrasing}", text=task_text(task, phrasing, self.source), category="rules-trial"
+            )
+            for task in self.source.TASKS
             for phrasing in range(PHRASINGS)
         ]
-        rows = checks()
+        rows = checks(self.source)
         keys = [
             AnswerKey(
                 question_id=question.id,
@@ -200,13 +205,13 @@ class RulesTrialDataset:
         corpus_sha, key_sha = dataset_files.write(out, corpus, questions, keys)
         dataset_files.write_json(out / "checks.json", rows)
         (out / "runner.py").write_text(RUNNER)
-        for relative, text in content.PROJECT_FILES.items():
+        for relative, text in self.source.PROJECT_FILES.items():
             (out / "project" / relative).parent.mkdir(parents=True, exist_ok=True)
             (out / "project" / relative).write_text(text)
         (out / "files").mkdir(exist_ok=True)
-        for name, text in rule_files().items():
+        for name, text in rule_files(self.source).items():
             (out / "files" / name).write_text(text)
-        tasks = {task["id"]: {"module": task["module"], "path": task["path"]} for task in content.TASKS}
+        tasks = {task["id"]: {"module": task["module"], "path": task["path"]} for task in self.source.TASKS}
         dataset_files.write_json(out / "tasks.json", tasks)
         manifest = DatasetManifest(
             name=self.name,
@@ -219,8 +224,8 @@ class RulesTrialDataset:
             key_sha256=key_sha,
             extra={
                 "language": "ru",
-                "target_project": content.TARGET,
-                "rules": len(content.RULES),
+                "target_project": self.source.TARGET,
+                "rules": len(self.source.RULES),
                 "known_checks": sum(row["kind"] == "known" for row in rows),
                 "unknown_checks": sum(row["kind"] == "unknown" for row in rows),
                 "checks_sha256": sha256_file(out / "checks.json"),
@@ -228,3 +233,11 @@ class RulesTrialDataset:
         )
         dataset_files.write_json(out / dataset_files.MANIFEST, manifest.model_dump(mode="json"))
         return manifest
+
+
+class RulesTrialDevDataset(RulesTrialDataset):
+    """For tuning the unrestricted prompt only: another task, other rules and values, another seed."""
+
+    name = "rules-trial-dev"
+    source = dev
+    seed = 20261127

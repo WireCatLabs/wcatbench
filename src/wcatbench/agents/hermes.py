@@ -169,7 +169,7 @@ class HermesAgent:
             stdout=stdout,
             stderr=stderr,
             transcript=transcript_text(after),
-            details={"exit": code, "usage": usage_raw},
+            details={"exit": code, "usage": usage_raw, "tools": tool_activity(after)},
         )
 
     def collect(self, into: Path) -> None:
@@ -195,3 +195,32 @@ def transcript_text(after: Path) -> str:
     for dump in sorted((after / "sessions").glob("*.json")) if (after / "sessions").exists() else []:
         parts.append(dump.read_text(errors="replace"))
     return "\n".join(parts)
+
+
+def tool_activity(after: Path) -> dict[str, object]:
+    """How many tool calls the session made, by tool, and the text the tools returned (the retrieved stage)."""
+    import sqlite3
+
+    database = after / "state.db"
+    if not database.exists():
+        return {"tool_calls": 0, "by_tool": {}, "outputs": ""}
+    db = sqlite3.connect(f"file:{database}?mode=ro", uri=True)
+    try:
+        calls = db.execute("SELECT coalesce(tool_calls, '') FROM messages WHERE role = 'assistant'").fetchall()
+        outputs = db.execute("SELECT coalesce(content, '') FROM messages WHERE role = 'tool'").fetchall()
+    finally:
+        db.close()
+    by_tool: dict[str, int] = {}
+    for (raw,) in calls:
+        try:
+            items = json.loads(raw) if raw else []
+        except json.JSONDecodeError:
+            items = []
+        for item in items if isinstance(items, list) else []:
+            name = str((item.get("function") or {}).get("name") or item.get("name") or "?")
+            by_tool[name] = by_tool.get(name, 0) + 1
+    return {
+        "tool_calls": sum(by_tool.values()),
+        "by_tool": by_tool,
+        "outputs": "\n".join(text for (text,) in outputs),
+    }

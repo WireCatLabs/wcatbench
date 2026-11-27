@@ -159,8 +159,10 @@ def describe_hermes_agent() -> None:
                 json.dumps({"input_tokens": 900, "output_tokens": 40})
             )
             db = sqlite3.connect(home / "state.db")
-            db.execute("CREATE TABLE messages (content TEXT, tool_calls TEXT)")
-            db.execute("INSERT INTO messages VALUES ('готово', 'read_file TASK.md')")
+            db.execute("CREATE TABLE messages (role TEXT, content TEXT, tool_calls TEXT)")
+            calls = json.dumps([{"function": {"name": "read_file", "arguments": "TASK.md"}}])
+            db.execute("INSERT INTO messages VALUES ('assistant', 'готово', ?)", (calls,))
+            db.execute("INSERT INTO messages VALUES ('tool', 'текст задачи', NULL)")
             db.commit()
             db.close()
             (home / "sessions").mkdir()
@@ -172,7 +174,8 @@ def describe_hermes_agent() -> None:
         reply = HermesAgent("gpt-5.6-terra", home=home).session("задача", tmp_path / "work", tmp_path / "trial")
         assert reply.outcome is Outcome.COMPLETED
         assert (reply.usage.input_tokens, reply.usage.source) == (900, "agent-files")
-        assert "read_file TASK.md" in reply.transcript
+        assert "TASK.md" in reply.transcript
+        assert reply.details["tools"] == {"tool_calls": 1, "by_tool": {"read_file": 1}, "outputs": "текст задачи"}
         assert "ls /work" in reply.transcript
         assert sorted(path.name for path in home.iterdir()) == ["auth.json", "config.yaml"]
 
@@ -491,3 +494,59 @@ def describe_dialogue_round() -> None:
 
         assert "Памяти между разговорами у тебя нет" not in dialogue.prompt_of("w", "C")
         assert [check["origin"] for check in dialogue.checks_of("w", "C")][:2] == ["A", "A"]
+
+
+class ToolAgent(OracleAgent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.tools: list[Any] = []
+
+    def session(self, prompt: str, workspace: Path, trial: Path, tools: Any = None) -> SessionResult:  # type: ignore[override]
+        self.tools.append(tools)
+        if tools is not None and tools.read_only:
+            search = Path(tools.read_only[0]) / "search"
+            subprocess.run(["/usr/bin/python3", "-I", str(search), "таймаут", "--k", "2"], check=True)
+        return super().session(prompt, workspace, trial)
+
+
+class FixedStore:
+    def search(self, query: str, k: int) -> list[Any]:
+        return [type("Hit", (), {"keys": ("r1",), "text": f"Сокол: таймаут 7 секунд ({query})", "score": 1.0})()] * k
+
+    def close(self) -> None:
+        return None
+
+
+def describe_unrestricted_round() -> None:
+    def it_gives_the_strategy_and_a_search_tool_that_reaches_the_engine(
+        dataset: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from wcatbench.pipeline import unrestricted
+
+        monkeypatch.setattr(unrestricted.UnrestrictedRound, "open_store", lambda *_: FixedStore())
+        monkeypatch.setattr(unrestricted, "PROXY_PORT", 18997)
+        monkeypatch.setattr(unrestricted, "SEARCH_TOOL", unrestricted.SEARCH_TOOL.replace("18990", "18997"))
+        agent = ToolAgent()
+        trial = unrestricted.UnrestrictedRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
+        trial.applications = 1
+        trial.go("u-files-top5")
+        result = trial.session_result("u-files-top5", "t1.p0", 1)
+        assert result is not None
+        assert (result["label"], result["searches"]) == ("ours, unrestricted", 1)
+        assert result["rows"][0]["retrieved"] is True
+        assert "Решения меняются" in agent.prompts[0]
+        table, _ = trial.summary("his")
+        assert "| u-files-top5 | 3/3 |" in table
+
+    def it_puts_the_archive_in_the_workspace_and_gives_it_no_tool(dataset: Path, tmp_path: Path) -> None:
+        from wcatbench.pipeline import unrestricted
+
+        agent = ToolAgent()
+        trial = unrestricted.UnrestrictedRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
+        trial.session("u-archive", "t2.p0", 1)
+        assert agent.tools == [None]
+        assert "`archive/`" in agent.prompts[0]
+        assert (
+            len(list((tmp_path / "run" / "trials" / "u-archive" / "t2.p0.a1" / "workspace" / "archive").iterdir()))
+            == 36
+        )
