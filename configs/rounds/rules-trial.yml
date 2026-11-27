@@ -62,6 +62,13 @@ amendments:
       unknown. The first u-files-top5 dev sessions saw no memory (a proxy thread bug, fixed in code, not in the
       prompt) and were rerun as dev2. The prompt was written by the test corpus's author after the e1 results were
       known; dev only confirmed it.
+  - date: 2026-11-27
+    what: "New variants memory-bank, memory-bank-files, u-memory-bank (e1) and memory-bank-agent (e2): dapi/memory-bank at e1b428d."
+    why: >-
+      Owner request, after every other row had run: a public comparison of memo with Danil Pismenny's own memory.
+      The strategy prompt stays at version 1, not retuned. Experiment 3 is not run for it: it has no engine that
+      stores versions, an edit in place plus grep is the fts case, and who marks an ADR superseded is the curation
+      that experiment 2 tests.
 
 hypothesis:
   h1: >-
@@ -170,6 +177,15 @@ variants:
     version: "ghcr.io/vectorize-io/hindsight:1.0.0-slim"
     defaults_checked: "LLM openai gpt-4o-mini, embeddings local bge-small-en-v1.5, reranker local"
     pointed_to: "the shared write model, embeddings openai, reranker whatever slim allows without a model, recorded"
+  - id: memory-bank
+    label: his (his own memory, our mapping of the sources)
+    version: "github.com/dapi/memory-bank e1b428dd7aed66eda99b3cbc6073c29f7da921de (2026-09-13)"
+    defaults_checked: "README: template/memory-bank becomes memory-bank/, template/init.sh becomes ./init.sh; routing block in AGENTS.md (docs/agent-instructions.md)"
+    pointed_to: >-
+      26 decisions as historical ADRs (accepted, no supersedes), 10 chats, notes and the meeting as evidence in
+      brownfield-intake-prd.md outside the bank (docs/brownfield-adaptation-protocol.md steps 2 and 6). The template is unchanged.
+  - {id: memory-bank-files, label: ours, what: "the written ADRs and intake file whole in memory/context.md, without the template"}
+  - {id: memory-bank-agent, label: ours, what: "e2: the agent keeps memory-bank itself across sessions A, B and C"}
   - {id: memo-cli, label: ours, what: "memo as a CLI skill: Hermes runs memo search itself, no frozen block"}
   - id: memo
     label: ours
