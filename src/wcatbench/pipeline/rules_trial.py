@@ -80,6 +80,29 @@ def cut(hits: list[dict[str, Any]], limit: int = MAX_TOKENS) -> tuple[str, int, 
     return "".join(parts), used, kept
 
 
+def run_hidden(dataset: Path, trial: Path, workspace: Path, checks: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
+    """The hidden checks of one module, run by the dataset's runner in a jail with no network."""
+    hidden = trial / "hidden"
+    hidden.mkdir(exist_ok=True)
+    (hidden / "checks.json").write_text(json.dumps(checks, ensure_ascii=False))
+    shutil.copy(dataset / "runner.py", hidden / "runner.py")
+    jail = Jail(read_only=(workspace, hidden), network=False, workdir="/tmp")  # nosec B108
+    argv = [
+        "/usr/bin/python3",
+        "-I",
+        str(hidden / "runner.py"),
+        str(workspace),
+        checks[0]["module"],
+        str(hidden / "checks.json"),
+    ]
+    done = subprocess.run(jail.command(argv), capture_output=True, text=True, timeout=120, check=False)  # noqa: S603  # nosec B603
+    (hidden / "stderr.txt").write_text(done.stderr)
+    try:
+        return dict(json.loads(done.stdout.strip().splitlines()[-1]))
+    except (json.JSONDecodeError, IndexError):
+        return {}
+
+
 @dataclass
 class Round:
     dataset: Path
@@ -195,26 +218,7 @@ class Round:
         )
 
     def hidden(self, trial: Path, workspace: Path, task: str) -> dict[str, dict[str, str]]:
-        checks = [check for check in self.checks if check["task"] == task]
-        hidden = trial / "hidden"
-        hidden.mkdir(exist_ok=True)
-        (hidden / "checks.json").write_text(json.dumps(checks, ensure_ascii=False))
-        shutil.copy(self.dataset / "runner.py", hidden / "runner.py")
-        jail = Jail(read_only=(workspace, hidden), network=False, workdir="/tmp")  # nosec B108
-        argv = [
-            "/usr/bin/python3",
-            "-I",
-            str(hidden / "runner.py"),
-            str(workspace),
-            checks[0]["module"],
-            str(hidden / "checks.json"),
-        ]
-        done = subprocess.run(jail.command(argv), capture_output=True, text=True, timeout=120, check=False)  # noqa: S603  # nosec B603
-        (hidden / "stderr.txt").write_text(done.stderr)
-        try:
-            return dict(json.loads(done.stdout.strip().splitlines()[-1]))
-        except (json.JSONDecodeError, IndexError):
-            return {}
+        return run_hidden(self.dataset, trial, workspace, [check for check in self.checks if check["task"] == task])
 
     def session(self, variant: str, qid: str, application: int) -> dict[str, Any]:
         trial = self.run / "trials" / variant / f"{qid}.a{application}"

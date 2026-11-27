@@ -209,6 +209,29 @@ class OpenVikingStore:
             )
         return hits
 
+    def remember_dialogue(self, session: str, messages: list[dict[str, str]]) -> Any:
+        """Experiment 2: OpenViking's own path from a conversation to memories (a session, committed)."""
+        reply = self.call("dialogue", session=session, messages=messages)
+        with (self.base / "dialogues.jsonl").open("a") as lines:
+            lines.write(json.dumps({"session": session, "reply": reply}, ensure_ascii=False, default=str) + "\n")
+        return reply
+
+    def recall(self, query: str, k: int) -> list[Hit]:
+        """Experiment 2: the top k of everything the store holds, memories included, each as its own text."""
+        reply = self.call("find", query=query, target="", k=k)
+        found = reply.get("memories", []) + reply.get("resources", []) + reply.get("skills", [])
+        found.sort(key=lambda row: row.get("score") or 0.0, reverse=True)
+        hits = []
+        for row in found[:k]:
+            uri = str(row.get("uri", ""))
+            try:
+                text = str(self.call("read", uri=uri)["text"]) if uri.endswith(".md") else ""
+            except PermanentError:
+                text = ""
+            text = text or str(row.get("abstract") or row.get("overview") or "")
+            hits.append(Hit(keys=(), text=text, score=row.get("score"), kind=row.get("context_type")))
+        return hits
+
     def describe(self) -> dict[str, object]:
         return {"files": len(self.names), "vlm": VLM, "embeddings": EMBEDDINGS, "agent_evolution": self.evolution}
 

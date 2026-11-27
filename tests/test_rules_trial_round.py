@@ -406,3 +406,88 @@ def test_the_oracle_fixture_is_complete() -> None:
         "notify_policy.py",
     ]
     assert shutil.which("python3")
+
+
+DIALOGUE = Path(__file__).parent / "fixtures" / "rules_trial" / "dialogue"
+
+
+class DialogueAgent:
+    """Writes the reference module of each session, keeps a note when it has a memory folder, records its tools."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, Any]] = []
+
+    def session(self, prompt: str, workspace: Path, trial: Path, tools: Any = None) -> SessionResult:
+        self.calls.append((prompt, tools))
+        for path in (DIALOGUE / "sokol").glob("*.py"):
+            shutil.copy(path, workspace / "sokol" / path.name)
+        if (workspace / "memory" / "NOTES.md").exists():
+            with (workspace / "memory" / "NOTES.md").open("a") as notes:
+                notes.write(f"session {len(self.calls)}\n")
+        return SessionResult(Outcome.COMPLETED, 2.0, Usage(input_tokens=10), "сделал", "", "")
+
+
+class RememberingStore:
+    def __init__(self) -> None:
+        self.texts: list[str] = []
+
+    def ingest(self, batch: list[Record]) -> None:
+        self.texts += [record.text for record in batch]
+
+    def search(self, query: str, k: int) -> list[Any]:
+        return [type("Hit", (), {"keys": ("x",), "text": text, "score": 1.0})() for text in self.texts[:k]]
+
+    def close(self) -> None:
+        return None
+
+
+def describe_dialogue_round() -> None:
+    @pytest.fixture(autouse=True)
+    def no_bwrap_for_dialogue(monkeypatch: pytest.MonkeyPatch) -> None:
+        from wcatbench.pipeline import dialogue as pipeline
+
+        monkeypatch.setattr(rules_trial, "Jail", NoJail)
+        monkeypatch.setattr(pipeline, "memo_template", lambda: Path(__file__).parent / "fixtures")
+
+    def it_scores_transfer_checks_and_carries_the_agents_notes(dataset: Path, tmp_path: Path) -> None:
+        from wcatbench.pipeline.dialogue import DialogueRound
+
+        trial = DialogueRound(dataset, tmp_path / "run", tmp_path / "builds", DialogueAgent())
+        trial.go("files-agent", reps=1)
+        notes = (tmp_path / "run" / "e2" / "files-agent" / "w.r1" / "memory" / "NOTES.md").read_text()
+        assert notes == "session 1\nsession 2\nsession 3\n"
+        table, rows = trial.summary()
+        assert "| files-agent | 6 | 24/24 | 8/8 | 12/12 | 14/14 |" in table
+        assert len(rows) == 54
+
+    def it_gives_memo_agent_the_memo_cli_and_its_own_store(dataset: Path, tmp_path: Path) -> None:
+        from wcatbench.pipeline.dialogue import DialogueRound
+
+        agent = DialogueAgent()
+        DialogueRound(dataset, tmp_path / "run", tmp_path / "builds", agent).session("memo-agent", "w", 1, "A")
+        prompt, tools = agent.calls[0]
+        assert "memo notes add" in prompt
+        assert tools.writable[0][1] == "/memo"
+        assert tools.env["MEMO_STATE_DIR"] == "/memo/state"
+
+    def it_hands_the_next_session_what_the_store_found(
+        dataset: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from wcatbench.pipeline.dialogue import DialogueRound
+
+        store = RememberingStore()
+        monkeypatch.setattr(DialogueRound, "store", lambda *_: store)
+        agent = DialogueAgent()
+        trial = DialogueRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
+        trial.session("memo-transcript", "r", 1, "A")
+        (tmp_path / "run" / "e2" / "memo-transcript" / "r.r1" / "store").mkdir()
+        result = trial.session("memo-transcript", "r", 1, "B")
+        assert "Ответ агента:\nсделал" in store.texts[0]
+        assert "memory/context.md" in agent.calls[1][0]
+        assert result["context_tokens"] > 0
+
+    def it_marks_a_session_without_memory_as_abstaining(dataset: Path, tmp_path: Path) -> None:
+        from wcatbench.datasets.rules_trial import dialogue
+
+        assert "Памяти между разговорами у тебя нет" not in dialogue.prompt_of("w", "C")
+        assert [check["origin"] for check in dialogue.checks_of("w", "C")][:2] == ["A", "A"]

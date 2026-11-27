@@ -58,6 +58,15 @@ class SessionResult:
     details: dict[str, object] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class Tools:
+    """What a session may use beyond its workspace: a program's folders (read-only) and its own store (writable)."""
+
+    read_only: tuple[Path, ...] = ()
+    writable: tuple[tuple[Path, str], ...] = ()
+    env: dict[str, str] = field(default_factory=dict)
+
+
 def interpreter_root(python: Path) -> Path:
     """The venv's base interpreter lives outside it, so the jail binds its install folder read-only."""
     real = python.resolve()
@@ -95,14 +104,20 @@ class HermesAgent:
             raise PermanentError(f"{self.home} holds files from an earlier session: {', '.join(stray)}")
         (self.home / "config.yaml").write_text(CONFIG.format(model=self.model))
 
-    def jail(self, workspace: Path, out: Path) -> Jail:
+    def jail(self, workspace: Path, out: Path, tools: Tools | None = None) -> Jail:
+        tools = tools or Tools()
         return Jail(
-            read_only=(interpreter_root(self.python), self.root),
-            writable=((workspace, "/work"), (out, "/out"), (self.home, str(self.home))),
-            env={"HERMES_HOME": str(self.home), "CODEX_HOME": "/tmp/codex-empty", "PYTHONDONTWRITEBYTECODE": "1"},  # nosec B108
+            read_only=(interpreter_root(self.python), self.root, *tools.read_only),
+            writable=((workspace, "/work"), (out, "/out"), (self.home, str(self.home)), *tools.writable),
+            env={
+                "HERMES_HOME": str(self.home),
+                "CODEX_HOME": "/tmp/codex-empty",  # nosec B108
+                "PYTHONDONTWRITEBYTECODE": "1",
+                **tools.env,
+            },
         )
 
-    def session(self, prompt: str, workspace: Path, trial: Path) -> SessionResult:
+    def session(self, prompt: str, workspace: Path, trial: Path, tools: Tools | None = None) -> SessionResult:
         self.prepare()
         out = trial / "out"
         out.mkdir(parents=True, exist_ok=True)
@@ -125,7 +140,7 @@ class HermesAgent:
         outcome = Outcome.COMPLETED
         try:
             done = subprocess.run(  # noqa: S603  # nosec B603
-                self.jail(workspace, out).command(argv),
+                self.jail(workspace, out, tools).command(argv),
                 capture_output=True,
                 text=True,
                 timeout=self.timeout,

@@ -19,6 +19,8 @@ from wcatbench.core import dataset_files, registry
 from wcatbench.core.errors import PermanentError
 from wcatbench.observability.logging import setup_logging
 from wcatbench.pipeline.build import Build, Selection
+from wcatbench.pipeline.dialogue import VARIANTS as DIALOGUE_VARIANTS
+from wcatbench.pipeline.dialogue import DialogueRound
 from wcatbench.pipeline.rules_trial import VARIANTS
 from wcatbench.pipeline.rules_trial import Round as RulesTrialRound
 from wcatbench.pipeline.search import REWRITES, search_run
@@ -309,6 +311,41 @@ def trial_summary(dataset: DatasetOption, run: RunOption, design: DesignOption =
     table, rows = trial_round.summary(design)
     (trial_round.run / f"summary-{design}.md").write_text(table)
     with (trial_round.run / f"rows-{design}.jsonl").open("w") as lines:
+        for row in rows:
+            lines.write(json.dumps(row, ensure_ascii=False) + "\n")
+    typer.echo(table)
+
+
+E2_VARIANTS = ", ".join(DIALOGUE_VARIANTS)
+
+
+def _dialogue(dataset: str, run: str, model: str) -> DialogueRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model)
+    return DialogueRound(dataset=_dataset_folder(dataset), run=home / "runs" / run, builds=home / "builds", agent=agent)
+
+
+@trial_app.command("dialogue")
+def trial_dialogue(
+    variant: Annotated[str, typer.Argument(help=f"One of: {E2_VARIANTS}.")],
+    dataset: DatasetOption,
+    run: RunOption,
+    reps: Annotated[int, typer.Option("--reps", help="Independent chains per scenario.")] = 2,
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """Experiment 2: chains of sessions A, B and C per scenario. A finished session is skipped on the next run."""
+    if variant not in DIALOGUE_VARIANTS:
+        raise typer.BadParameter(f"unknown variant {variant}; one of: {E2_VARIANTS}")
+    _dialogue(dataset, run, model).go(variant, reps)
+
+
+@trial_app.command("dialogue-summary")
+def trial_dialogue_summary(dataset: DatasetOption, run: RunOption) -> None:
+    """Experiment 2's table; writes e2/summary.md and e2/rows.jsonl to the run."""
+    trial_round = _dialogue(dataset, run, "unused")
+    table, rows = trial_round.summary()
+    (trial_round.run / "e2" / "summary.md").write_text(table)
+    with (trial_round.run / "e2" / "rows.jsonl").open("w") as lines:
         for row in rows:
             lines.write(json.dumps(row, ensure_ascii=False) + "\n")
     typer.echo(table)
