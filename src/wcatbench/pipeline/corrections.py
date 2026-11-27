@@ -86,21 +86,29 @@ class Gate:
     def check(self, name: str) -> dict[str, Any]:
         out = self.run / "e3" / name
         out.mkdir(parents=True, exist_ok=True)
-        if (out / "result.json").exists():
-            return dict(json.loads((out / "result.json").read_text()))
-        store = self.build(name)
-        try:
-            contents = getattr(store, "contents", None)
-            stored = "\n\n".join(contents()) if contents else ""
-            hits = {rule: store.search(spec["question"], K) for rule, spec in corrections.RULES.items()}
-        finally:
-            store.close()
-        (out / "stored.txt").write_text(stored)
+        if not (out / "hits.json").exists():
+            store = self.build(name)
+            try:
+                contents = getattr(store, "contents", None)
+                (out / "stored.txt").write_text("\n\n".join(contents()) if contents else "")
+                found_hits = {rule: store.search(spec["question"], K) for rule, spec in corrections.RULES.items()}
+            finally:
+                store.close()
+            (out / "hits.json").write_text(
+                json.dumps(
+                    {rule: [hit.text or "" for hit in rule_hits] for rule, rule_hits in found_hits.items()},
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        # Scored from the saved store text and hits: a corrected pattern rescores without a new build.
+        stored = (out / "stored.txt").read_text()
+        hits: dict[str, list[str]] = json.loads((out / "hits.json").read_text())
         rows: list[dict[str, Any]] = []
         for rule, spec in corrections.RULES.items():
             current = spec["versions"][-1][3]
             older = [version[3] for version in spec["versions"][:-1]]
-            context = "\n\n".join(hit.text or "" for hit in hits[rule])
+            context = "\n\n".join(hits[rule])
             results = {
                 "stored_current": found(current, stored),
                 "stored_old_gone": not any(found(pattern, stored) for pattern in older),
@@ -110,13 +118,6 @@ class Gate:
             rows += [
                 {"store": name, "rule": rule, "check": check, "pass": results[check]} for check in corrections.CHECKS
             ]
-        (out / "hits.json").write_text(
-            json.dumps(
-                {rule: [hit.text for hit in found_hits] for rule, found_hits in hits.items()},
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
         result = {
             "store": name,
             "passed": sum(bool(row["pass"]) for row in rows),

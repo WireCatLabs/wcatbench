@@ -561,7 +561,7 @@ def describe_corrections_gate() -> None:
         assert result["total"] == 44
         assert result["by_check"]["stored_current"] == 11
         assert result["by_check"]["stored_old_gone"] == 11
-        assert gate.check("fts") == result
+        assert gate.check("fts")["rows"] == result["rows"]
         assert "| fts |" in gate.summary()
 
     def it_gives_a_statement_store_each_version_as_a_new_statement() -> None:
