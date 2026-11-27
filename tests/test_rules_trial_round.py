@@ -574,3 +574,88 @@ def describe_corrections_gate() -> None:
         assert [record.key for record in versions("mem0-oss", 1)][:2] == ["C01-v2", "C02-v2"]
         assert versions("memo", 2)[0].key == "C01"
         assert versions("memo", 2)[0].text.startswith("2026-08-19 · Анна Белова\n")
+
+
+@pytest.fixture
+def bank_template(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    from wcatbench.pipeline import memory_bank
+
+    template = tmp_path / "memory-bank-src" / "template"
+    (template / "memory-bank" / "adr").mkdir(parents=True)
+    (template / "memory-bank" / "README.md").write_text("# Memory Bank\n")
+    (template / "init.sh").write_text("#!/usr/bin/env bash\n")
+    monkeypatch.setattr(memory_bank, "TEMPLATE", template)
+    return template
+
+
+def describe_memory_bank() -> None:
+    def it_writes_decisions_as_accepted_adrs_and_keeps_the_rest_as_intake_evidence(
+        dataset: Path, tmp_path: Path, bank_template: Path
+    ) -> None:
+        from wcatbench.core import dataset_files
+        from wcatbench.pipeline import memory_bank
+
+        written = memory_bank.install(tmp_path / "work", dataset_files.records(dataset))
+        adrs = sorted((tmp_path / "work" / "memory-bank" / "adr").glob("ADR-*.md"))
+        intake = (tmp_path / "work" / "brownfield-intake-prd.md").read_text()
+        assert (written, len(adrs)) == (27, 26)
+        assert "decision_status: accepted" in adrs[0].read_text()
+        assert "supersedes" not in "".join(path.read_text() for path in adrs)
+        assert intake.count("Тип источника:") == 10
+        assert "MEMORY BANK START" in (tmp_path / "work" / "AGENTS.md").read_text()
+
+    def it_refuses_a_clone_at_another_commit(tmp_path: Path, bank_template: Path) -> None:
+        from wcatbench.pipeline import memory_bank
+
+        clone = str(bank_template.parent)
+        subprocess.run(["git", "init", "-q", clone], check=True)
+        identity = ["-c", "user.name=t", "-c", "user.email=t@example.com"]
+        subprocess.run(["git", "-C", clone, *identity, "commit", "-q", "--allow-empty", "-m", "x"], check=True)
+        with pytest.raises(RuntimeError, match="pins"):
+            memory_bank.install(tmp_path / "work")
+
+    def it_gives_his_design_the_bank_and_the_control_its_files_whole(
+        dataset: Path, tmp_path: Path, bank_template: Path
+    ) -> None:
+        agent = OracleAgent()
+        trial = Round(dataset, tmp_path / "run", tmp_path / "builds", agent)
+        trial.session("memory-bank", "t1.p0", 1)
+        control = trial.session("memory-bank-files", "t1.p0", 1)
+        workspace = tmp_path / "run" / "trials" / "memory-bank" / "t1.p0.a1" / "workspace"
+        assert len(list((workspace / "memory-bank" / "adr").glob("ADR-*.md"))) == 26
+        assert "`AGENTS.md`" in agent.prompts[0]
+        assert "memory/context.md" in agent.prompts[1]
+        assert control["context_tokens"] > 1000
+
+    def it_carries_the_bank_the_agent_kept_into_the_next_session(
+        dataset: Path, tmp_path: Path, bank_template: Path
+    ) -> None:
+        from wcatbench.pipeline.dialogue import DialogueRound
+
+        class BankAgent(DialogueAgent):
+            def session(self, prompt: str, workspace: Path, trial: Path, tools: Any = None) -> SessionResult:
+                with (workspace / "memory-bank" / "adr" / "notes.md").open("a") as notes:
+                    notes.write("x")
+                return super().session(prompt, workspace, trial, tools)
+
+        trial = DialogueRound(dataset, tmp_path / "run", tmp_path / "builds", BankAgent())
+        for session in ("A", "B"):
+            trial.session("memory-bank-agent", "w", 1, session)
+        chain = tmp_path / "run" / "e2" / "memory-bank-agent" / "w.r1"
+        assert (chain / "bank" / "memory-bank" / "adr" / "notes.md").read_text() == "xx"
+        assert (chain / "bank" / "AGENTS.md").exists()
+
+
+def describe_unrestricted_memory_bank() -> None:
+    def it_puts_the_bank_in_the_workspace_with_the_frozen_strategy(
+        dataset: Path, tmp_path: Path, bank_template: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from wcatbench.pipeline import unrestricted
+
+        monkeypatch.setattr(unrestricted, "TOOLS_ROOT", tmp_path / "tools")
+        agent = ToolAgent()
+        trial = unrestricted.UnrestrictedRound(dataset, tmp_path / "run", tmp_path / "builds", agent)
+        monkeypatch.setattr(unrestricted, "tool_activity", lambda _: {"outputs": [], "tool_calls": 0, "by_tool": {}})
+        trial.session("u-memory-bank", "t2.p0", 1)
+        assert unrestricted.STRATEGY in agent.prompts[0]
+        assert "`memory-bank/`" in agent.prompts[0]

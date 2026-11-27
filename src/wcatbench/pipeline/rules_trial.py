@@ -27,6 +27,7 @@ from wcatbench.agents.hermes import tool_activity
 from wcatbench.core import dataset_files, registry
 from wcatbench.core.jail import Jail
 from wcatbench.core.types import Outcome, Question, Record
+from wcatbench.pipeline import memory_bank
 from wcatbench.scoring import staged
 
 K = 5
@@ -39,6 +40,8 @@ VARIANTS: dict[str, tuple[str, str | None]] = {
     "files-his": ("file", "his.md"),
     "files-history": ("file", "history.md"),
     "archive-in-workspace": ("archive", None),
+    "memory-bank": ("memory-bank", None),
+    "memory-bank-files": ("memory-bank-files", None),
     "files-top5": ("store", "fts"),
     "memo": ("store", "memo"),
     "agentmemory": ("store", "agentmemory"),
@@ -52,6 +55,9 @@ NOTE = {
     "context": "Опыт проекта, найденный в памяти, лежит в `memory/context.md`. Другой памяти у тебя нет.",
     "archive": "Архив переписки и решений лежит в папке `archive/`, одна запись в файле.",
     "none": "Опыта проекта у тебя нет: ни памяти, ни архива.",
+    "memory-bank": (
+        "Память проекта лежит в папке `memory-bank/` (Memory Bank), как с ней работать, сказано в `AGENTS.md`."
+    ),
 }
 
 
@@ -137,8 +143,12 @@ class Round:
             (self.run / "stored").mkdir(exist_ok=True)
             (self.run / "stored" / f"{variant}.txt").write_text(stored)
         for qid, question in self.questions.items():
-            if kind == "none" or kind == "archive":
+            if kind in ("none", "archive", "memory-bank"):
                 entry: dict[str, Any] = {"text": None, "tokens": 0, "hits": []}
+            elif kind == "memory-bank-files":
+                text = memory_bank.whole_text(self.records)
+                tokens = len(tiktoken.get_encoding(ENCODING).encode(text))
+                entry = {"text": text, "tokens": tokens, "hits": [], "whole_file": "memory-bank layout"}
             elif kind == "file":
                 text = (self.dataset / "files" / (name or "")).read_text()
                 tokens = len(tiktoken.get_encoding(ENCODING).encode(text))
@@ -205,6 +215,9 @@ class Round:
             (into / "memory").mkdir()
             (into / "memory" / "context.md").write_text(entry["text"])
             note = NOTE["context"]
+        elif kind == "memory-bank":
+            memory_bank.install(into, self.records)
+            note = NOTE["memory-bank"]
         elif kind == "archive":
             (into / "archive").mkdir()
             for record in self.records:
