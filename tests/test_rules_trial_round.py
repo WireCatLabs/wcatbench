@@ -680,3 +680,9 @@ def describe_hermes_collect() -> None:
         assert (tmp_path / "after" / "state" / "kept.txt").read_text() == "x"
         assert not (tmp_path / "after" / "state" / "g.sock").exists()
         assert not source.exists()
+
+
+def describe_memo_pin() -> None:
+    def it_runs_the_pinned_install_not_the_memo_on_path() -> None:
+        assert memo.MemoStore().binary == memo.PINNED_BINARY
+        assert memo.PINNED_BINARY.endswith("memo-cli/node_modules/.bin/memo")

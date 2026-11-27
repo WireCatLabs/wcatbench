@@ -69,6 +69,11 @@ amendments:
       The strategy prompt stays at version 1, not retuned. Experiment 3 is not run for it: it has no engine that
       stores versions, an edit in place plus grep is the fts case, and who marks an ADR superseded is the curation
       that experiment 2 tests.
+  - date: 2026-11-27
+    what: "memo rerun on EmbeddingGemma, the documented default of 0.154.0, in every memo row (e1 his and ours, u-memo, e2 memo-agent and memo-transcript, e3)."
+    why: >-
+      The post review found the memo rows had run on e5-small, the default before 8 Nov 2026 and not the default of
+      the pinned version. Same seeds, prompts and session counts. The e5-small rows are kept, labelled not default.
 
 hypothesis:
   h1: >-
@@ -190,7 +195,10 @@ variants:
   - id: memo
     label: ours
     version: "@wirecat/cli-memo 0.154.0 (npm)"
-    defaults_checked: "local embeddings, multilingual-e5-small (memo models list), no model API"
+    defaults_checked: >-
+      local embeddings, default EmbeddingGemma 300M (cli-core 1.1.0 dist/embeddings/models.js DEFAULT_TEXT_MODEL, and
+      `memo models list` shows it default: true), no model API. The first memo rows ran on e5-small, the default
+      before 8 Nov 2026, by mistake: kept and labelled e5-small (not default)
     pointed_to: "throwaway config and state dirs, DBUS_SESSION_BUS_ADDRESS=disabled: on the CLI run only"
 
 experiments:
