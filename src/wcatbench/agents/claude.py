@@ -62,7 +62,7 @@ class ClaudeAgent:
     def version(self) -> str:
         return f"claude-code {self.binary.name}"
 
-    def jail(self, workspace: Path, out: Path, tools: Tools | None = None, secret: str = "") -> Jail:
+    def jail(self, workspace: Path, out: Path, tools: Tools | None = None, secret: str = "") -> Jail:  # nosec B107
         tools = tools or Tools()
         config = out / "claude-config"
         config.mkdir(parents=True, exist_ok=True)

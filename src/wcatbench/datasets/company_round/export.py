@@ -18,7 +18,7 @@ from email.header import Header
 from email.utils import format_datetime
 from pathlib import Path
 from typing import Any
-from xml.sax.saxutils import escape
+from xml.sax.saxutils import escape  # nosec B406  # escapes text we write, parses nothing
 
 from wcatbench.datasets.company_round import content
 
