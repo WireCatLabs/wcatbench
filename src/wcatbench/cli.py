@@ -432,7 +432,9 @@ def trial_full_use(
     run: RunOption,
     limit: Annotated[int, typer.Option("--limit", help="Only the first N sessions (stages 2 and 5).")] = 0,
     model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
-    agent: Annotated[str, typer.Option("--agent", help="hermes, or claude for the replication.")] = "hermes",
+    agent: Annotated[
+        str, typer.Option("--agent", help="hermes (Codex sign-in), hermes-api (OpenAI API key) or claude.")
+    ] = "hermes",
 ) -> None:
     """The full-use round: one contestant at one archive size. A finished session is skipped on the next run."""
     try:

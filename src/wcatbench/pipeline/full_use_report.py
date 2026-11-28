@@ -23,7 +23,7 @@ def results(run: Path) -> list[dict[str, Any]]:
     return [
         json.loads(path.read_text())
         for path in sorted(run.glob("*/trials/*/*/result.json"))
-        if ".aborted-" not in path.parent.name
+        if ".aborted-" not in path.parent.name and ".quota-" not in path.parent.name
     ]
 
 
@@ -198,6 +198,29 @@ def metrics(run: Path, datasets: dict[str, Path]) -> list[dict[str, Any]]:
     return out
 
 
+# Tool names an answer may mention; the judge sees letters, so these are masked. Citation styles stay: the judge
+# needs the source to score it, which leaves some contestants guessable by their reference format.
+TOOL_WORDS = re.compile(r"(?i)\b(memo|ripgrep|rg|grep|mem0|openviking|viking|memory[- ]bank)\b")
+
+
+def masked(text: str) -> str:
+    return TOOL_WORDS.sub("[tool]", text)
+
+
+def precheck(answer: str, key: dict[str, Any]) -> str:
+    """A regex pre-check, only to flag sheets for a hand read where it disagrees with the judge."""
+    text = answer.lower()
+    if not key["answer"]:
+        return "no_data" if "нет данных" in text else "wrong"
+    numbers = re.findall(r"\d+", key["answer"])
+    if numbers and all(re.search(rf"(?<!\d){n}(?!\d)", text) for n in numbers):
+        return "correct"
+    words = list(re.findall(r"[а-яёa-z]{5,}", key["answer"].lower()))[:3]
+    if not numbers and words and all(w[:5] in text for w in words):
+        return "correct"
+    return "no_data" if "нет данных" in text else "wrong"
+
+
 def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> dict[str, Any]:
     """One sheet per question across runs: the key, what the traps say, every answer under a random letter.
 
@@ -227,7 +250,7 @@ def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> di
             "key_source_dates": sorted({_date(s) for s in key["sources"]}),
             "traps": [export.text_of(by_id[s])[:600] for s in key["traps"] if s in by_id],
             "answers": [
-                {"letter": letter, "text": r["answer"][-4000:]} for letter, r in zip(letters, rows, strict=True)
+                {"letter": letter, "text": masked(r["answer"][-4000:])} for letter, r in zip(letters, rows, strict=True)
             ],
         }
         (out / f"{unit}.json").write_text(json.dumps(sheet, ensure_ascii=False, indent=2))

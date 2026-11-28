@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import shutil
 import subprocess  # nosec B404
 import time
@@ -359,6 +360,22 @@ def curate_memory_bank(dataset: Path, store: Path, agent: Any) -> dict[str, Any]
     return result
 
 
+QUOTA = re.compile(r"quota exhausted \(429\); retry after (\d+)s")
+
+
+def quota_wait(trial: Path) -> int | None:
+    """A session the provider refused for quota is no result: set it aside and say how long to wait."""
+    result = trial / "result.json"
+    if not result.exists() or json.loads(result.read_text())["outcome"] != "error":
+        return None
+    text = "".join((trial / name).read_text() for name in ("stdout.txt", "stderr.txt") if (trial / name).exists())
+    found = QUOTA.search(text)
+    if found is None and "HTTP 429" not in text:
+        return None
+    shutil.move(str(trial), str(trial.with_name(f"{trial.name}.quota-{int(time.time())}")))
+    return min(int(found.group(1)) + 60, 4 * 3600) if found else 1800
+
+
 @dataclass
 class FullUseRound:
     dataset: Path
@@ -530,6 +547,7 @@ class FullUseRound:
         valid = not leaks and reply.outcome is Outcome.COMPLETED
         result: dict[str, Any] = {
             "contestant": contestant,
+            "provider": getattr(self.agent, "provider", "unknown"),
             "size": self.size,
             "prompt_version": PROMPT_VERSION,
             "unit": qid,
@@ -584,6 +602,10 @@ class FullUseRound:
                     writer.writerow(["id", "status", "detail", "time"])
                 for index, (qid, application) in enumerate(units, start=1):
                     result = self.session(contestant, qid, application, store)
+                    while (wait := quota_wait(self.run / "trials" / contestant / f"{qid}.a{application}")) is not None:
+                        logger.warning("Codex quota exhausted; waiting {}s, then {} again", wait, qid)
+                        time.sleep(wait)
+                        result = self.session(contestant, qid, application, store)
                     applied = sum(row.get("applied", False) for row in result.get("rows", []))
                     detail = f"{result['outcome']} applied={applied} {result['seconds']}s leaks={result['leaks']}"
                     writer.writerow(
