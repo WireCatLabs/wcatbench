@@ -51,6 +51,7 @@ openviking-evo = "wcatbench.stores.openviking:OpenVikingEvolutionStore"
 oracle = "wcatbench.agents.oracle:OracleAgent"
 noop = "wcatbench.agents.noop:NoopAgent"
 hermes = "wcatbench.agents.hermes:HermesAgent"
+claude = "wcatbench.agents.claude:ClaudeAgent"
 
 [project.entry-points."wcatbench.datasets"]
 synthetic = "wcatbench.datasets.synthetic:SyntheticDataset"

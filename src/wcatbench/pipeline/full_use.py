@@ -374,7 +374,9 @@ class FullUseRound:
         self.checks: list[dict[str, Any]] = json.loads((self.dataset / "checks.json").read_text())
         self.qkeys: dict[str, Any] = json.loads((self.dataset / "qkeys.json").read_text())
         self.run.mkdir(parents=True, exist_ok=True)
-        self.stores = STORES / self.size
+        # Each agent gets its own stores: two agents' sessions may run at once, and memo keeps one writer per store.
+        name = getattr(self.agent, "name", "hermes")
+        self.stores = STORES / (self.size if name == "hermes" else f"{self.size}-{name}")
         install_wrappers()
 
     def units(self, contestant: str) -> list[tuple[str, int]]:
@@ -403,7 +405,11 @@ class FullUseRound:
             # Under hard limits, as in rules-trial: one notes folder. The forgotten notes never went in.
             records = [record for record in self.records if record.id not in forgotten]
         held = store.held()
-        missing = [record for record in records if record.key not in held]
+        marker = workdir / "forgotten.json"
+        # After the deletion the forgotten records are no longer held; re-adding them would undo it.
+        missing = [
+            record for record in records if record.key not in held and not (marker.exists() and record.id in forgotten)
+        ]
         if missing:
             started = time.perf_counter()
             receipt = store.ingest(missing)
@@ -419,7 +425,6 @@ class FullUseRound:
                     )
                     + "\n"
                 )
-        marker = workdir / "forgotten.json"
         if contestant != "memo-limited" and not marker.exists():
             keys = [record.key for record in self.records if record.id in forgotten]
             marker.write_text(json.dumps({"forgot": store.forget(keys), "at": datetime.now(UTC).isoformat()}))
@@ -496,7 +501,7 @@ class FullUseRound:
         reply = self.agent.session(prompt, workspace, trial, self.tools(contestant))
         (trial / "stdout.txt").write_text(reply.stdout)
         (trial / "stderr.txt").write_text(reply.stderr)
-        activity = tool_activity(trial / "hermes-home-after")
+        activity = reply.details.get("tools") or tool_activity(trial / "hermes-home-after")
         seen = str(activity["outputs"])
         if (trial / "searches.jsonl").exists():
             seen += "\n".join(

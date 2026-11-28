@@ -417,9 +417,9 @@ def trial_corrections_summary(run: RunOption) -> None:
     typer.echo(table)
 
 
-def _full_use(size: str, run: str, model: str, timeout: int = 900) -> FullUseRound:
+def _full_use(size: str, run: str, model: str, timeout: int = 900, agent_name: str = "hermes") -> FullUseRound:
     home = get_settings().home
-    agent = registry.load("agents", "hermes")(model=model, timeout=timeout)
+    agent = registry.load("agents", agent_name)(model=model, timeout=timeout)
     return FullUseRound(
         dataset=_dataset_folder(f"full-use-{size}"), run=home / "runs" / run / size, size=size, agent=agent
     )
@@ -432,13 +432,32 @@ def trial_full_use(
     run: RunOption,
     limit: Annotated[int, typer.Option("--limit", help="Only the first N sessions (stages 2 and 5).")] = 0,
     model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+    agent: Annotated[str, typer.Option("--agent", help="hermes, or claude for the replication.")] = "hermes",
 ) -> None:
     """The full-use round: one contestant at one archive size. A finished session is skipped on the next run."""
     try:
-        trial_round = _full_use(size, run, model)
+        trial_round = _full_use(size, run, model, agent_name=agent)
         if contestant == "memory-bank":
             curator = registry.load("agents", "hermes")(model=model, timeout=3600)
             curate_memory_bank(trial_round.dataset, trial_round.stores / "memory-bank", curator)
         trial_round.go(contestant, limit or None)
     except PermanentError as error:
         raise _fail(error) from error
+
+
+@trial_app.command("full-use-summary")
+def trial_full_use_summary(run: RunOption) -> None:
+    """Every contestant and size of a full-use run as JSON rows; writes metrics.json and blind sheets to the run."""
+    from wcatbench.pipeline import full_use_report
+
+    home = get_settings().home
+    folder = home / "runs" / run
+    datasets = {
+        path.name: _dataset_folder(f"full-use-{path.name}")
+        for path in folder.iterdir()
+        if path.is_dir() and (path / "trials").is_dir()
+    }
+    rows = full_use_report.metrics(folder, datasets)
+    (folder / "metrics.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2))
+    full_use_report.blind_sheets(folder, folder / "blind" / "sheets")
+    typer.echo(json.dumps(rows, ensure_ascii=False, indent=1))
