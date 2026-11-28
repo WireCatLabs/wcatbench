@@ -57,16 +57,26 @@ data:
     About 12 rules the tasks need, each living inside a conversation, several spread over 2 or more messages. At least
     4 changed across kinds (set in chat, changed in mail or a meeting, and the other way), at least 2 cancelled, and
     the look-alike project carries different values for at least 4 of the same rules.
-  deletion: one source holding a unique marker is deleted at its source mid-round, and every store re-syncs
+  deletion: >-
+    one note holding a unique marker is deleted at its source mid-round, and every store re-syncs. A note, because
+    `tg store import` and `mail messages import` only add or update (their help says so), so a chat or mail deletion
+    would test the import tool, not memo. Checked on step0: the note file removed, `memo sync`, the note gone from
+    search with and without --exact.
   revoked_access: >-
-    one source holding another unique marker is put out of the agent's reach with each system's own control (memo:
-    its account removed from what the agent may read; files: removed from the agent's mount; Mem0 and OpenViking:
-    the source's memories deleted)
+    one notes folder ("HR", with another unique marker) is put out of the agent's reach with each system's own
+    control. memo has no per-agent access setting in 0.156.0 (config show lists none), so memo uses
+    `memo folders remove <id> --allow-delete --yes`, its documented way to stop reading a folder. Files: the folder
+    is removed from the agent's mount. Mem0 and OpenViking: the memories made from it are deleted through their API.
+    Memory Bank: the agent is told to forget it, as a user would.
   sizes:
     "1x": the rule sources plus about 150 background sources
     "10x": about 1,500 background sources
     "100x": about 15,000 background sources
-  background: everyday company talk of all 3 projects and of no project, in the same kinds and style, with no rule of a task
+  background: >-
+    everyday company talk in the same kinds and style, with no rule value of a task. Distractors on purpose, so rg
+    cannot filter noise away for free: 30% names the target project, 25% the look-alike, 20% the third, 25% none;
+    40% mentions a rule topic (timeouts, retention, limits, deadlines, formats) without the task's value, and 10% of
+    those carry a value for another service or the look-alike.
 
 tasks:
   coding: >-
@@ -74,6 +84,7 @@ tasks:
     run. Each task runs twice per contestant and size (his 2 applications): 60 known and 18 unknown. 17 known checks
     per run (34 per contestant and size) rest on a rule whose look-alike project has another value, and 16 per run
     (32) on a rule with an older or cancelled version.
+  question_variants: 4 facts asked in a second wording, as extra sessions outside the 15, scored apart
   questions: >-
     15 questions as a user asks them: some without the project, typos in names (one close to another person, one
     mangled), a word with two meanings, a misremembered detail, a question with no answer, a few asked in 2 wordings
@@ -91,6 +102,7 @@ memo_setup:
     - "memo vocabulary aliases add project:<Пеликан-Плюс> 'ПП'"
     - "memo vocabulary aliases add project:<Пеликан-Плюс> 'Pelican Plus'"
   also: "tg <profile> store import and conversations embed, mail <profile> messages import, memo import, memo folders add, memo sync"
+  reranker: "mmarco, the tg and mail default (search_reranker), downloaded with `tg <profile> models download mmarco`"
   mail_profile: >-
     mail-cli refuses `config set address` from an agent. The harness writes the synthetic address into the throwaway
     config file (throwaway HOME, DBUS_SESSION_BUS_ADDRESS=disabled:, no sign-in, so mail-cli only reads the mbox).
