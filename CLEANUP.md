@@ -15,3 +15,16 @@ Things to remove later, one per line: the path, why, the date. Removals happen i
 - /var/tmp/wcat-dapi/wcatbench-home/runs/e1-prefix: symlinks to the pre-fix memo and OpenViking evidence, for their summary rows. 2026-11-27
 - /var/tmp/wcat-dapi/superseded-e2-ov-loop: experiment 2 OpenViking chains that failed on the SDK event-loop bug, kept as evidence. 2026-11-27
 - /var/tmp/wcat-dapi/hermes-stray-e2-kill: Hermes home files left by a session I stopped mid-run (contains no sign-in). 2026-11-27
+- /home/leemour/.cache/wcat-dapi-mb/wt-wcatbench: worktree of fix/memo-default-embedding, merged as wcatbench#20.
+  2026-11-27
+- /home/leemour/.cache/wcat-dapi-mb/wt-cli-testing: worktree of fix/memo-default-embedding (with node_modules), merged
+  as cli-testing#426. 2026-11-27
+- /home/leemour/.cache/wcat-dapi-mb/wt-cli-private: cli-private worktree for POST-248.a update. 2026-11-27
+- /home/leemour/.cache/wcat-dapi-gemma: memo EmbeddingGemma runs (evidence behind cli-testing#426), its memo template,
+  queue scripts and logs. Keep while the page may be rerun. 2026-11-27
+- /home/leemour/.cache/wcat-dapi-gemma/superseded-memo-0.156.0: memo rows built by the global memo 0.156.0 by mistake
+  (u-memo failed on the store schema), kept as evidence. 2026-11-27
+- /home/leemour/.cache/wcat-dapi-mb/wt-cli-testing-2: worktree of fix/memory-trials-facts (with node_modules).
+  2026-11-27
+- /home/leemour/.cache/wcat-dapi-full/superseded/ (full-use datasets and the 1x memo store built before the opaque-id
+  fix: source ids leaked into exported message ids, Message-IDs and file names). 2026-11-28.
