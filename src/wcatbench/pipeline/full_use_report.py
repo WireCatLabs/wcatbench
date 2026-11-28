@@ -9,11 +9,13 @@ from __future__ import annotations
 import json
 import random
 import re
+import sqlite3
 import statistics
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
-from wcatbench.datasets.company_round import content, export, keys
+from wcatbench.datasets.company_round import content, export, keys, question_texts
 
 VERDICTS = ("correct", "partial", "wrong", "no_data")
 
@@ -41,7 +43,7 @@ def needed(unit: str) -> list[str]:
 class Identity:
     """Which source a hit is, by the identifiers the export gave it (dataset ids.json) and by store record keys."""
 
-    def __init__(self, dataset: Path) -> None:
+    def __init__(self, dataset: Path, memo_db: Path | None = None) -> None:
         index = json.loads((dataset / "ids.json").read_text())
         self.marks: dict[str, list[str]] = {}
         for key, sid in index["messages"].items():
@@ -55,12 +57,31 @@ class Identity:
             self.marks.setdefault(sid, []).append(f'"title": "{title}"')
         corpus = (dataset / "corpus.jsonl").read_text().splitlines()
         self.by_key = {f"r{n + 1:04}": json.loads(line)["id"] for n, line in enumerate(corpus)}
+        # memo's `document:N` refs, resolved through the store's own documents table: titles repeat across notes.
+        self.documents: dict[str, str] = {}
+        if memo_db is not None and memo_db.exists():
+            files = index["files"]
+            with sqlite3.connect(f"file:{memo_db}?mode=ro", uri=True) as con:
+                for number, external in con.execute("select id, external_id from documents"):
+                    path = urllib.parse.unquote(str(external).replace("~", "%"))
+                    found = [k for k in files if path == k or path.endswith(k) or path.endswith("/" + k)]
+                    found = found or [k for k in files if k.startswith(path.split("%")[0][:30])]
+                    if len(found) == 1:
+                        self.documents[f"document:{number}"] = files[found[0]]
 
     def relevant(self, hit: dict[str, Any], sources: list[str]) -> bool:
         if "keys" in hit:
             return any(self.by_key.get(key) in sources for key in hit["keys"])
+        ref = hit.get("ref")
+        if isinstance(ref, str) and ref in self.documents:
+            return self.documents[ref] in sources
         text = hit["json"]
+        if isinstance(ref, str) and ref.startswith("document:") and self.documents:
+            return False
         return any(mark in text for sid in sources for mark in self.marks.get(sid, []))
+
+
+COMPACT_HIT = re.compile(r"(?m)^((?:msg:\S+|document:\d+)) · ")
 
 
 def ranked_lists(trial: Path) -> list[list[dict[str, Any]]]:
@@ -75,8 +96,16 @@ def ranked_lists(trial: Path) -> list[list[dict[str, Any]]]:
             try:
                 reply = json.loads(call["stdout"].strip().splitlines()[-1])
             except (json.JSONDecodeError, IndexError):
+                # `--compact` prints one hit per line, its ref first: "ref · kind · date · title · …".
+                refs = [m.group(1) for m in COMPACT_HIT.finditer(call["stdout"])]
+                lists.append([{"ref": ref, "json": json.dumps({"ref": ref})} for ref in refs])
                 continue
-            lists.append([{"json": json.dumps(item, ensure_ascii=False)} for item in reply.get("items", [])])
+            lists.append(
+                [
+                    {"ref": item.get("ref"), "json": json.dumps(item, ensure_ascii=False)}
+                    for item in reply.get("items", [])
+                ]
+            )
     searches = trial / "searches.jsonl"
     if searches.exists():
         for line in searches.read_text().splitlines():
@@ -102,6 +131,20 @@ def recall(trial: Path, patterns: list[str]) -> float | None:
     if not patterns:
         return None
     return sum(bool(re.search(p, seen, re.IGNORECASE)) for p in patterns) / len(patterns)
+
+
+def key_recall(trial: Path, sources: list[str], identity: Identity) -> float | None:
+    """For a store whose hits are extracted text (Mem0, OpenViking): needed sources among the records it returned."""
+    path = trial / "searches.jsonl"
+    if not sources or not path.exists():
+        return None
+    seen = {
+        identity.by_key.get(key)
+        for line in path.read_text().splitlines()
+        for hit in json.loads(line)["hits"]
+        for key in hit.get("keys", [])
+    }
+    return sum(source in seen for source in sources) / len(sources)
 
 
 def median(values: list[float]) -> float | None:
@@ -152,9 +195,9 @@ def _checks() -> list[dict[str, Any]]:
     return checks()
 
 
-def metrics(run: Path, datasets: dict[str, Path]) -> list[dict[str, Any]]:
+def metrics(run: Path, datasets: dict[str, Path], memo_dbs: dict[str, Path] | None = None) -> list[dict[str, Any]]:
     out = []
-    identities = {size: Identity(folder) for size, folder in datasets.items()}
+    identities = {size: Identity(folder, (memo_dbs or {}).get(size)) for size, folder in datasets.items()}
     every = results(run)
     groups = sorted({(r["size"], r["contestant"]) for r in every})
     for size, contestant in groups:
@@ -163,7 +206,16 @@ def metrics(run: Path, datasets: dict[str, Path]) -> list[dict[str, Any]]:
         asked = [r for r in done if "rows" not in r]
         trials = {id(r): run / size / "trials" / contestant / f"{r['unit']}.a{r['application']}" for r in done}
         quality = [search_quality(trials[id(r)], needed_sources(r["unit"]), identities[size]) for r in done]
-        recalls = [x for r in done if (x := recall(trials[id(r)], needed(r["unit"]))) is not None]
+        recalls = [
+            x
+            for r in done
+            if (
+                x := key_recall(trials[id(r)], needed_sources(r["unit"]), identities[size])
+                if (trials[id(r)] / "searches.jsonl").exists()
+                else recall(trials[id(r)], needed(r["unit"]))
+            )
+            is not None
+        ]
         search_seconds = [
             c["seconds"]
             for r in done
@@ -230,6 +282,7 @@ def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> di
     out.mkdir(parents=True, exist_ok=True)
     by_id = {source["id"]: source for source in content.SOURCES}
     mapping: dict[str, dict[str, str]] = {}
+    asked = question_texts(Path())
     answers = [
         r | {"run": run.name}
         for run in ([runs] if isinstance(runs, Path) else runs)
@@ -246,6 +299,7 @@ def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> di
         }
         sheet = {
             "question": unit,
+            "asked": asked.get(unit, ""),
             "key": key["answer"] or "нет данных: в памяти ответа нет",
             "key_source_dates": sorted({_date(s) for s in key["sources"]}),
             "traps": [export.text_of(by_id[s])[:600] for s in key["traps"] if s in by_id],

@@ -466,3 +466,33 @@ def trial_full_use_summary(
     (folder / "metrics.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2))
     full_use_report.blind_sheets([folder, *(home / "runs" / name for name in also or [])], folder / "blind" / "sheets")
     typer.echo(json.dumps(rows, ensure_ascii=False, indent=1))
+
+
+@trial_app.command("full-use-tables")
+def trial_full_use_tables(
+    runs: Annotated[list[str], typer.Argument(help="Run folders under runs/, e.g. r1 r1-claude2.")],
+    verdicts: Annotated[Path, typer.Option("--verdicts", help="Unblinded verdicts JSON (a list of rows).")],
+    out: Annotated[Path, typer.Option("--out", help="Folder for tables.md and rows.json.")],
+) -> None:
+    """Recount every full-use table and the 1x hypotheses from result.json rows and the blind verdicts."""
+    from wcatbench.pipeline import full_use_tables
+    from wcatbench.pipeline.full_use import STORES
+
+    home = get_settings().home
+    folders = {name: home / "runs" / name for name in runs}
+    sizes = {p.name for folder in folders.values() for p in folder.iterdir() if (p / "trials").is_dir()}
+    datasets = {size: _dataset_folder(f"full-use-{size}") for size in sizes}
+    memo_dbs = {
+        name: {
+            size: STORES
+            / (size if "claude" not in name else f"{size}-claude")
+            / "memo-full"
+            / "wirecat-state"
+            / "wirecat.db"
+            for size in sizes
+        }
+        for name in runs
+    }
+    rows = full_use_tables.collect(folders, datasets, memo_dbs, json.loads(verdicts.read_text()))
+    full_use_tables.write(out, rows)
+    typer.echo((out / "tables.md").read_text())
