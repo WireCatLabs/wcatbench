@@ -69,11 +69,36 @@ data:
   background: everyday company talk of all 3 projects and of no project, in the same kinds and style, with no rule of a task
 
 tasks:
-  coding: 3 tasks with hidden tests, as in his design (known checks and checks whose answer is UNKNOWN)
+  coding: >-
+    3 tasks with hidden tests, as in his design: 10 known and 3 UNKNOWN checks each, so 30 known and 9 unknown per
+    run. Each task runs twice per contestant and size (his 2 applications): 60 known and 18 unknown. 17 known checks
+    per run (34 per contestant and size) rest on a rule whose look-alike project has another value, and 16 per run
+    (32) on a rule with an older or cancelled version.
   questions: >-
     15 questions as a user asks them: some without the project, typos in names (one close to another person, one
     mangled), a word with two meanings, a misremembered detail, a question with no answer, a few asked in 2 wordings
     (scored apart). Written by a second agent that sees only the source and style samples, errors added by a third.
+    12 have an answer and 3 have none; 4 turn on the look-alike project and 4 on a changed or cancelled rule. One
+    session per question.
+
+memo_setup:
+  rule: projects and their aliases only, the names a user would type. No rule value, no source-to-project mapping.
+  commands:
+    - memo projects add 'Пеликан' --key PEL --type work
+    - memo projects add 'Пеликан-Плюс' --key PPL --type work
+    - memo projects add 'Орбита' --key ORB --type work
+    - "memo vocabulary aliases add project:<Пеликан> 'Pelican'"
+    - "memo vocabulary aliases add project:<Пеликан-Плюс> 'ПП'"
+    - "memo vocabulary aliases add project:<Пеликан-Плюс> 'Pelican Plus'"
+  also: "tg <profile> store import and conversations embed, mail <profile> messages import, memo import, memo folders add, memo sync"
+  mail_profile: >-
+    mail-cli refuses `config set address` from an agent. The harness writes the synthetic address into the throwaway
+    config file (throwaway HOME, DBUS_SESSION_BUS_ADDRESS=disabled:, no sign-in, so mail-cli only reads the mbox).
+
+gates:
+  answer_key: an agent given the current rules as one file must score 60 of 60 known and 18 of 18 unknown at 1x
+  no_memory: an agent with no memory and no sources must apply at most 10 of 60 known at 1x
+  when: both at 1x before any contestant; a failed gate stops the round
 
 contestants:
   - {id: memo-full, what: "agent with the memo CLI and its skill (memo skill show), every kind ingested natively, projects defined once"}
@@ -118,35 +143,37 @@ scoring:
   questions: >-
     blind: answers shuffled under random letters, scored by a separate agent (Claude subscription) against the key
     with one rule for all; every disagreement with a regex pre-check is read by hand
-  transcripts: two per contestant read before scoring; a run broken by setup is fixed and rerun, never scored
+  transcripts: >-
+    two per contestant read after the blind scores are fixed. A harness bug found there is fixed, the contestant is
+    rerun and both rows are kept.
 
 stages: ["2 sessions per contestant", "5", "full"]
 
 hypotheses:
   h1:
-    claim: "At 1x, files-rg ties memo-full on accuracy (expected): memo-full is within 3 points of files-rg."
-    fails_if: memo-full accuracy is more than 3 checks or answers below files-rg at 1x
+    claim: "At 1x, files-rg ties memo-full on accuracy (expected)."
+    fails_if: "memo-full is more than 3 checks below files-rg out of 60 known + 18 unknown, or more than 1 answer below out of 15 questions, at 1x"
   h2:
     claim: "At 100x, memo-full uses at most half the agent input tokens per task of files-rg, at no worse accuracy than files-rg minus 2."
-    fails_if: memo-full tokens per task above 0.5 x files-rg at 100x, or its accuracy below files-rg minus 2
+    fails_if: "memo-full input tokens per task above 0.5 x files-rg at 100x (21 tasks: 6 coding runs + 15 questions), or its accuracy more than 2 below files-rg out of 60 + 18 checks and 15 questions"
   h3:
     claim: "At 100x, memo-full's wall time per task is at most files-rg's."
     fails_if: memo-full median wall time per task above files-rg's at 100x
   h4:
     claim: "On look-alike-project checks memo-full uses the wrong project's value at most half as often as files-rg at 10x and 100x."
-    fails_if: "memo-full contamination above 0.5 x files-rg at 10x or at 100x. Both at 0 is reported as no difference, not a pass."
+    fails_if: "memo-full look-alike values above 0.5 x files-rg's, counted out of 34 look-alike checks and 4 look-alike questions, at 10x or at 100x. Both at 0 is reported as no difference, not a pass."
   h5:
     claim: "Expected against memo: on cross-kind corrections memo-full uses a stale version at least as often as files-rg, because memo has no supersession yet."
-    fails_if: memo-full stale use is lower than files-rg's by 2 or more (that would be a result for memo)
+    fails_if: "memo-full stale uses are 2 or more below files-rg's, out of 32 checks and 4 questions with an older version, at any size (that would be a result for memo)"
   h6:
     claim: "At 1x memo-full uses more agent input tokens per task than files-rg (expected against memo)."
     fails_if: memo-full tokens per task at 1x are at most files-rg's
   h7:
     claim: "After deletion and revocation, the marker reaches the model input in 0 sessions for memo-full."
-    fails_if: any memo-full session sees a marker after the change
+    fails_if: "any memo-full session (out of all its sessions after the change, at every size) sees a marker"
   h8:
     claim: "memo-full cites the right source for at least 90% of the rules it applies."
-    fails_if: below 90%
+    fails_if: "below 90%, out of the applied known checks with a citation plus the correct answered questions, at 1x"
   decision: >-
     h2, h3 and h4 are memo's claim; any that fails goes in the headline, and memo's roadmap. h5 and h6 are published
     either way. Small differences (1 or 2 answers of 15) are reported as noise, not as a claim.
