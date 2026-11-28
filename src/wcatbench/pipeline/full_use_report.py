@@ -273,7 +273,7 @@ def precheck(answer: str, key: dict[str, Any]) -> str:
     return "no_data" if "нет данных" in text else "wrong"
 
 
-def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> dict[str, Any]:
+def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128, size: str | None = None) -> dict[str, Any]:
     """One sheet per question across runs: the key, what the traps say, every answer under a random letter.
 
     The map from letter to run, size and contestant stays beside the sheets, never in them.
@@ -287,7 +287,7 @@ def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> di
         r | {"run": run.name}
         for run in ([runs] if isinstance(runs, Path) else runs)
         for r in results(run)
-        if "answer" in r
+        if "answer" in r and size in (None, r["size"])
     ]
     for unit in sorted({r["unit"] for r in answers}):
         rows = [r for r in answers if r["unit"] == unit]
@@ -302,6 +302,8 @@ def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> di
             "asked": asked.get(unit, ""),
             "key": key["answer"] or "нет данных: в памяти ответа нет",
             "key_source_dates": sorted({_date(s) for s in key["sources"]}),
+            "case": key.get("case", ""),
+            "flags": key.get("flags", []),
             "traps": [export.text_of(by_id[s])[:600] for s in key["traps"] if s in by_id],
             "answers": [
                 {"letter": letter, "text": masked(r["answer"][-4000:])} for letter, r in zip(letters, rows, strict=True)

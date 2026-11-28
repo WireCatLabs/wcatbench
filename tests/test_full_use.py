@@ -334,3 +334,31 @@ def describe_opaque_ids() -> None:
         assert "s04" in index["messages"].values()
         assert "s06" in index["mail"].values()
         assert index["files"]["Пеликан/экспорт.md"] == "s13"
+
+
+def describe_tables() -> None:
+    def it_recounts_tables_and_scores_hypotheses_on_complete_runs_only(dataset: Path, tmp_path: Path) -> None:
+        from wcatbench.pipeline import full_use_tables
+
+        for contestant in ("memo-full", "files-rg"):
+            trial = FullUseRound(dataset, tmp_path / "run" / "1x", "1x", FakeAgent())
+            for qid, application in trial.units(contestant):
+                if qid.startswith("t") or qid in full_use_tables.BASE:
+                    trial.session(contestant, qid, application)
+        verdicts = [
+            {"question": qid, "run": "run", "size": "1x", "contestant": c, "verdict": "correct", "source_ok": True}
+            for c in ("memo-full", "files-rg")
+            for qid in full_use_tables.BASE
+        ]
+        rows = full_use_tables.collect({"run": tmp_path / "run"}, {"1x": dataset}, {}, verdicts)
+        memo = next(r for r in rows if r["contestant"] == "memo-full")
+        assert memo["tasks"] == 21
+        assert memo["questions_scored"]["correct"] == 15
+        full_use_tables.write(tmp_path / "out", rows)
+        text = (tmp_path / "out" / "tables.md").read_text()
+        assert "ceiling: raw export plus rg" in text
+        assert "| h1 | ceiling |" in text
+        hyps = {h["id"]: h for h in full_use_tables.hypotheses_1x(rows, "run")}
+        assert not hyps["h1"]["fails"]
+        assert hyps["h7 (1x leg)"]["measured"].endswith("of 21")
+        assert full_use_tables.hypotheses_1x([{**memo, "tasks": 3}], "run") == []

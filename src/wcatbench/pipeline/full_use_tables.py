@@ -123,7 +123,10 @@ def markdown(rows: list[dict[str, Any]], size: str, run: str) -> str:
         (r for r in rows if r["size"] == size and r["run"] == run),
         key=lambda r: ORDER.index(r["contestant"]) if r["contestant"] in ORDER else 99,
     )
+    providers = ", ".join(f"{LABEL.get(r['contestant'], r['contestant'])}: {'+'.join(r['providers'])}" for r in chosen)
     out = [
+        f"Agent provider per contestant: {providers}.",
+        "",
         f"#### Coding, {size}, run {run}",
         "",
         "| Contestant | Sessions | Known applied | UNKNOWN right | Old version used | Look-alike value used | "
@@ -143,7 +146,8 @@ def markdown(rows: list[dict[str, Any]], size: str, run: str) -> str:
         "",
         f"#### Questions, {size}, run {run} (blind scores)",
         "",
-        '| Contestant | Right, with source (of 15) | Right, any source | Partial | "No data" right (of 3) | '
+        "| Contestant | Right with a dated source, of 15 (primary) | Right answer, of 15 | Partial | "
+        '"No data" right (of 3) | '
         "Second wording right (of 4) | Old version used | Look-alike used |",
         "|---|---|---|---|---|---|---|---|",
     ]
@@ -153,7 +157,7 @@ def markdown(rows: list[dict[str, Any]], size: str, run: str) -> str:
             continue
         out.append(
             f"| {LABEL.get(r['contestant'], r['contestant'])} | {q['correct']}/{q['scored']} | "
-            f"{q['correct_any_source']} | {q['partial']} | {q['no_data_ok']}/{len(NO_DATA)} | "
+            f"{q['correct_any_source']}/{q['scored']} | {q['partial']} | {q['no_data_ok']}/{len(NO_DATA)} | "
             f"{q['variants']}/{q['variants_scored']} | {q['stale_used']}/{len(STALE_Q)} | "
             f"{q['lookalike_used']}/{len(LOOKALIKE_Q)} |"
         )
@@ -182,7 +186,10 @@ def _pick(rows: list[dict[str, Any]], run: str, size: str, contestant: str) -> d
 def hypotheses_1x(rows: list[dict[str, Any]], run: str) -> list[dict[str, Any]]:
     """h1, h5 (1x leg), h6, h7 (1x leg) and h8 by their pre-registered wording and denominators."""
     memo, files = _pick(rows, run, "1x", "memo-full"), _pick(rows, run, "1x", "files-rg")
-    if not memo or not files or not memo["coding"] or not files["coding"]:
+    # Only a complete run is scored: 6 coding runs and 15 questions each, as pre-registered.
+    if memo is None or files is None or not memo["coding"] or not files["coding"]:
+        return []
+    if memo["tasks"] != 21 or files["tasks"] != 21:
         return []
     mc, fc = memo["coding"], files["coding"]
     mq, fq = memo["questions_scored"], files["questions_scored"]

@@ -17,7 +17,8 @@ DONE = ("completed", "failed", "cancelled")
 
 def main() -> None:
     request = json.loads(sys.stdin.read())
-    client = SyncHTTPClient(url=request["url"])
+    # The SDK default read timeout (180 s here) is shorter than adding 1,500 files with wait=True.
+    client = SyncHTTPClient(url=request["url"], timeout=float(request.get("timeout", 3600)))
     client.initialize()
     try:
         if request["op"] == "add":
