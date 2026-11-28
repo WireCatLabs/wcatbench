@@ -88,7 +88,36 @@ MAIL_SUBJECTS = [
     "Планирование спринта",
     "{p1}: отчёт поддержки",
 ]
-MEETINGS = ["{p1} — планирование", "{p1} — дейли", "Общий созвон", "{p1} — разбор багов"]
+MEETINGS = [
+    "{p1} — планирование",
+    "{p1} — дейли",
+    "Общий созвон",
+    "{p1} — разбор багов",
+    "{p1} — синк",
+    "{p1} — ретро",
+    "{p1} и поддержка",
+]
+# Topics a note or a document is named after, the way the rule sources are named (экспорт, логи, стенд).
+TOPICS = [
+    "деплой",
+    "баги",
+    "созвоны",
+    "релиз",
+    "ревью",
+    "доступы",
+    "таймауты",
+    "выгрузки",
+    "логи",
+    "стенд",
+    "уведомления",
+    "поддержка",
+    "планы",
+    "метрики",
+    "онбординг",
+    "интеграции",
+    "отчёты",
+    "ретро",
+]
 MONTHS = ["январе", "феврале", "марте", "апреле", "мае", "июне", "июле", "августе", "сентябре", "октябре"]
 CLOSERS = ["", "", " спасибо", " 🙏", " если что пишите", ")"]
 
@@ -208,7 +237,8 @@ def source(index: int, rng: random.Random) -> dict[str, Any]:
             "messages": [(sender, (receiver, content.OWNER), at, subject, body)],
         }
     if kind == "note":
-        title = f"{NAME[project][0]}: заметки {at[:10]}"
+        topic = rng.choice(TOPICS)
+        title = f"{NAME[project][0]}: {topic}"
         folder = NAME[project][0] if project != content.NONE else "Разное"
         return {
             "id": sid,
@@ -216,7 +246,7 @@ def source(index: int, rng: random.Random) -> dict[str, Any]:
             "project": project,
             "folder": "notes",
             "noise": True,
-            "path": f"{folder}/{sid}.md",
+            "path": f"{folder}/{topic}.md",
             "at": at,
             "author": content.OWNER,
             "body": f"# {title}\n\n{text_of(rng, project, 3)}",
@@ -233,16 +263,17 @@ def source(index: int, rng: random.Random) -> dict[str, Any]:
             "at": at,
             "cues": cues,
         }
+    topic = rng.choice(TOPICS)
     return {
         "id": sid,
         "kind": "doc",
         "project": project,
         "noise": True,
-        "path": f"{NAME[project][0]} — {sid}.md",
+        "path": f"{NAME[project][0]} — {topic}.md",
         "at": at,
         "author": rng.choice(list(content.PEOPLE)),
-        "title": f"{NAME[project][0]}: рабочие записи",
-        "body": f"# {NAME[project][0]}: рабочие записи\n\n{text_of(rng, project, 4)}",
+        "title": f"{NAME[project][0]}: {topic}",
+        "body": f"# {NAME[project][0]}: {topic}\n\n{text_of(rng, project, 4)}",
     }
 
 

@@ -134,3 +134,19 @@ KEYS: dict[str, dict[str, Any]] = {
 
 # Facts asked a second time in another form; extra sessions outside the 15, scored apart.
 VARIANTS = {"q02v": "q02", "q06v": "q06", "q11v": "q11", "q15v": "q15"}
+
+# A pattern per needed source, for recall, precision and MRR: what marks the source's text in a tool's output.
+PROBES = {
+    "s02": r"восем\w* секунд",
+    "s03": r"15 секунд|пять на запрос",
+    "s04": r"всего три попытки",
+    "s06": r"2, 4, 8|вдвое длиннее",
+    "s08": r"api\.pelican-pay\.example",
+    "s11": r"ДД\.ММ\.ГГГГ|точкой с запятой",
+    "s13": r"не больше 2000 строк",
+    "s15": r"три звёздочки",
+    "s18": r"21:00 до 09:00",
+    "s20": r"сорок пять дней|лимит в три уведомления",
+    "s32": r"27 ноября",
+    "s33": r"хранилище секретов",
+}

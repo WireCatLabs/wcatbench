@@ -5,7 +5,38 @@
 
 round: full-use
 status: pre-registered
-amendments: []
+amendments:
+  - date: 2026-11-28
+    when: after the content was written and before the first session of any contestant
+    what: >-
+      Counts as the content came out (manifest extra): 15 known checks per run (30 per contestant and size) rest on
+      a rule whose look-alike has another value, not 17 (34); 14 per run (28) on a rule with an older or cancelled
+      version, not 16 (32). Questions: 4 look-alike (q01, q03, q06, q13) and 5 with a changed or cancelled rule
+      (q02, q04, q05, q10, q11), not 4. Thresholds keep their form with these denominators.
+  - date: 2026-11-28
+    when: same
+    what: >-
+      The prompt is the frozen strategy of the rules-trial unrestricted round (STRATEGY_VERSION 1, tuned on
+      rules-trial-dev: another project, other values, another seed) plus one line naming the tool. No new dev set was
+      built; full-use PROMPT_VERSION 1 is that text, frozen before the first session.
+  - date: 2026-11-28
+    when: same
+    what: >-
+      Memory Bank curates the archive after the deletion and the revocation (one curation session of up to 3600 s per
+      size, then the tasks read the bank only). Its forgetting is therefore not tested. Files get the archive after
+      the deletion and the revocation, as a user's disk would hold it. memo-full, Mem0 and OpenViking ingest
+      everything, then forget with their own commands. The deletion happens after the build and before the first
+      session, not between sessions.
+  - date: 2026-11-28
+    when: after the answer-key gate and before the first contestant session
+    what: >-
+      Fairness fix. The first build wrote source ids (s04, n00042) into exported identifiers: tg message ids,
+      Message-IDs, .vtt names and noise file names, so a contestant reading raw data could tell a rule source from
+      noise. Every exported identifier is now opaque (export.Ids, seeded), noise notes and documents carry topical
+      names, and the id-to-source map is ids.json in the dataset folder, outside every mount. The corpus text did not
+      change. The answer-key gate (60/60 known, 18/18 unknown) stands: its input is the rule text only, no exported
+      identifier. Search MRR and precision now score a hit by its source identity (ref, title), not by a regex on the
+      excerpt.
 
 step0:
   date: 2026-11-28

@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import zipfile
+from collections import defaultdict
 from datetime import datetime
 from email.header import Header
 from email.utils import format_datetime
@@ -62,11 +64,70 @@ def text_of(source: dict[str, Any]) -> str:
     return f"{source['at'][:10]} · {name(source['author'])}\n{source['body']}"
 
 
+class Ids:
+    """Every identifier an export shows, opaque and drawn from a seeded shuffle: a source id (s04, n00042) never
+    reaches the data, so no contestant can tell a rule source from noise by its id. `index` maps each back, for
+    scoring only; it stays in the dataset folder, outside every mount."""
+
+    def __init__(self, sources: list[dict[str, Any]], seed: int) -> None:
+        rng = random.Random(seed)  # noqa: S311  # nosec B311
+        self.message: dict[tuple[str, int], int] = {}
+        self.chat: dict[str, str] = {}
+        per_chat: dict[str, list[tuple[str, str, int]]] = defaultdict(list)
+        for source in sources:
+            if source["kind"] == "chat":
+                self.chat[source["id"]] = chat_id(source["chat"])
+                for n, (_, at, _) in enumerate(source["messages"]):
+                    per_chat[source["chat"]].append((at, source["id"], n))
+        for chat in sorted(per_chat):
+            base = rng.randrange(1000, 90000)
+            for offset, (_, sid, n) in enumerate(sorted(per_chat[chat])):
+                self.message[(sid, n)] = base + offset
+        self.mail: dict[tuple[str, int], tuple[int, int, str]] = {}
+        for source in sources:
+            if source["kind"] == "mail":
+                thread = rng.randrange(10**18, 9 * 10**18)
+                for n in range(len(source["messages"])):
+                    self.mail[(source["id"], n)] = (
+                        thread,
+                        thread + n,
+                        f"<{rng.getrandbits(64):016x}@severveter.example>",
+                    )
+        self.path: dict[str, str] = {}
+        self.title: dict[str, str] = {}
+        taken: set[tuple[str, str]] = set()
+        for source in sources:
+            if source["kind"] == "meeting":
+                wanted = f"{source['at'][:10]} {source['title']}.vtt"
+            elif source["kind"] in ("note", "doc"):
+                wanted = source["path"]
+            else:
+                continue
+            folder = str(source.get("folder") or source["kind"])
+            stem, _, suffix = wanted.rpartition(".")
+            path, copy = wanted, 2
+            while (folder, path) in taken:
+                path, copy = f"{stem} ({copy}).{suffix}", copy + 1
+            taken.add((folder, path))
+            self.path[source["id"]] = path
+            if str(source.get("body", "")).startswith("# "):
+                self.title[source["id"]] = source["body"].splitlines()[0][2:]
+
+    def index(self) -> dict[str, dict[str, str]]:
+        return {
+            "messages": {f"{self.chat[sid]}/{mid}": sid for (sid, _), mid in self.message.items()},
+            "mail": {str(gid): sid for (sid, _), (_, gid, _) in self.mail.items()}
+            | {message_id: sid for (sid, _), (_, _, message_id) in self.mail.items()},
+            "files": {path: sid for sid, path in self.path.items()},
+            "titles": {title: sid for sid, title in self.title.items()},
+        }
+
+
 def person(key: str) -> dict[str, str]:
     return {"id": person_id(key), "name": name(key), "username": content.PEOPLE[key][1]}
 
 
-def tg_file(sources: list[dict[str, Any]]) -> dict[str, Any]:
+def tg_file(sources: list[dict[str, Any]], ids: Ids) -> dict[str, Any]:
     messages = []
     for source in sources:
         if source["kind"] != "chat":
@@ -74,7 +135,7 @@ def tg_file(sources: list[dict[str, Any]]) -> dict[str, Any]:
         for n, (who, at, text) in enumerate(source["messages"]):
             messages.append(
                 {
-                    "id": f"{source['id']}-{n}",
+                    "id": str(ids.message[(source["id"], n)]),
                     "chatId": chat_id(source["chat"]),
                     "senderId": person_id(who),
                     "senderName": name(who),
@@ -102,7 +163,7 @@ def tg_file(sources: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def desktop_exports(sources: list[dict[str, Any]]) -> dict[str, str]:
+def desktop_exports(sources: list[dict[str, Any]], ids: Ids) -> dict[str, str]:
     """Telegram Desktop's JSON export, one file per chat, indented one field per line as Desktop writes it."""
     by_chat: dict[str, list[dict[str, Any]]] = {chat: [] for chat in content.CHATS}
     for source in sources:
@@ -110,7 +171,7 @@ def desktop_exports(sources: list[dict[str, Any]]) -> dict[str, str]:
             for n, (who, at, text) in enumerate(source["messages"]):
                 by_chat[source["chat"]].append(
                     {
-                        "id": int(source["id"][1:]) * 10 + n,
+                        "id": ids.message[(source["id"], n)],
                         "type": "message",
                         "date": at[:19],
                         "from": name(who),
@@ -125,24 +186,20 @@ def desktop_exports(sources: list[dict[str, Any]]) -> dict[str, str]:
             "name": title,
             "type": "private_group" if kind == "group" else "personal_chat",
             "id": int(chat_id(chat)),
-            "messages": sorted(messages, key=lambda m: m["date"]),
+            "messages": sorted(messages, key=lambda m: (m["date"], m["id"])),
         }
         out[f"chats/{title}/result.json"] = json.dumps(export, ensure_ascii=False, indent=1)
     return out
 
 
-def mbox(sources: list[dict[str, Any]]) -> str:
+def mbox(sources: list[dict[str, Any]], ids: Ids) -> str:
     blocks = []
-    serial = 0
     for source in sources:
         if source["kind"] != "mail":
             continue
-        thread = 1790000000000000000 + int(source["id"][1:]) * 100
         first = None
-        for sender, receivers, at, subject, body in source["messages"]:
-            serial += 1
-            gid = thread + serial % 100
-            message_id = f"<{source['id']}.{serial}@severveter.example>"
+        for n, (sender, receivers, at, subject, body) in enumerate(source["messages"]):
+            thread, gid, message_id = ids.mail[(source["id"], n)]
             when = moment(at)
             headers = [
                 f"From {gid}@xxx {when.strftime('%a %b %d %H:%M:%S %z %Y')}",
@@ -218,21 +275,19 @@ def touch(path: Path, stamp: str) -> None:
     os.utime(path, (seconds, seconds))
 
 
-def meeting_name(source: dict[str, Any]) -> str:
-    return f"{source['at'][:10]} {source['title']} {source['id']}.vtt"
-
-
-def write(out: Path, sources: list[dict[str, Any]]) -> dict[str, int]:
-    """Both layouts under `out`. Returns the count of files per kind."""
+def write(out: Path, sources: list[dict[str, Any]], seed: int) -> dict[str, int]:
+    """Both layouts under `out`, and ids.json beside them. Returns the count of sources per kind."""
+    ids = Ids(sources, seed)
+    (out / "ids.json").parent.mkdir(parents=True, exist_ok=True)
     memo, files = out / "memo", out / "files"
     for folder in (memo / "notes", memo / "hr", memo / "docs", memo / "meetings", files):
         folder.mkdir(parents=True, exist_ok=True)
-    (memo / "chats.json").write_text(json.dumps(tg_file(sources), ensure_ascii=False))
-    box = mbox(sources)
+    (memo / "chats.json").write_text(json.dumps(tg_file(sources, ids), ensure_ascii=False))
+    box = mbox(sources, ids)
     (memo / "mail.mbox").write_text(box)
     (files / "mail").mkdir(exist_ok=True)
     (files / "mail" / "mail.mbox").write_text(box)
-    for relative, text in desktop_exports(sources).items():
+    for relative, text in desktop_exports(sources, ids).items():
         (files / relative).parent.mkdir(parents=True, exist_ok=True)
         (files / relative).write_text(text)
     counts: dict[str, int] = {}
@@ -242,15 +297,15 @@ def write(out: Path, sources: list[dict[str, Any]]) -> dict[str, int]:
         if kind == "meeting":
             for root in (memo / "meetings", files / "meetings"):
                 root.mkdir(parents=True, exist_ok=True)
-                (root / meeting_name(source)).write_text(vtt(source))
-                touch(root / meeting_name(source), source["at"])
+                (root / ids.path[source["id"]]).write_text(vtt(source))
+                touch(root / ids.path[source["id"]], source["at"])
         elif kind == "note":
             for root in (memo / source["folder"], files / source["folder"]):
-                (root / source["path"]).parent.mkdir(parents=True, exist_ok=True)
-                (root / source["path"]).write_text(source["body"] + "\n")
-                touch(root / source["path"], source["at"])
+                (root / ids.path[source["id"]]).parent.mkdir(parents=True, exist_ok=True)
+                (root / ids.path[source["id"]]).write_text(source["body"] + "\n")
+                touch(root / ids.path[source["id"]], source["at"])
         elif kind == "doc":
-            path = source["path"]
+            path = ids.path[source["id"]]
             (files / "docs").mkdir(exist_ok=True)
             if path.endswith(".docx"):
                 (memo / "docs" / path).write_bytes(docx(source["body"]))
@@ -260,4 +315,5 @@ def write(out: Path, sources: list[dict[str, Any]]) -> dict[str, int]:
                 (files / "docs" / path).write_text(source["body"] + "\n")
             for written in (memo / "docs" / path, files / "docs" / path.replace(".docx", ".txt")):
                 touch(written, source["at"])
+    (out / "ids.json").write_text(json.dumps(ids.index(), ensure_ascii=False))
     return counts

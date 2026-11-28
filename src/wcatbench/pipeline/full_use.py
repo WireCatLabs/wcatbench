@@ -281,12 +281,13 @@ def sources_file(workspace: Path) -> str:
     return path.read_text() if path.exists() else ""
 
 
-def citation_ok(check: dict[str, Any], sources_md: str) -> bool | None:
-    """The SOURCES.md line for the check's name carries the active source's date."""
+def citation_ok(check: dict[str, Any], sources_md: str, checks: list[dict[str, Any]]) -> bool | None:
+    """A SOURCES.md line naming any value of the check's rule carries the active source's date. One rule sets several
+    names (MAX_ATTEMPTS and should_retry), and one line per rule is a correct citation."""
     if check["kind"] != "known":
         return None
-    name = check["expr"].split("(")[0]
-    lines = [line for line in sources_md.splitlines() if name in line]
+    names = {other["expr"].split("(")[0] for other in checks if other.get("rule") == check["rule"]}
+    lines = [line for line in sources_md.splitlines() if any(name in line for name in names)]
     return any(check["source_date"] in line for line in lines)
 
 
@@ -301,7 +302,9 @@ def extra_rows(
             row["stale_used"] = check.get("stale") is not None and got == check["stale"]
             row["lookalike_used"] = check.get("lookalike") is not None and got == check["lookalike"]
             row["cited"] = (
-                citation_ok(check, sources_md) if statuses.get(check["id"], {}).get("status") == "pass" else None
+                citation_ok(check, sources_md, checks)
+                if statuses.get(check["id"], {}).get("status") == "pass"
+                else None
             )
         else:
             row["trap_used"] = check.get("trap_value") is not None and got == check["trap_value"]
@@ -378,7 +381,12 @@ class FullUseRound:
         coding = [(task["id"], n) for task in content.TASKS for n in range(1, self.applications + 1)]
         if contestant in GATES:
             return coding
-        return coding + [(qid, 1) for qid in sorted(self.qkeys)]
+        # Interleaved, so the first 2 and 5 sessions of the staged run cover both kinds of unit.
+        asked = [(qid, 1) for qid in sorted(self.qkeys, key=lambda qid: (qid.endswith("v"), qid))]
+        mixed: list[tuple[str, int]] = []
+        for index in range(max(len(coding), len(asked))):
+            mixed += coding[index : index + 1] + asked[index : index + 1]
+        return mixed
 
     def memo(self) -> MemoBuild:
         return MemoBuild(self.stores / "memo-full")

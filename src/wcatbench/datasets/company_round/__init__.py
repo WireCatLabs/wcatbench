@@ -151,7 +151,8 @@ class CompanyRoundDataset:
             (out / "project" / relative).write_text(text)
         (out / "files").mkdir(exist_ok=True)
         (out / "files" / "current.md").write_text(current_rules())
-        counts = export.write(out / "sources", sources)
+        counts = export.write(out / "sources", sources, seed)
+        (out / "sources" / "ids.json").rename(out / "ids.json")
         tasks = {task["id"]: {"module": task["module"], "path": task["path"]} for task in content.TASKS}
         dataset_files.write_json(out / "tasks.json", tasks)
         manifest = DatasetManifest(
