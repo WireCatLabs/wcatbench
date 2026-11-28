@@ -446,7 +446,10 @@ def trial_full_use(
 
 
 @trial_app.command("full-use-summary")
-def trial_full_use_summary(run: RunOption) -> None:
+def trial_full_use_summary(
+    run: RunOption,
+    also: Annotated[list[str] | None, typer.Option("--also", help="More runs to blind together with this one.")] = None,
+) -> None:
     """Every contestant and size of a full-use run as JSON rows; writes metrics.json and blind sheets to the run."""
     from wcatbench.pipeline import full_use_report
 
@@ -459,5 +462,5 @@ def trial_full_use_summary(run: RunOption) -> None:
     }
     rows = full_use_report.metrics(folder, datasets)
     (folder / "metrics.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2))
-    full_use_report.blind_sheets(folder, folder / "blind" / "sheets")
+    full_use_report.blind_sheets([folder, *(home / "runs" / name for name in also or [])], folder / "blind" / "sheets")
     typer.echo(json.dumps(rows, ensure_ascii=False, indent=1))

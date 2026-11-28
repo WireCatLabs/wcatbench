@@ -13,7 +13,7 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-from wcatbench.datasets.company_round import content, keys
+from wcatbench.datasets.company_round import content, export, keys
 
 VERDICTS = ("correct", "partial", "wrong", "no_data")
 
@@ -198,22 +198,34 @@ def metrics(run: Path, datasets: dict[str, Path]) -> list[dict[str, Any]]:
     return out
 
 
-def blind_sheets(run: Path, out: Path, seed: int = 20261128) -> dict[str, Any]:
-    """One sheet per question: the key and every contestant's answer under a random letter. The map stays here."""
+def blind_sheets(runs: Path | list[Path], out: Path, seed: int = 20261128) -> dict[str, Any]:
+    """One sheet per question across runs: the key, what the traps say, every answer under a random letter.
+
+    The map from letter to run, size and contestant stays beside the sheets, never in them.
+    """
     rng = random.Random(seed)  # noqa: S311  # nosec B311
     out.mkdir(parents=True, exist_ok=True)
+    by_id = {source["id"]: source for source in content.SOURCES}
     mapping: dict[str, dict[str, str]] = {}
-    answers = [r for r in results(run) if "answer" in r]
+    answers = [
+        r | {"run": run.name}
+        for run in ([runs] if isinstance(runs, Path) else runs)
+        for r in results(run)
+        if "answer" in r
+    ]
     for unit in sorted({r["unit"] for r in answers}):
         rows = [r for r in answers if r["unit"] == unit]
         rng.shuffle(rows)
         key = keys.KEYS[keys.VARIANTS.get(unit, unit)]
         letters = [f"A{n:03d}" for n in range(1, len(rows) + 1)]
-        mapping[unit] = {letter: f"{r['size']}/{r['contestant']}" for letter, r in zip(letters, rows, strict=True)}
+        mapping[unit] = {
+            letter: f"{r['run']}/{r['size']}/{r['contestant']}" for letter, r in zip(letters, rows, strict=True)
+        }
         sheet = {
             "question": unit,
             "key": key["answer"] or "нет данных: в памяти ответа нет",
             "key_source_dates": sorted({_date(s) for s in key["sources"]}),
+            "traps": [export.text_of(by_id[s])[:600] for s in key["traps"] if s in by_id],
             "answers": [
                 {"letter": letter, "text": r["answer"][-4000:]} for letter, r in zip(letters, rows, strict=True)
             ],
@@ -234,6 +246,6 @@ def unblind(verdicts: Path, mapping_path: Path) -> list[dict[str, Any]]:
     for path in sorted(verdicts.glob("*.json")):
         sheet = json.loads(path.read_text())
         for verdict in sheet["verdicts"]:
-            size, contestant = mapping[sheet["question"]][verdict["letter"]].split("/")
-            rows.append({"question": sheet["question"], "size": size, "contestant": contestant, **verdict})
+            run, size, contestant = mapping[sheet["question"]][verdict["letter"]].split("/")
+            rows.append({"question": sheet["question"], "run": run, "size": size, "contestant": contestant, **verdict})
     return rows

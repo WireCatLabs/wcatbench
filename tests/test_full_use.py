@@ -250,9 +250,18 @@ def describe_round() -> None:
         )
         back = full_use_report.unblind(tmp_path / "verdicts", tmp_path / "blind" / "blind-map.json")
         assert back == [
-            {"question": "q01", "size": "1x", "contestant": "files-rg", "letter": letter, "verdict": "correct"}
+            {
+                "question": "q01",
+                "run": "run",
+                "size": "1x",
+                "contestant": "files-rg",
+                "letter": letter,
+                "verdict": "correct",
+            }
         ]
-        assert mapping["q01"][letter] == "1x/files-rg"
+        assert mapping["q01"][letter] == "run/1x/files-rg"
+        assert sheet["traps"]
+        assert "files-rg" not in sheet["traps"][0]
 
     def it_cites_one_line_per_rule() -> None:
         rows = [row for row in checks() if row["task"] == "t1" and row["kind"] == "known"]
