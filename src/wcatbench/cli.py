@@ -23,6 +23,8 @@ from wcatbench.pipeline.corrections import STORES as GATE_STORES
 from wcatbench.pipeline.corrections import Gate
 from wcatbench.pipeline.dialogue import VARIANTS as DIALOGUE_VARIANTS
 from wcatbench.pipeline.dialogue import DialogueRound
+from wcatbench.pipeline.full_use import KIND as FULL_USE
+from wcatbench.pipeline.full_use import FullUseRound, curate_memory_bank
 from wcatbench.pipeline.rules_trial import VARIANTS
 from wcatbench.pipeline.rules_trial import Round as RulesTrialRound
 from wcatbench.pipeline.search import REWRITES, search_run
@@ -413,3 +415,30 @@ def trial_corrections_summary(run: RunOption) -> None:
     table = Gate(builds=home / "builds-e3", run=home / "runs" / run).summary()
     (home / "runs" / run / "e3" / "summary.md").write_text(table)
     typer.echo(table)
+
+
+def _full_use(size: str, run: str, model: str, timeout: int = 900) -> FullUseRound:
+    home = get_settings().home
+    agent = registry.load("agents", "hermes")(model=model, timeout=timeout)
+    return FullUseRound(
+        dataset=_dataset_folder(f"full-use-{size}"), run=home / "runs" / run / size, size=size, agent=agent
+    )
+
+
+@trial_app.command("full-use")
+def trial_full_use(
+    contestant: Annotated[str, typer.Argument(help=f"One of: {', '.join(FULL_USE)}.")],
+    size: Annotated[str, typer.Option("--size", help="1x, 10x or 100x.")],
+    run: RunOption,
+    limit: Annotated[int, typer.Option("--limit", help="Only the first N sessions (stages 2 and 5).")] = 0,
+    model: Annotated[str, typer.Option("--model", help="Hermes model through the Codex sign-in.")] = "gpt-5.6-terra",
+) -> None:
+    """The full-use round: one contestant at one archive size. A finished session is skipped on the next run."""
+    try:
+        trial_round = _full_use(size, run, model)
+        if contestant == "memory-bank":
+            curator = registry.load("agents", "hermes")(model=model, timeout=3600)
+            curate_memory_bank(trial_round.dataset, trial_round.stores / "memory-bank", curator)
+        trial_round.go(contestant, limit or None)
+    except PermanentError as error:
+        raise _fail(error) from error

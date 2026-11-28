@@ -63,6 +63,12 @@ def main() -> None:
     elif request["op"] == "search":
         reply = store.search(request["query"], top_k=request["k"], filters={"user_id": user})
         print(json.dumps(reply.get("results", []), ensure_ascii=False, default=str))
+    elif request["op"] == "forget":
+        rows = store.get_all(filters={"user_id": user}, top_k=10000).get("results", [])
+        gone = [row["id"] for row in rows if (row.get("metadata") or {}).get("key") in set(request["keys"])]
+        for memory_id in gone:
+            store.delete(memory_id)
+        print(json.dumps({"deleted": len(gone)}))
     elif request["op"] == "all":
         reply = store.get_all(filters={"user_id": user}, top_k=10000)
         print(json.dumps(reply.get("results", []), ensure_ascii=False, default=str))

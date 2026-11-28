@@ -179,6 +179,15 @@ class OpenVikingStore:
         stem = next(stem for stem, name in self.names.items() if name == key)
         return f"{TARGET}/{stem}/{stem}.md"
 
+    def forget(self, keys: Sequence[str]) -> int:
+        """Remove each record's resource folder through OpenViking's own `rm`."""
+        for key in keys:
+            stem = next(stem for stem, name in self.names.items() if name == key)
+            self.call("rm", uri=f"{TARGET}/{stem}")
+            del self.names[stem]
+        (self.base / "names.json").write_text(json.dumps(self.names, indent=2))
+        return len(keys)
+
     def contents(self) -> list[str]:
         return [str(self.call("read", uri=self.file_of(key))["text"]) for key in self.names.values()]
 

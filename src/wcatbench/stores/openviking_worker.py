@@ -48,6 +48,10 @@ def main() -> None:
                 time.sleep(2)
             client.wait_processed()
             print(json.dumps({"commit": reply, "task": task}, ensure_ascii=False, default=str))
+        elif request["op"] == "rm":
+            client.rm(request["uri"], recursive=True, wait=True)
+            client.wait_processed()
+            print(json.dumps({"removed": request["uri"]}))
         elif request["op"] == "ls":
             reply = client.ls(request["uri"], recursive=True)
             print(json.dumps(reply, ensure_ascii=False, default=str))
