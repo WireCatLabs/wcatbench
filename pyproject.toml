@@ -51,11 +51,16 @@ openviking-evo = "wcatbench.stores.openviking:OpenVikingEvolutionStore"
 oracle = "wcatbench.agents.oracle:OracleAgent"
 noop = "wcatbench.agents.noop:NoopAgent"
 hermes = "wcatbench.agents.hermes:HermesAgent"
+hermes-api = "wcatbench.agents.hermes:HermesApiAgent"
+claude = "wcatbench.agents.claude:ClaudeAgent"
 
 [project.entry-points."wcatbench.datasets"]
 synthetic = "wcatbench.datasets.synthetic:SyntheticDataset"
 rules-trial = "wcatbench.datasets.rules_trial:RulesTrialDataset"
 rules-trial-dev = "wcatbench.datasets.rules_trial:RulesTrialDevDataset"
+full-use-1x = "wcatbench.datasets.company_round:CompanyRoundDataset"
+full-use-10x = "wcatbench.datasets.company_round:CompanyRound10x"
+full-use-100x = "wcatbench.datasets.company_round:CompanyRound100x"
 
 [project.entry-points."wcatbench.scorers"]
 answer = "wcatbench.scoring.answer:AnswerScorer"
@@ -143,6 +148,9 @@ select = ["E", "F", "W", "I", "B", "UP", "A", "S", "BLE", "SIM", "RUF", "PT", "P
 "tests/**" = ["S101", "S603", "S607", "RUF001"]
 # Russian task and corpus text: Cyrillic letters are the content, not look-alikes.
 "src/wcatbench/datasets/rules_trial/*" = ["RUF001"]
+"src/wcatbench/datasets/company_round/*" = ["RUF001"]
+"src/wcatbench/pipeline/full_use.py" = ["RUF001"]
+"src/wcatbench/pipeline/full_use_report.py" = ["RUF001"]
 "src/wcatbench/pipeline/rules_trial.py" = ["RUF001", "S108"]
 "src/wcatbench/pipeline/dialogue.py" = ["RUF001", "S108"]
 "src/wcatbench/pipeline/unrestricted.py" = ["RUF001", "S108"]

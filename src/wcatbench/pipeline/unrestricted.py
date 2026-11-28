@@ -16,6 +16,7 @@ import json
 import os
 import shutil
 import threading
+import time
 from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -115,12 +116,17 @@ class Proxy:
                 params = parse_qs(urlparse(self.path).query)
                 query = params.get("q", [""])[0]
                 k = max(1, min(MAX_K, int(params.get("k", ["10"])[0])))
+                started = time.perf_counter()
                 with proxy.lock:
                     hits = proxy.store.search(query, k)
+                seconds = round(time.perf_counter() - started, 3)
                 rows = [{"rank": n, "text": hit.text or "", "keys": list(hit.keys)} for n, hit in enumerate(hits, 1)]
                 if proxy.log is not None:
                     with proxy.log.open("a") as lines:
-                        lines.write(json.dumps({"q": query, "k": k, "hits": rows}, ensure_ascii=False) + "\n")
+                        lines.write(
+                            json.dumps({"q": query, "k": k, "seconds": seconds, "hits": rows}, ensure_ascii=False)
+                            + "\n"
+                        )
                 body = json.dumps([{"rank": row["rank"], "text": row["text"]} for row in rows], ensure_ascii=False)
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")

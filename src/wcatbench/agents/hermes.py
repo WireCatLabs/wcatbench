@@ -17,6 +17,7 @@ from pathlib import Path
 
 from wcatbench.core.errors import PermanentError
 from wcatbench.core.jail import Jail
+from wcatbench.core.secrets import keyring_secret
 from wcatbench.core.types import Outcome, Usage
 
 # Hermes v0.23.4 cloned there with its own venv; the home is the one bin/hermes-codex-signin signed in.
@@ -75,6 +76,7 @@ def interpreter_root(python: Path) -> Path:
 
 class HermesAgent:
     name = "hermes"
+    provider = "openai-codex"
 
     def __init__(
         self,
@@ -131,7 +133,7 @@ class HermesAgent:
             "-m",
             self.model,
             "--provider",
-            "openai-codex",
+            self.provider,
             "-t",
             self.toolsets,
             "--yolo",
@@ -240,3 +242,55 @@ def tool_activity(after: Path) -> dict[str, object]:
         "by_tool": by_tool,
         "outputs": "\n".join(text for (text,) in outputs),
     }
+
+
+API_HOME = Path(os.environ.get("WCATBENCH_HERMES_API_HOME", "/var/tmp/wcat-dapi/hermes-home-api"))  # nosec B108
+
+# The Codex sessions sent no effort of ours; Hermes' Responses transport then sends "medium"
+# (agent/transports/codex.py `_resolve_reasoning`, gpt-5.6 defaults to medium). Pinned here so the API rows match.
+API_CONFIG = """model:
+  default: {model}
+  provider: openai-api
+agent:
+  reasoning_effort: medium
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+"""
+
+
+class HermesApiAgent(HermesAgent):
+    """The same Hermes harness on an OpenAI API key (keyring service openai, account default) instead of the
+    Codex sign-in. The key is read in-process and goes into the jail's environment only; its home holds no sign-in.
+    """
+
+    provider = "openai-api"
+
+    def __init__(
+        self,
+        model: str,
+        toolsets: str = "file,terminal",
+        timeout: int = 900,
+        root: Path = HERMES_ROOT,
+        home: Path = API_HOME,
+    ) -> None:
+        super().__init__(model=model, toolsets=toolsets, timeout=timeout, root=root, home=home)
+
+    def prepare(self) -> None:
+        self.home.mkdir(mode=0o700, parents=True, exist_ok=True)
+        stray = sorted(entry.name for entry in self.home.iterdir() if entry.name not in KEEP)
+        if stray:
+            raise PermanentError(f"{self.home} holds files from an earlier session: {', '.join(stray)}")
+        auth = self.home / "auth.json"
+        # Hermes writes an auth.json naming the env key in its credential pool; a provider entry would be a sign-in.
+        if auth.exists() and json.loads(auth.read_text()).get("providers"):
+            raise PermanentError(f"{self.home} holds a sign-in; the API home must not")
+        (self.home / "config.yaml").write_text(API_CONFIG.format(model=self.model))
+
+    def jail(self, workspace: Path, out: Path, tools: Tools | None = None) -> Jail:
+        base = super().jail(workspace, out, tools)
+        return Jail(
+            read_only=base.read_only,
+            writable=base.writable,
+            env={**base.env, "OPENAI_API_KEY": keyring_secret("openai", "default")},
+        )

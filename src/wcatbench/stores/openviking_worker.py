@@ -17,7 +17,8 @@ DONE = ("completed", "failed", "cancelled")
 
 def main() -> None:
     request = json.loads(sys.stdin.read())
-    client = SyncHTTPClient(url=request["url"])
+    # The SDK default read timeout (180 s here) is shorter than adding 1,500 files with wait=True.
+    client = SyncHTTPClient(url=request["url"], timeout=float(request.get("timeout", 3600)))
     client.initialize()
     try:
         if request["op"] == "add":
@@ -48,6 +49,10 @@ def main() -> None:
                 time.sleep(2)
             client.wait_processed()
             print(json.dumps({"commit": reply, "task": task}, ensure_ascii=False, default=str))
+        elif request["op"] == "rm":
+            client.rm(request["uri"], recursive=True, wait=True)
+            client.wait_processed()
+            print(json.dumps({"removed": request["uri"]}))
         elif request["op"] == "ls":
             reply = client.ls(request["uri"], recursive=True)
             print(json.dumps(reply, ensure_ascii=False, default=str))

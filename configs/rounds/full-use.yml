@@ -1,0 +1,232 @@
+# Pre-registered on 2026-11-28, before any data was generated. Changes after the first run go under `amendments`.
+# The owner's go (2026-11-28): test memo as it is built, not only its note search. The rules-trial memo row (one
+# Markdown folder, one frozen `search all`, no --project, no kinds, no people or projects) stays as a bonus row,
+# "under hard limits".
+
+round: full-use
+status: pre-registered
+amendments:
+  - date: 2026-11-28
+    when: after the content was written and before the first session of any contestant
+    what: >-
+      Counts as the content came out (manifest extra): 15 known checks per run (30 per contestant and size) rest on
+      a rule whose look-alike has another value, not 17 (34); 14 per run (28) on a rule with an older or cancelled
+      version, not 16 (32). Questions: 4 look-alike (q01, q03, q06, q13) and 5 with a changed or cancelled rule
+      (q02, q04, q05, q10, q11), not 4. Thresholds keep their form with these denominators.
+  - date: 2026-11-28
+    when: same
+    what: >-
+      The prompt is the frozen strategy of the rules-trial unrestricted round (STRATEGY_VERSION 1, tuned on
+      rules-trial-dev: another project, other values, another seed) plus one line naming the tool. No new dev set was
+      built; full-use PROMPT_VERSION 1 is that text, frozen before the first session.
+  - date: 2026-11-28
+    when: same
+    what: >-
+      Memory Bank curates the archive after the deletion and the revocation (one curation session of up to 3600 s per
+      size, then the tasks read the bank only). Its forgetting is therefore not tested. Files get the archive after
+      the deletion and the revocation, as a user's disk would hold it. memo-full, Mem0 and OpenViking ingest
+      everything, then forget with their own commands. The deletion happens after the build and before the first
+      session, not between sessions.
+  - date: 2026-11-28
+    when: after the answer-key gate and before the first contestant session
+    what: >-
+      Fairness fix. The first build wrote source ids (s04, n00042) into exported identifiers: tg message ids,
+      Message-IDs, .vtt names and noise file names, so a contestant reading raw data could tell a rule source from
+      noise. Every exported identifier is now opaque (export.Ids, seeded), noise notes and documents carry topical
+      names, and the id-to-source map is ids.json in the dataset folder, outside every mount. The corpus text did not
+      change. The answer-key gate (60/60 known, 18/18 unknown) stands: its input is the rule text only, no exported
+      identifier. Search MRR and precision now score a hit by its source identity (ref, title), not by a regex on the
+      excerpt.
+
+step0:
+  date: 2026-11-28
+  hybrid: >-
+    EmbeddingGemma rules-trial store (memo 0.154.0), 3 queries: default search returns 10 hits each with found_by
+    title, words and meaning, --exact returns 0 (all words as written). Single words with --exact give 1 to 4 hits,
+    all inside the default list.
+  kinds: >-
+    memo 0.156.0: mail (mbox through mail-cli), documents and .vtt transcripts (memo import), folder notes and native
+    notes all have vectors after `memo sync`. Messenger messages (tg store import) are words only after `memo sync`
+    and get vectors from `tg conversations embed`. Filed as WireCatLabs/cli-memo#907. The harness runs the tg embed
+    step, as a real tg sync would.
+
+versions:
+  memo: "@wirecat/cli-memo 0.156.0, cli-core 2.0.0: the latest npm release on 2026-11-28 (published 2026-11-27)"
+  tg: "@wirecat/tg-cli 0.138.0 (store import of synthetic chats, conversations embed)"
+  mail: "@wirecat/mail-cli 0.38.0 (messages import of an mbox)"
+  why_latest: >-
+    Owner's ruling for this round: measure memo as it ships now. 0.154.0 stays the pin of the rules-trial rows only.
+  installed_at: /home/leemour/.cache/wcat-dapi-full/memo-cli, never the memo on PATH
+  embedding: EmbeddingGemma 300M, memo's default (cli-core DEFAULT_TEXT_MODEL)
+
+fairness:
+  - The harness never hands memo the answer key. No project tag, kind hint or link is put on a source for memo only.
+  - "Allowed for memo: links memo infers from the data itself; one-time setup a real user would do (the 3 projects
+    defined with `memo projects add` and their aliases, the tg and mail profiles); the agent passing --project because
+    it read the project in the task."
+  - Every contestant gets the same raw sources, in the format its own ingestion reads.
+  - "Each rival at its best: Mem0 OSS and OpenViking extract with their own LLM (gpt-5-mini), Memory Bank is curated
+    by the agent from the raw sources following its own rules, files are the raw export plus an agent with ripgrep,
+    jq and Python."
+  - One generic prompt for every contestant, plus one line naming its tool. Tuned on a dev set with another project,
+    then frozen as PROMPT_VERSION and never changed for the test set.
+  - Tasks are worded as a user writes them (cli-testing docs/dev/AGENT-TESTS.md). Scoring is blind.
+
+data:
+  generator: wcatbench.datasets.company_round, synthetic, Russian, written from scratch
+  seed: 20261128
+  dev_seed: 20261129
+  company: one small company, 3 projects (the target and a look-alike with a near name and shared people, plus a third)
+  people: about 10, with roles; some names close to each other (two of one first name), some with diminutives
+  kinds:
+    chat: tg synthetic store import (group chats and dialogs, informal, typos, inflections, synonyms)
+    mail: mbox (threads, replies, forwards)
+    meeting: .vtt transcripts with speaker cues
+    note: Markdown notes in a folder
+    document: Markdown and .docx documents
+  rules: >-
+    About 12 rules the tasks need, each living inside a conversation, several spread over 2 or more messages. At least
+    4 changed across kinds (set in chat, changed in mail or a meeting, and the other way), at least 2 cancelled, and
+    the look-alike project carries different values for at least 4 of the same rules.
+  deletion: >-
+    one note holding a unique marker is deleted at its source mid-round, and every store re-syncs. A note, because
+    `tg store import` and `mail messages import` only add or update (their help says so), so a chat or mail deletion
+    would test the import tool, not memo. Checked on step0: the note file removed, `memo sync`, the note gone from
+    search with and without --exact.
+  revoked_access: >-
+    one notes folder ("HR", with another unique marker) is put out of the agent's reach with each system's own
+    control. memo has no per-agent access setting in 0.156.0 (config show lists none), so memo uses
+    `memo folders remove <id> --allow-delete --yes`, its documented way to stop reading a folder. Files: the folder
+    is removed from the agent's mount. Mem0 and OpenViking: the memories made from it are deleted through their API.
+    Memory Bank: the agent is told to forget it, as a user would.
+  sizes:
+    "1x": the rule sources plus about 150 background sources
+    "10x": about 1,500 background sources
+    "100x": about 15,000 background sources
+  background: >-
+    everyday company talk in the same kinds and style, with no rule value of a task. Distractors on purpose, so rg
+    cannot filter noise away for free: 30% names the target project, 25% the look-alike, 20% the third, 25% none;
+    40% mentions a rule topic (timeouts, retention, limits, deadlines, formats) without the task's value, and 10% of
+    those carry a value for another service or the look-alike.
+
+tasks:
+  coding: >-
+    3 tasks with hidden tests, as in his design: 10 known and 3 UNKNOWN checks each, so 30 known and 9 unknown per
+    run. Each task runs twice per contestant and size (his 2 applications): 60 known and 18 unknown. 17 known checks
+    per run (34 per contestant and size) rest on a rule whose look-alike project has another value, and 16 per run
+    (32) on a rule with an older or cancelled version.
+  question_variants: 4 facts asked in a second wording, as extra sessions outside the 15, scored apart
+  questions: >-
+    15 questions as a user asks them: some without the project, typos in names (one close to another person, one
+    mangled), a word with two meanings, a misremembered detail, a question with no answer, a few asked in 2 wordings
+    (scored apart). Written by a second agent that sees only the source and style samples, errors added by a third.
+    12 have an answer and 3 have none; 4 turn on the look-alike project and 4 on a changed or cancelled rule. One
+    session per question.
+
+memo_setup:
+  rule: projects and their aliases only, the names a user would type. No rule value, no source-to-project mapping.
+  commands:
+    - memo projects add 'Пеликан' --key PEL --type work
+    - memo projects add 'Пеликан-Плюс' --key PPL --type work
+    - memo projects add 'Орбита' --key ORB --type work
+    - "memo vocabulary aliases add project:<Пеликан> 'Pelican'"
+    - "memo vocabulary aliases add project:<Пеликан-Плюс> 'ПП'"
+    - "memo vocabulary aliases add project:<Пеликан-Плюс> 'Pelican Plus'"
+  also: "tg <profile> store import and conversations embed, mail <profile> messages import, memo import, memo folders add, memo sync"
+  reranker: "mmarco, the tg and mail default (search_reranker), downloaded with `tg <profile> models download mmarco`"
+  mail_profile: >-
+    mail-cli refuses `config set address` from an agent. The harness writes the synthetic address into the throwaway
+    config file (throwaway HOME, DBUS_SESSION_BUS_ADDRESS=disabled:, no sign-in, so mail-cli only reads the mbox).
+
+gates:
+  answer_key: an agent given the current rules as one file must score 60 of 60 known and 18 of 18 unknown at 1x
+  no_memory: an agent with no memory and no sources must apply at most 10 of 60 known at 1x
+  when: both at 1x before any contestant; a failed gate stops the round
+
+contestants:
+  - {id: memo-full, what: "agent with the memo CLI and its skill (memo skill show), every kind ingested natively, projects defined once"}
+  - {id: files-rg, what: "the raw export as files (chat JSON, mbox, .vtt, .md, .docx as text), agent with rg, jq and Python"}
+  - {id: memory-bank, what: "dapi/memory-bank e1b428d, curated by the agent from the raw export under its rules, then the tasks"}
+  - {id: mem0-oss, what: "mem0ai 2.2.1, its own extraction with gpt-5-mini, agent searches through a thin tool"}
+  - {id: openviking, what: "OpenViking 0.4.17.1, its own extraction, agent searches through a thin tool"}
+  - {id: memo-limited, label: "bonus, under hard limits", what: "the rules-trial memo row: one notes folder, one frozen search all"}
+
+sizes_per_contestant:
+  memo-full: ["1x", "10x", "100x"]
+  files-rg: ["1x", "10x", "100x"]
+  memory-bank: ["1x", "10x"]
+  mem0-oss: ["1x"]
+  openviking: ["1x", "10x"]
+  memo-limited: ["1x"]
+  why: >-
+    Extraction cost scales with sources (rules-trial: about $0.29 for Mem0 and $0.11 for OpenViking per 36 sources).
+    Mem0 at 10x would be about $13 and at 100x about $120, OpenViking at 100x about $45: over the $18.4 left of the
+    $20 cap. Memory Bank at 100x would need the agent to curate 15,000 sources. Each gap is said next to the curve.
+
+agent:
+  primary: Hermes v0.23.4 with gpt-5.6-terra over the openai-codex subscription, in bubblewrap
+  replication: Claude Code headless on the Claude subscription, at 1x, for memo-full and files-rg
+  timeout_s: 900
+
+metrics:
+  - accuracy: applied known rules plus correct UNKNOWN (coding), correct answers with a source (questions)
+  - recall: needed sources among what the agent saw (tool outputs); precision and MRR of each search where it returns a ranked list
+  - contamination: a look-alike project's value used
+  - stale: an old or cancelled version used
+  - citation: the answer or code comment points to the right source, not an old revision
+  - tokens: agent input and output per task
+  - time: wall time per task and per search call
+  - tool_calls: per task
+  - ingest: ingest time and store size per contestant and size
+  - curve: every metric above against archive size
+  - deletion_and_revocation: the marker anywhere in the model input after the change (transcript scan), plus a store check with no agent
+
+scoring:
+  coding: hidden tests, staged outcomes as in rules-trial
+  questions: >-
+    blind: answers shuffled under random letters, scored by a separate agent (Claude subscription) against the key
+    with one rule for all; every disagreement with a regex pre-check is read by hand
+  transcripts: >-
+    two per contestant read after the blind scores are fixed. A harness bug found there is fixed, the contestant is
+    rerun and both rows are kept.
+
+stages: ["2 sessions per contestant", "5", "full"]
+
+hypotheses:
+  h1:
+    claim: "At 1x, files-rg ties memo-full on accuracy (expected)."
+    fails_if: "memo-full is more than 3 checks below files-rg out of 60 known + 18 unknown, or more than 1 answer below out of 15 questions, at 1x"
+  h2:
+    claim: "At 100x, memo-full uses at most half the agent input tokens per task of files-rg, at no worse accuracy than files-rg minus 2."
+    fails_if: "memo-full input tokens per task above 0.5 x files-rg at 100x (21 tasks: 6 coding runs + 15 questions), or its accuracy more than 2 below files-rg out of 60 + 18 checks and 15 questions"
+  h3:
+    claim: "At 100x, memo-full's wall time per task is at most files-rg's."
+    fails_if: memo-full median wall time per task above files-rg's at 100x
+  h4:
+    claim: "On look-alike-project checks memo-full uses the wrong project's value at most half as often as files-rg at 10x and 100x."
+    fails_if: "memo-full look-alike values above 0.5 x files-rg's, counted out of 34 look-alike checks and 4 look-alike questions, at 10x or at 100x. Both at 0 is reported as no difference, not a pass."
+  h5:
+    claim: "Expected against memo: on cross-kind corrections memo-full uses a stale version at least as often as files-rg, because memo has no supersession yet."
+    fails_if: "memo-full stale uses are 2 or more below files-rg's, out of 32 checks and 4 questions with an older version, at any size (that would be a result for memo)"
+  h6:
+    claim: "At 1x memo-full uses more agent input tokens per task than files-rg (expected against memo)."
+    fails_if: memo-full tokens per task at 1x are at most files-rg's
+  h7:
+    claim: "After deletion and revocation, the marker reaches the model input in 0 sessions for memo-full."
+    fails_if: "any memo-full session (out of all its sessions after the change, at every size) sees a marker"
+  h8:
+    claim: "memo-full cites the right source for at least 90% of the rules it applies."
+    fails_if: "below 90%, out of the applied known checks with a citation plus the correct answered questions, at 1x"
+  decision: >-
+    h2, h3 and h4 are memo's claim; any that fails goes in the headline, and memo's roadmap. h5 and h6 are published
+    either way. Small differences (1 or 2 answers of 15) are reported as noise, not as a claim.
+
+budget:
+  api_cap_usd: 20
+  stop_and_report_at_usd: 20
+  estimate_usd:
+    mem0_oss: "about 1.40 at 1x"
+    openviking: "about 0.50 at 1x and 5 at 10x"
+    total: "about 7, checked after each build; stop and report before 18.4 (what is left of the cap)"
+    embeddings_openai: "under 0.20 (Mem0 and OpenViking only; memo embeds locally)"
+    judge_and_agents: "0: Codex and Claude subscriptions"

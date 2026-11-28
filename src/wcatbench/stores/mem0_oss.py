@@ -104,6 +104,10 @@ class Mem0OssStore:
             hits.append(Hit(keys=(key,) if key else (), text=str(row["memory"]), score=row.get("score")))
         return hits
 
+    def forget(self, keys: Sequence[str]) -> int:
+        """Delete every memory Mem0 made from these records, through its own `delete`."""
+        return int(self.call("forget", keys=list(keys))["deleted"])
+
     def describe(self) -> dict[str, object]:
         return {"memories": len(self.call("all")), "llm": LLM, "embedder": EMBEDDER}
 
